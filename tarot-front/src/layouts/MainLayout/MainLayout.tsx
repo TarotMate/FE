@@ -1,5 +1,4 @@
 import MainHeader from './MainHeader';
-import MainSidebar from './MainSidebar';
 import MainFooter from './MainFooter';
 import { Container } from '@mui/material';
 import React from "react"

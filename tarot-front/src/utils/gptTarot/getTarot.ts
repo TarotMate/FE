@@ -86,9 +86,6 @@ export const gptTarot = async (prompt: string): Promise<CallGptResponse> => {
         }),
     });
     const responseData = await response.json();
-    console.log(">>responseData", responseData);
-
-    const message = responseData.choices[0].message.content;
 
     return responseData; // responseData는 Response 타입의 객체입니다.
 };

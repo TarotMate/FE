@@ -1,7 +1,6 @@
 import './App.css'
-import TarotMateMainPage from "./pages/TarotMate/MainPage/TarotMateMainPage";
 import {allRoutes} from "./utils/routes/routes";
-import {BrowserRouter, Route, Router, Routes} from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {CircularProgress} from "@mui/material";
 import React, { Suspense } from 'react';
 import MainLayout from "./layouts/MainLayout/MainLayout";
