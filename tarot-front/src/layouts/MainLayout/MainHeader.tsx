@@ -1,13 +1,10 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
-function MainHeader(props) {
-    const { title } = props;
-
+function MainHeader() {
     return (
         <React.Fragment>
             <Toolbar sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -37,9 +34,5 @@ function MainHeader(props) {
         </React.Fragment>
     );
 }
-
-MainHeader.propTypes = {
-    title: PropTypes.string.isRequired,
-};
 
 export default MainHeader;
