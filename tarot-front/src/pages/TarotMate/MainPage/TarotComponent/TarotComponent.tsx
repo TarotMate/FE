@@ -38,7 +38,7 @@ function TarotComponent() {
             setResponse(result.choices); // 응답 데이터 설정
         } catch (error) {
             console.error('Error fetching GPT response:', error);
-            setResponse(null); // 에러 발생시 응답 데이터 초기화
+            setResponse([]); // 에러 발생시 응답 데이터 초기화
         }
         setIsLoading(false); // 로딩 상태 종료
     };
