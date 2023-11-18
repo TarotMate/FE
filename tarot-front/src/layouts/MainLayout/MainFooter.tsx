@@ -9,8 +9,8 @@ function Copyright() {
     return (
         <Typography variant="body2" color="text.secondary">
             {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
+            <Link color="inherit" href="/about">
+                TarotMate
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -46,7 +46,7 @@ export default function MainFooter() {
                 >
                     <Container maxWidth="sm">
                         <Typography variant="body1">
-                            My sticky footer can be found here.
+                            타로메이트
                         </Typography>
                         <Copyright />
                     </Container>
