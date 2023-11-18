@@ -1,11 +1,18 @@
 import { useState } from 'react';
 import {Button, Card, CardContent, CircularProgress, Typography} from "@mui/material";
 import {gptTarot} from "../../../../utils/gptTarot/getTarot";
+interface ResponseItem {
+    message: {
+        content: string;
+    };
+    // Add any other necessary properties of the response item here
+}
+
 
 function TarotComponent() {
     // 상태 정의: 로딩 상태와 응답 데이터
     const [isLoading, setIsLoading] = useState(false);
-    const [response, setResponse] = useState(null);
+    const [response, setResponse] = useState<ResponseItem[]>([]);
     const tarotCards = [
         "마법사", "여사제", "여황제", "황제", "교황", "연인들",
         "전차", "힘", "은둔자", "운명의 수레바퀴", "정의", "매달린 사람",
