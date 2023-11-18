@@ -5,7 +5,7 @@ import {gptTarot} from "../../../../utils/gptTarot/getTarot";
 function TarotComponent() {
     // 상태 정의: 로딩 상태와 응답 데이터
     const [isLoading, setIsLoading] = useState(false);
-    const [response, setResponse] = useState("");
+    const [response, setResponse] = useState(null);
     const tarotCards = [
         "마법사", "여사제", "여황제", "황제", "교황", "연인들",
         "전차", "힘", "은둔자", "운명의 수레바퀴", "정의", "매달린 사람",
@@ -45,7 +45,7 @@ function TarotComponent() {
             {isLoading ? (
                 <CircularProgress />
             ) : (
-                response && response.map((res, index) => (
+                response && response.map((res: any, index: any) => (
                     <Card key={index} style={{ margin: '10px', maxWidth: 600 }}>
                         <CardContent>
                             <Typography variant="h5" component="div">
