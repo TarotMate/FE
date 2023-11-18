@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
@@ -8,7 +7,6 @@ function MainHeader() {
     return (
         <React.Fragment>
             <Toolbar sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Button size="small">Subscribe</Button>
                 <Typography
                     component="h2"
                     variant="h5"
@@ -21,9 +19,6 @@ function MainHeader() {
                 </Typography>
                 <IconButton>
                 </IconButton>
-                <Button variant="outlined" size="small">
-                    Sign up
-                </Button>
             </Toolbar>
             <Toolbar
                 component="nav"
