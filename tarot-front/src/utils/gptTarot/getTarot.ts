@@ -1,5 +1,3 @@
-const api_key = import.meta.env.VITE_SOME_KEY;
-
 export interface CallGptResponse {
     id: string
     object: string
@@ -28,6 +26,8 @@ interface Usage {
 
 
 export const gptTarot = async (prompt: string): Promise<CallGptResponse> => {
+    // const apiUrl = import.meta.env.VITE_SOME_KEY;
+
     const messages = [
         {
             role: "system",
@@ -70,6 +70,7 @@ export const gptTarot = async (prompt: string): Promise<CallGptResponse> => {
 // prompt ex)    const tarotPrompt = `첫번째 카드는 ${selectedCards[0]}, 두번째 카드는 ${selectedCards[1]}, 세번째 카드는 ${selectedCards[2]}를 뽑았다.`;
         },
     ];
+    const api_key = import.meta.env.VITE_OPENAI_API_KEY;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
