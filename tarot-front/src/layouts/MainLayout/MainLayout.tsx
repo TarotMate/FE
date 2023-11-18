@@ -1,7 +1,7 @@
 import MainHeader from './MainHeader';
 import MainFooter from './MainFooter';
 import { Container } from '@mui/material';
-import React from "react"
+import * as React from 'react';
 import PropTypes from "prop-types"
 
 const MainLayout = (props: any) => {

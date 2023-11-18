@@ -1,4 +1,4 @@
-import { Container, Typography, Button, Box } from "@mui/material";
+import { Container, Typography, Box } from "@mui/material";
 
 const AboutPage = () => {
     return (

@@ -27,7 +27,7 @@ function TarotComponent() {
     const handleButtonClick = async () => {
         setIsLoading(true); // 로딩 상태 시작
         try {
-            const result = await gptTarot(tarotPrompt); // API 호출
+            const result: any = await gptTarot(tarotPrompt); // API 호출
             setResponse(result.choices); // 응답 데이터 설정
         } catch (error) {
             console.error('Error fetching GPT response:', error);
