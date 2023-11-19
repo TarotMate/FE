@@ -100,10 +100,8 @@ function TarotComponent() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        // transition: 'transform 0.6s',
         transformStyle: 'preserve-3d',
         position: 'relative',
-        backgroundColor: cardBackImage,
         ':hover': {
             boxShadow: '0 4px 8px rgba(0,0,0,0.5)',
             transform: 'scale(1.05)'
@@ -117,15 +115,6 @@ function TarotComponent() {
         height: '100%',
         position: 'absolute',
         backfaceVisibility: 'hidden',
-    };
-
-    // 로딩 인디케이터 스타일
-    const loadingStyle = {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100px',
-        margin: '20px'
     };
 
     // 응답 카드 스타일
