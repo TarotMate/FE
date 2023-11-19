@@ -89,40 +89,9 @@ function TarotComponent() {
     };
 
 
-// 카드 컨테이너 스타일
-    const cardContainerStyle = {
-        cursor: 'pointer',
-        margin: '5px',
-        width: '120px',
-        height: '168px',
-        borderRadius: '10px',
-        boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        transformStyle: 'preserve-3d',
-        ':hover': {
-            boxShadow: '0 4px 8px rgba(0,0,0,0.5)',
-            transform: 'scale(1.05)'
-        },
-        transition: 'transform 0.3s ease, border 0.3s ease' // 부드러운 전환 효과 추가
-    };
 
-    // 카드 전면 스타일
-    const cardFaceStyle = {
-        width: '100%',
-        height: '100%',
-        position: 'absolute',
-        backfaceVisibility: 'hidden',
-    };
 
-    // 응답 카드 스타일
-    const responseCardStyle = {
-        margin: '10px',
-        maxWidth: '600px',
-        color: 'white', // 결과 텍스트 색상을 밝게 변경
-        boxShadow: '0 4px 8px rgba(0,0,0,0.5)' // 결과 카드에 그림자 효과 추가
-    };
+
 
     return (
         <div style={{
@@ -139,14 +108,32 @@ function TarotComponent() {
                     <Card
                         key={index}
                         style={{
-                            ...cardContainerStyle,
+                            cursor: 'pointer',
+                            margin: '5px',
+                            width: '120px',
+                            height: '168px',
+                            borderRadius: '10px',
+                            boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            transformStyle: 'preserve-3d',
+                            ':hover': {
+                                boxShadow: '0 4px 8px rgba(0,0,0,0.5)',
+                                transform: 'scale(1.05)'
+                            },
+                            transition: 'transform 0.3s ease, border 0.3s ease',
                             border: selectedCards.includes(card.name) ? '3px solid gold' : '', // 선택된 카드에 두꺼운 금색 테두리 추가
                             transform: flippedCards.has(card.name) ? 'rotateY(180deg)' : 'rotateY(0deg)',
                         }}
                         onClick={() => toggleCardSelection(card.name)}
                     >
                         {/* 카드 전면 */}
-                        <CardContent style={{ ...cardFaceStyle,
+                        <CardContent style={{
+                            width: '100%',
+                            height: '100%',
+                            position: 'absolute',
+                            backfaceVisibility: 'hidden',
                             border: selectedCards.includes(card.name) ? '2px solid #1976d2' : '1px solid #ddd',
                             transform: flippedCards.has(card.name) ? 'rotateY(180deg)' : 'rotateY(0deg)',
                             zIndex: flippedCards.has(card.name) ? 1 : 0 }}>
@@ -183,7 +170,14 @@ function TarotComponent() {
                 ) : (
                 // 결과 표시 영역
                     response && response.map((res, index) => (
-                    <Card key={index} style={responseCardStyle}>
+                    <Card key={index} style={
+                        {
+                            margin: '10px',
+                            maxWidth: '600px',
+                            color: 'white', // 결과 텍스트 색상을 밝게 변경
+                            boxShadow: '0 4px 8px rgba(0,0,0,0.5)' // 결과 카드에 그림자 효과 추가
+                        }
+                    }>
                         <CardContent>
                             <Typography variant="h5" component="div">
                                 Response {index + 1}
