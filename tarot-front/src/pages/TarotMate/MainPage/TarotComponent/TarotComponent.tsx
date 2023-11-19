@@ -88,6 +88,20 @@ function TarotComponent() {
         setIsLoading(false);
     };
 
+    const renderResponse = (responseContent) => {
+        // JSON 문자열을 객체로 변환
+        const responseObj = JSON.parse(responseContent);
+
+        return (
+            <div style={{ margin: '10px' }}>
+                <Typography variant="h6" style={{ fontWeight: 'bold' }}>{responseObj.title}</Typography>
+                <Typography variant="body1">{responseObj.fortune_telling}</Typography>
+                <Typography variant="body1">{responseObj.emotion_result}</Typography>
+                <Typography variant="body1">{responseObj.analysis}</Typography>
+                <Typography variant="body1">{responseObj.action_list}</Typography>
+            </div>
+        );
+    };
 
 
 
@@ -167,22 +181,9 @@ function TarotComponent() {
                 ) : (
                 // 결과 표시 영역
                     response && response.map((res, index) => (
-                    <Card key={index} style={
-                        {
-                            margin: '10px',
-                            maxWidth: '600px',
-                            backgroundColor: '#333', // 결과 카드의 배경색 변경
-                            color: 'white', // 결과 텍스트 색상을 밝게 변경
-                            boxShadow: '0 4px 8px rgba(0,0,0,0.5)' // 결과 카드에 그림자 효과 추가
-                        }
-                    }>
+                        <Card key={index} style={{ margin: '10px', maxWidth: 600 }}>
                         <CardContent>
-                            <Typography variant="h5" component="div">
-                                Response {index + 1}
-                            </Typography>
-                            <Typography variant="body2">
-                                {res.message.content}
-                            </Typography>
+                            {renderResponse(res.message.content)}
                         </CardContent>
                     </Card>
                 ))
