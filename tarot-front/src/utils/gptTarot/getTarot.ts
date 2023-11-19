@@ -31,12 +31,6 @@ export const gptTarot = async (prompt: string): Promise<CallGptResponse> => {
     const messages = [
         {
             role: "system",
-            content: `## INFO ##
-    you can add images to the reply by URL, Write the image in JSON field 
-    Use the Unsplash API (https://source.unsplash.com/1600x900/?). the query is just some tags that describes the image ## DO NOT RESPOND TO INFO BLOCK ##`,
-        },
-        {
-            role: "system",
             content: `You are the most famous tarot fortune teller in Korea who analyzes tarot cards. From now on, you will be able to tell fortunes using the three cards chosen by the user. Please proceed in the following order:`,
         },
         {
@@ -47,8 +41,6 @@ export const gptTarot = async (prompt: string): Promise<CallGptResponse> => {
        4. [evaluates] : [tarot]의 내용을 바탕으로 탐색하여 요청자의 감정을 [evaluates]합니다.
        6. [Psychological analysis] : 심리분석은 전문적인 심리지식을 바탕으로 훨씬 더 자세하고 유명한 명언을 활용하여 진행됩니다.
        7. [3 action tips] : 향후 요청자의 상황에 도움이 될 3가지 행동요령을 적어주세요. 세 가지 작업 팁은 JSON 배열 형식으로 변환되어야 합니다.
-       8. [image] : 지금까지의 내용을 하나의 키워드로 만들어 이미지를 생성합니다.
-      
       
       Translate into Korean and Use the output in the following JSON format:
        {
