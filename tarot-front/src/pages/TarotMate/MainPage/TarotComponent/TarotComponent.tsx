@@ -101,6 +101,7 @@ function TarotComponent() {
             alignItems: 'center',
             backgroundImage: 'url(./mystical-background.jpg)', // 신비로운 배경 이미지 추가
             backgroundSize: 'cover',
+            backgroundColor: '#1a1a2e', // 어두운 배경 색상 추가
             color: 'white' // 텍스트 색상을 밝게 변경
         }}>
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', margin: '10px' }}>
@@ -170,6 +171,7 @@ function TarotComponent() {
                         {
                             margin: '10px',
                             maxWidth: '600px',
+                            backgroundColor: '#333', // 결과 카드의 배경색 변경
                             color: 'white', // 결과 텍스트 색상을 밝게 변경
                             boxShadow: '0 4px 8px rgba(0,0,0,0.5)' // 결과 카드에 그림자 효과 추가
                         }
