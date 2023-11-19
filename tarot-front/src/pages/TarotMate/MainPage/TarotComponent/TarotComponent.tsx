@@ -118,10 +118,6 @@ function TarotComponent() {
                             justifyContent: 'center',
                             alignItems: 'center',
                             transformStyle: 'preserve-3d',
-                            ':hover': {
-                                boxShadow: '0 4px 8px rgba(0,0,0,0.5)',
-                                transform: 'scale(1.05)'
-                            },
                             transition: 'transform 0.3s ease, border 0.3s ease',
                             border: selectedCards.includes(card.name) ? '3px solid gold' : '', // 선택된 카드에 두꺼운 금색 테두리 추가
                             transform: flippedCards.has(card.name) ? 'rotateY(180deg)' : 'rotateY(0deg)',
