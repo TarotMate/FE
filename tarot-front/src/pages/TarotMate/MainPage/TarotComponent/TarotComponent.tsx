@@ -113,12 +113,13 @@ function TarotComponent() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            backgroundImage: 'url(./mystical-background.jpg)', // 신비로운 배경 이미지 추가
-            backgroundSize: 'cover',
             backgroundColor: '#1a1a2e', // 어두운 배경 색상 추가
             color: 'white' // 텍스트 색상을 밝게 변경
         }}>
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', margin: '10px' }}>
+                <p>
+                    라이더-웨이트 타로 덱의 메이저 아르카나(Major Arcana) 카드는 총 22장입니다. 메이저 아르카나는 타로 덱의 주요 카드들로 구성되어 있으며, 일반적으로 0부터 21까지 번호가 매겨져 있습니다. 이 카드들은 각각 다른 상징과 의미를 지니며, 타로 카드 읽기에서 중요한 역할을 합니다.
+                </p>
                 {tarotCards.map((card, index) => (
                     <Card
                         key={index}

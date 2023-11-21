@@ -17,14 +17,6 @@ function MainHeader() {
                 >
                     타로메이트
                 </Typography>
-                <IconButton>
-                </IconButton>
-            </Toolbar>
-            <Toolbar
-                component="nav"
-                variant="dense"
-                sx={{ justifyContent: 'space-between', overflowX: 'auto' }}
-            >
             </Toolbar>
         </React.Fragment>
     );
