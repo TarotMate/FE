@@ -155,6 +155,7 @@ function TarotComponent() {
                             width: '100%',
                             height: '100%',
                             backgroundSize: 'cover',
+                            backgroundPosition: 'center',
                             backgroundImage: `url(${flippedCards.has(card.name) ? card.image : cardBackImage})`
                         }}>
                         </CardContent>
