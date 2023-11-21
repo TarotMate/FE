@@ -88,9 +88,9 @@ function TarotComponent() {
         setIsLoading(false);
     };
 
-    const renderResponse = (responseContent) => {
+    const renderResponse = (responseContent: any) => {
         // JSON 문자열을 객체로 변환
-        const responseObj: any = JSON.parse(responseContent);
+        const responseObj = JSON.parse(responseContent);
 
         return (
             <div style={{ margin: '10px' }}>
