@@ -132,9 +132,8 @@ function TarotComponent() {
         }}>
             <div style={{
                 padding: '20px',
-                margin: '0 auto', // 자동 마진을 사용하여 좌우 중앙 정렬
-                maxWidth: '50%', // 최대 너비를 90%로 설정하여 여백 유지
-
+                margin: 'auto', // 자동 마진을 사용하여 좌우 중앙 정렬
+                maxWidth: '70%', // 최대 너비를 90%로 설정하여 여백 유지
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -150,25 +149,36 @@ function TarotComponent() {
             <Typography variant="h5" style={{ color: 'gold', marginBottom: '20px' }}>
                 선택한 카드를 통해 운세를 점쳐드립니다.
             </Typography>
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', margin: '10px' }}>
                 <Typography variant="body1" style={{ marginBottom: '20px', color: 'gold' }}>
 
                     {selectedCards.length === 3 ? "카드를 다시 고를 수 없습니다. " :
                         `${3 - selectedCards.length}장의 카드를 신중하게 선택해 주세요.`
                     }
                 </Typography>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', margin: '10px' }}>
 
-<div>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleButtonClick}
-                    disabled={selectedCards.length !== 3}
-                    style={{ marginBottom: '20px' }}
-                >
-                    타로하기
-                </Button>
-</div>
+                <div style={{ textAlign: 'center', padding: '20px 0' }}> {/* 버튼을 중앙에 정렬 */}
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleButtonClick}
+                        disabled={selectedCards.length !== 3 || isLoading}
+                        style={{
+                            marginBottom: '20px',
+                            padding: '15px 30px',
+                            fontSize: '1rem',
+                            borderRadius: '25px',
+                            boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)',
+                            backgroundColor: selectedCards.length !== 3 || isLoading ? '#bdbdbd' : '', // 비활성화 시 회색으로 변경
+                            color: selectedCards.length !== 3 || isLoading ? '#757575' : '' // 비활성화 시 텍스트 색 변경
+                        }}
+                    >
+                        타로하기
+                    </Button>
+
+                </div>
+
+
 
                 <p>
                     라이더-웨이트 타로 덱의 메이저 아르카나(Major Arcana) 카드는 총 22장입니다. 메이저 아르카나는 타로 덱의 주요 카드들로 구성되어 있으며, 일반적으로 0부터 21까지 번호가 매겨져 있습니다. 이 카드들은 각각 다른 상징과 의미를 지니며, 타로 카드 읽기에서 중요한 역할을 합니다.
