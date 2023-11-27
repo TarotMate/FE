@@ -98,13 +98,10 @@ function TarotComponent() {
         setIsLoading(false);
     };
 
-    const handleCloseSnackbar = (event?: React.SyntheticEvent, reason?: string) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
+    const handleCloseSnackbar = () => {
         setOpenSnackbar(false);
     };
+
 
     const renderResponse = (responseContent: any) => {
         // JSON 문자열을 객체로 변환
