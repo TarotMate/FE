@@ -19,7 +19,12 @@ function TarotComponent() {
     // 카드 선택 여부를 관리하는 상태 추가
     const [flippedCards, setFlippedCards] = useState<Set<string>>(new Set());
     const [openSnackbar, setOpenSnackbar] = useState(false); // Snackbar 상태 추가
+    const [fortuneType, setFortuneType] = useState(''); // 운세 유형 상태 추가
 
+    // 버튼 클릭 핸들러
+    const handleFortuneType = (type: string) => {
+        setFortuneType(type);
+    };
 
     // 타로 카드와 Unsplash 이미지 URL 매핑
     const tarotCards = [
@@ -85,8 +90,23 @@ function TarotComponent() {
             return;
         }
 
-        const tarotPrompt = `첫번째 카드는 ${selectedCards[0]}, 두번째 카드는 ${selectedCards[1]}, 세번째 카드는 ${selectedCards[2]}를 뽑았다.`;
-        setSelectedCardsText(`당신이 뽑은 타로카드는 ${selectedCards.join(', ')} 입니다.`);
+        // 선택된 카드의 번호를 찾습니다
+        const selectedCardNumbers = selectedCards.map(cardName => {
+            const card = tarotCards.find(tarotCard => tarotCard.name === cardName);
+            return card ? card.number : null;
+        });
+
+        // 선택된 카드의 이름과 번호를 포함하여 문자열 생성
+        let tarotPrompt = `첫번째 카드는 ${selectedCardNumbers[0]}번 카드, 두번째 카드는 ${selectedCardNumbers[1]}번 카드, 세번째 카드는 ${selectedCardNumbers[2]}번 카드를 뽑았다.`;
+        // 선택된 운세 유형에 따라 프롬프트를 조정
+        if (fortuneType === '오늘의 운세') {
+            tarotPrompt += " 오늘의 운세를 알려주세요.";
+        } else if (fortuneType === '연애운') {
+            tarotPrompt += " 연애운을 알려주세요.";
+        } else if (fortuneType === '이번달 운세') {
+            tarotPrompt += " 이번달 운세를 알려주세요.";
+        }
+        setSelectedCardsText(`${tarotPrompt}`);
 
         setIsLoading(true);
         try {
@@ -111,9 +131,8 @@ function TarotComponent() {
         return (
             <div style={{ margin: '10px' }}>
                 <Typography variant="h6" style={{ fontWeight: 'bold' }}>{responseObj.title}</Typography>
-                <Typography variant="body1">{responseObj.fortune_telling}</Typography>
-                <Typography variant="body1">{responseObj.emotion_result}</Typography>
-                <Typography variant="body1">{responseObj.analysis}</Typography>
+                <Typography variant="body1">{responseObj.summarize}</Typography>
+                <Typography variant="body1">{responseObj.tarot}</Typography>
                 <Typography variant="body1">{responseObj.action_list}</Typography>
             </div>
         );
@@ -138,23 +157,37 @@ function TarotComponent() {
                 backgroundColor: '#1a1a2e', // 어두운 배경 색상 추가
                 color: 'white' // 텍스트 색상을 밝게 변경
             }}>
+
+                {fortuneType || (
+                    <Typography variant="h5" style={{ color: 'gold', marginBottom: '20px' }}>
+                    선택한 카드를 통해 운세를 점쳐드립니다.</Typography>
+                )}
+                {fortuneType && (
+                            <Typography variant="h6" style={{ marginBottom: '20px', color: 'gold' }}>
+                                {`"${fortuneType}"에 맞는 타로점을 보여드리겠습니다.`}
+                            </Typography>
+                )}
+                <div style={{ marginBottom: '20px' }}>
+                    <Button variant="contained" onClick={() => handleFortuneType('오늘의 운세')}>오늘의 운세</Button>
+                    <Button variant="contained" onClick={() => handleFortuneType('연애운')}>연애운</Button>
+                    <Button variant="contained" onClick={() => handleFortuneType('이번달 운세')}>이번달 운세</Button>
+                </div>
+
+                {/* 선택된 운세 유형에 따른 텍스트 표시 */}
+
             <Snackbar
                 open={openSnackbar}
                 autoHideDuration={6000}
                 onClose={handleCloseSnackbar}
                 message="3장의 카드를 모두 선택하셨습니다."
             />
-            <Typography variant="h5" style={{ color: 'gold', marginBottom: '20px' }}>
-                선택한 카드를 통해 운세를 점쳐드립니다.
-            </Typography>
+
                 <Typography variant="body1" style={{ marginBottom: '20px', color: 'gold' }}>
 
                     {selectedCards.length === 3 ? "카드를 다시 고를 수 없습니다. " :
                         `${3 - selectedCards.length}장의 카드를 신중하게 선택해 주세요.`
                     }
                 </Typography>
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', margin: '10px' }}>
-
                 <div style={{ textAlign: 'center', padding: '20px 0' }}> {/* 버튼을 중앙에 정렬 */}
                     <Button
                         variant="contained"
@@ -173,14 +206,9 @@ function TarotComponent() {
                     >
                         타로하기
                     </Button>
-
                 </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', margin: '10px' }}>
 
-
-
-                <p>
-                    라이더-웨이트 타로 덱의 메이저 아르카나(Major Arcana) 카드는 총 22장입니다. 메이저 아르카나는 타로 덱의 주요 카드들로 구성되어 있으며, 일반적으로 0부터 21까지 번호가 매겨져 있습니다. 이 카드들은 각각 다른 상징과 의미를 지니며, 타로 카드 읽기에서 중요한 역할을 합니다.
-                </p>
 
 
                 {tarotCards.map((card, index) => (
