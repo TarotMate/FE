@@ -86,7 +86,7 @@ function TarotComponent() {
 
     const handleButtonClick = async () => {
         if (selectedCards.length < 3) {
-            alert('3장의 카드를 선택해야 합2니다.');
+            alert('3장의 카드를 선택해야 합22니다.');
             return;
         }
 
