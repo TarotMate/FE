@@ -46,4 +46,5 @@ jobs:
           application_name: tarot-front
           environment_name: Tarot-front-env
           version_label: ${{ github.sha }}
-          zip_file: deploy.zip
+          deployment_package: deploy.zip
+
