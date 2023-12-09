@@ -266,7 +266,7 @@ function TarotComponent() {
             {isLoading ? (
                 <>
                 <CircularProgress />
-                <Typography style={{ marginLeft: '10px' }}>응답을 기다리는 중...</Typography>
+                <Typography style={{ marginLeft: '10px' }}>응답을 기다리는 중....</Typography>
                 </>
                 ) : (
                 // 결과 표시 영역
