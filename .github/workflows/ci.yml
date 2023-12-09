@@ -23,7 +23,10 @@ jobs:
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Build and push Docker image to ECR
         run: |
-          docker build -t ${{ steps.login-ecr.outputs.registry }}/tarotmate-frontend:latest -f tarot-front/Dockerfile tarot-front/
-          docker push ${{ steps.login-ecr.outputs.registry }}/tarotmate-frontend:latest
+          docker build -t ${ECR_REGISTRY}/tarotmate-frontend:latest -f tarot-front/Dockerfile tarot-front/
+          docker push ${ECR_REGISTRY}/tarotmate-frontend:latest
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+
