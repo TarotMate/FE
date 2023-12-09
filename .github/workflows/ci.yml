@@ -27,8 +27,8 @@ jobs:
 
       - name: Build, tag, and push image to Amazon ECR
         env:
-          ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
-          ECR_REPOSITORY: ${{ secrets.AWS_ECR_REPOSITORY }}
+          ECR_REGISTRY: 052355723841.dkr.ecr.ap-northeast-2.amazonaws.com/test
+          ECR_REPOSITORY: test
           IMAGE_TAG: latest
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./tarot-front
