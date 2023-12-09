@@ -1,0 +1,12 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "aws_account_id.dkr.ecr.region.amazonaws.com/052355723841.dkr.ecr.ap-northeast-2.amazonaws.com/tarotmate-frontend:latest",
+    "Update": "true"
+  },
+  "Ports": [
+    {
+      "ContainerPort": "4173"
+    }
+  ]
+}

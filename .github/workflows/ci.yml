@@ -1,4 +1,4 @@
-name: Build and Deploy to ECR
+name: Build and Deploy to ECR and Elastic Beanstalk
 
 on:
   push:
@@ -33,13 +33,17 @@ jobs:
           docker build -t $ECR_REPOSITORY:$IMAGE_TAG ./tarot-front
           docker push $ECR_REPOSITORY:$IMAGE_TAG
 
-#      - name: Deploy to Elastic Beanstalk
-#        uses: einaregilsson/beanstalk-deploy@v18
-#        with:
-#          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          region: ap-northeast-2
-#          application_name: your-eb-application-name
-#          environment_name: your-eb-environment-name
-#          version_label: ${{ github.sha }}
-#          deployment_package: your-deployment-package.zip
+      - name: Create ZIP with Dockerrun.aws.json
+        run: |
+          zip deploy.zip Dockerrun.aws.json
+
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v18
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: ap-northeast-2
+          application_name: tarot-front
+          environment_name: Tarot-front-env
+          version_label: ${{ github.sha }}
+          zip_file: deploy.zip
