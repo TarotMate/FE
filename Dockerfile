@@ -5,7 +5,7 @@ FROM node:18.16.0
 WORKDIR /usr/src/app
 
 # package.json과 package-lock.json을 컨테이너에 복사
-COPY package*.json ./tarotfront
+COPY package*.json ./
 
 # 의존성 설치
 RUN npm install
