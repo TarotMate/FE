@@ -25,8 +25,11 @@ jobs:
 
       - name: Build and push Docker image to ECR
         run: |
+          ECR_REGISTRY=${{ secrets.AWS_ECR_REGISTRY }} # Use the secret value as ECR_REGISTRY
           docker build -t ${ECR_REGISTRY}/tarotmate-frontend:latest -f tarot-front/Dockerfile tarot-front/
           docker push ${ECR_REGISTRY}/tarotmate-frontend:latest
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          AWS_REGION: ap-northeast-2
+
+
 
