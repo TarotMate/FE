@@ -46,7 +46,7 @@ export default function MainFooter() {
                 >
                     <Container maxWidth="sm">
                         <Typography variant="body1">
-                            타로메이트22222222
+                            타로메이트2222222
                         </Typography>
                         <Copyright />
                     </Container>
