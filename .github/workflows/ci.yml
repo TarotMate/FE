@@ -35,7 +35,7 @@ jobs:
 
       - name: Create ZIP with Dockerrun.aws.json
         run: |
-          zip deploy.zip Dockerrun.aws.json
+          zip deploy.zip ./tarot-front/Dockerrun.aws.json
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v18
