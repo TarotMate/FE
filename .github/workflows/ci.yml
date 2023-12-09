@@ -1,33 +1,33 @@
-name: Build and Deploy to ECR
+name: ECR에 빌드 및 푸시
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'tarot-front/**' # tarot-front 폴더 내의 변경사항에 대해서만 트리거됩니다.
+      - 'FE/tarot-front/**' # FE/tarot-front 폴더 내의 변경사항에 대해서만 트리거됩니다.
 
 jobs:
-  deploy:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: 레포지토리 체크아웃
         uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
+      - name: AWS 자격 증명 구성
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
-      - name: Login to Amazon ECR
+      - name: Amazon ECR에 로그인
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Docker 빌드 및 푸시
         env:
-          ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.AWS_ECR_REPOSITORY }}
           IMAGE_TAG: latest
         run: |
