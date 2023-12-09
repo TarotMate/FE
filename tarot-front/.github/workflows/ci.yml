@@ -1,41 +1,29 @@
-name: Deploy to ECR
+name: Build and Deploy to ECR
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'tarot-front/**'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'tarot-front/**'
+      - 'tarot-front/**' # tarot-front 폴더 내의 변경사항에 대해서만 트리거됩니다.
 
 jobs:
-  deploy:
-    name: Deploy to ECR
+  build-and-deploy:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: ap-northeast-2 # AWS 리전 설정
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }} # AWS 액세스 키
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # AWS 비밀 액세스 키
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
       - name: Login to Amazon ECR
-        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
 
       - name: Build, tag, and push image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: latest
         run: |
-          docker build -t $ECR_REGISTRY/tarotmate-frontend:${IMAGE_TAG} .
-          docker push $ECR_REGISTRY/tarotmate-frontend:${IMAGE_TAG}
+          docker build -t ${{ steps.login-ecr.outputs.registry }}/tarotmate-frontend:latest -f tarot-front/Dockerfile tarot-front/
+          docker push ${{ steps.login-ecr.outputs.registry }}/tarotmate-frontend:latest
