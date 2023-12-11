@@ -1,4 +1,4 @@
-name: Build and Deploy to ECR and Elastic Beanstalk
+name: Build and Deploy to ECR and Elastic Beanstalk-안씀
 
 on:
   push:
