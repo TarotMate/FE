@@ -12,7 +12,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import {NavLink} from "react-router-dom";
 
-function MainHeader() {
+function TarotHeader() {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -64,7 +64,11 @@ function MainHeader() {
                 {/* 중앙 부분 (로고) */}
                 <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
                     <Link color="inherit" href="/">
-                        DODOINFO
+                    <img
+                        src="/images/TarotMate_logo.png"
+                        alt="TarotMate Logo"
+                        style={{ height: '50px' }}
+                    />
                     </Link>
                 </div>
                 {/* 오른쪽 부분 (메뉴 버튼 또는 빈 공간) */}
@@ -89,4 +93,4 @@ function MainHeader() {
     );
 }
 
-export default MainHeader;
+export default TarotHeader;

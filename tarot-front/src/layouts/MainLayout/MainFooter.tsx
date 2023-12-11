@@ -3,20 +3,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
-
-function Copyright() {
-    return (
-        <Typography variant="body2" color="text.secondary">
-            {'Copyright © '}
-            <Link color="inherit" href="/about">
-                TarotMate
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
 
 const defaultTheme = createTheme();
 
@@ -31,7 +17,6 @@ export default function MainFooter() {
                 }}
             >
                 <CssBaseline />
-
                 <Box
                     component="footer"
                     sx={{
@@ -45,10 +30,9 @@ export default function MainFooter() {
                     }}
                 >
                     <Container maxWidth="sm">
-                        <Typography variant="body1">
-                            타로메이트
+                        <Typography variant="body1" align="center">
+                            DODOINFO
                         </Typography>
-                        <Copyright />
                     </Container>
                 </Box>
             </Box>
