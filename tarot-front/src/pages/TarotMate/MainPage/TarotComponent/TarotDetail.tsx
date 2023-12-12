@@ -216,7 +216,7 @@ function TarotDetail() {
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
-                                backgroundColor: 'white',
+                                backgroundColor: '#eeeeee',
                                 color: "black",
                             }}>
                                 {!showResults &&

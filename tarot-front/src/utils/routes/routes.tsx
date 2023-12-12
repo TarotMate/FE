@@ -2,8 +2,6 @@
 import TarotMateMainPage from "../../pages/TarotMate/MainPage/TarotMateMainPage";
 import AboutPage from "../../pages/TarotMate/AboutPage/AboutPage";
 import TarotDetail from "../../pages/TarotMate/MainPage/TarotComponent/TarotDetail";
-import MainPage from "../../pages/TarotMate/MainPage/MainPage";
-import MainLayout from "../../layouts/MainLayout/MainLayout";
 import TarotLayout from "../../layouts/TarotMate/MainLayout/TarotLayout";
 
 export const HOME = "/";
