@@ -18,10 +18,9 @@ interface RouteProps {
 
 
 const mainRoutes: Array<RouteProps> = [
-    { path: "/", component: <MainPage />, layout: MainLayout },
-    { path: "/tarot", component: <TarotMateMainPage />, layout: TarotLayout },
-    { path: "/tarot/about", component: <AboutPage /> }, // No layout specified
-    { path: "/tarot/detail", component: <TarotDetail />, layout: MainLayout }
+    { path: "/", component: <TarotMateMainPage />, layout: TarotLayout },
+    { path: "/about", component: <AboutPage />, layout: TarotLayout },
+    { path: "/detail", component: <TarotDetail />, layout: TarotLayout }
 ];
 
 

@@ -11,7 +11,7 @@ function TarotComponent() {
     const [showTarotCards, setShowTarotCards] = useState(false); // State to toggle visibility of tarot cards
     const handleShowTarotCards = () => {
         setShowTarotCards(true);
-        navigate('/tarot/detail'); // '/tarot/detail' 경로로 이동
+        navigate('/detail'); // '/tarot/detail' 경로로 이동
     };
     return (
         <div style={{
