@@ -1,7 +1,7 @@
 import {
     Button, Card, CardContent, CircularProgress, Tab, Tabs, Typography, Snackbar
 } from "@mui/material";
-import { useState } from "react";
+import {ChangeEvent, CSSProperties, FC, SyntheticEvent, useState} from "react";
 import { gptTarot, CallGptResponse } from "../../../../utils/gptTarot/getTarot";
 
 interface ResponseItem {
@@ -19,11 +19,11 @@ interface TarotCard {
 interface FortuneTabProps {
     fortunes: { label: string, value: string }[];
     selectedFortune: string;
-    onChange: (event: React.ChangeEvent<HTMLDivElement>, newValue: string) => void;
+    onChange: (event: ChangeEvent<HTMLDivElement>, newValue: string) => void;
 }
 
 // FortuneTabs 컴포넌트
-const FortuneTabs: React.FC<FortuneTabProps> = ({ fortunes, selectedFortune, onChange }) => (
+const FortuneTabs: FC<FortuneTabProps> = ({ fortunes, selectedFortune, onChange }) => (
     <Tabs value={selectedFortune} onChange={onChange} variant="scrollable" scrollButtons="auto" indicatorColor="primary" textColor="primary" aria-label="fortune selection tabs" style={{ backgroundColor: 'white', width: '500px', maxWidth: '500px' }}>
         {fortunes.map((fortune, index) => (
             <Tab key={index} label={fortune.label} value={fortune.value} />
@@ -32,7 +32,7 @@ const FortuneTabs: React.FC<FortuneTabProps> = ({ fortunes, selectedFortune, onC
 );
 
 // 기존 cardStyle에 React.CSSProperties 타입을 명시적으로 적용
-const cardStyle: React.CSSProperties = {
+const cardStyle: CSSProperties = {
     cursor: 'pointer',
     margin: '3px',
     width: '50px',
@@ -64,7 +64,7 @@ function TarotDetail() {
     const [selectedFortune, setSelectedFortune] = useState<string>(fortunes[0].value);
     const [fortuneType, setFortuneType] = useState<string>(fortunes[0].value);
 
-    const handleFortuneChange = (event: React.SyntheticEvent, newValue: string) => {
+    const handleFortuneChange = (event: SyntheticEvent<Element, Event>, newValue: string) => {
         setSelectedFortune(newValue);
         setFortuneType(newValue);
     };
