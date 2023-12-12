@@ -1,9 +1,9 @@
 import './App.css'
-import {allRoutes} from "./utils/routes/routes";
+import {allRoutes} from "./tarotmate/utils/routes/routes";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {CircularProgress} from "@mui/material";
 import React, { Suspense } from 'react';
-import MainLayout from "./layouts/MainLayout/MainLayout";
+import MainLayout from "./tarotmate/layouts/MainLayout/MainLayout";
 
 function App() {
     return (

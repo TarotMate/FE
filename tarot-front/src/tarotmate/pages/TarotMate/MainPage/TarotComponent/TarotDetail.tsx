@@ -54,10 +54,6 @@ function TarotDetail() {
     const [selectedFortune, setSelectedFortune] = useState<string>(fortunes[0].value);
     const [fortuneType, setFortuneType] = useState<string>(fortunes[0].value);
 
-    // const handleFortuneChange = (event: any, newValue: any) => {
-    //     setSelectedFortune(newValue);
-    //     setFortuneType(newValue);
-    // };
 
     const handleFortuneChange = (newValue: string) => {
         setSelectedFortune(newValue);
