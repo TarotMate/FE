@@ -1,8 +1,9 @@
 import {
     Button, Card, CardContent, CircularProgress, Tab, Tabs, Typography, Snackbar
 } from "@mui/material";
-import {ChangeEvent, CSSProperties, FC, SyntheticEvent, useState} from "react";
+import {ChangeEvent, CSSProperties, FC, useState} from "react";
 import { gptTarot, CallGptResponse } from "../../../../utils/gptTarot/getTarot";
+import React from 'react'
 
 interface ResponseItem {
     message: {
@@ -64,7 +65,7 @@ function TarotDetail() {
     const [selectedFortune, setSelectedFortune] = useState<string>(fortunes[0].value);
     const [fortuneType, setFortuneType] = useState<string>(fortunes[0].value);
 
-    const handleFortuneChange = (event: SyntheticEvent<Element, Event>, newValue: string) => {
+    const handleFortuneChange = (event: React.SyntheticEvent<Element, Event>, newValue: string) => {
         setSelectedFortune(newValue);
         setFortuneType(newValue);
     };
