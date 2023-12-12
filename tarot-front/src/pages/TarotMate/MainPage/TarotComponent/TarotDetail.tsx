@@ -3,7 +3,6 @@ import {
 } from "@mui/material";
 import {CSSProperties, useState} from "react";
 import { gptTarot, CallGptResponse } from "../../../../utils/gptTarot/getTarot";
-import React from 'react'
 
 interface ResponseItem {
     message: {
