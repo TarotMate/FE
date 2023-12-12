@@ -1,7 +1,7 @@
 import {
     Button, Card, CardContent, CircularProgress, Tab, Tabs, Typography, Snackbar
 } from "@mui/material";
-import {ChangeEvent, CSSProperties, FC, useState} from "react";
+import {CSSProperties, useState} from "react";
 import { gptTarot, CallGptResponse } from "../../../../utils/gptTarot/getTarot";
 import React from 'react'
 
@@ -17,20 +17,10 @@ interface TarotCard {
     image: string;
 }
 
-interface FortuneTabProps {
-    fortunes: { label: string, value: string }[];
-    selectedFortune: string;
-    onChange: (event: ChangeEvent<HTMLDivElement>, newValue: string) => void;
-}
 
-// FortuneTabs 컴포넌트
-const FortuneTabs: FC<FortuneTabProps> = ({ fortunes, selectedFortune, onChange }) => (
-    <Tabs value={selectedFortune} onChange={onChange} variant="scrollable" scrollButtons="auto" indicatorColor="primary" textColor="primary" aria-label="fortune selection tabs" style={{ backgroundColor: 'white', width: '500px', maxWidth: '500px' }}>
-        {fortunes.map((fortune, index) => (
-            <Tab key={index} label={fortune.label} value={fortune.value} />
-        ))}
-    </Tabs>
-);
+
+
+
 
 // 기존 cardStyle에 React.CSSProperties 타입을 명시적으로 적용
 const cardStyle: CSSProperties = {
@@ -65,10 +55,17 @@ function TarotDetail() {
     const [selectedFortune, setSelectedFortune] = useState<string>(fortunes[0].value);
     const [fortuneType, setFortuneType] = useState<string>(fortunes[0].value);
 
-    const handleFortuneChange = (event: React.SyntheticEvent<Element, Event>, newValue: string) => {
+    // const handleFortuneChange = (event: any, newValue: any) => {
+    //     setSelectedFortune(newValue);
+    //     setFortuneType(newValue);
+    // };
+
+    const handleFortuneChange = (newValue: string) => {
         setSelectedFortune(newValue);
         setFortuneType(newValue);
     };
+
+
     const cardBackImage = "../images/bcard.png"; // 카드 뒷면 이미
 
     const tarotCards: TarotCard[] = [
@@ -248,7 +245,27 @@ function TarotDetail() {
                     {!showResults && (
                         <>
                             <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar} message="3장의 카드를 모두 선택하셨습니다." />
-                            <FortuneTabs fortunes={fortunes} selectedFortune={selectedFortune} onChange={handleFortuneChange} />
+
+                            <Tabs
+                                value={selectedFortune}
+                                onChange={(_, newValue) => handleFortuneChange(newValue)}
+                                variant="scrollable" // Allows scrolling if tabs exceed parent width
+                                scrollButtons="auto" // Show scroll buttons only when needed
+                                indicatorColor="primary"
+                                textColor="primary"
+                                aria-label="fortune selection tabs"
+                                style={{
+                                    backgroundColor: 'white',
+                                    width: '400px',
+                                    maxWidth: '400px', // Ensures Tabs do not exceed 400px
+                                }}
+                            >
+                                {fortunes.map((fortune, index) => (
+                                    <Tab key={index} label={fortune.label} value={fortune.value} />
+                                ))}
+                            </Tabs>
+
+
                             <br /><br />
                             {getDisplayTextForSelectedTab()}
                             <br />
