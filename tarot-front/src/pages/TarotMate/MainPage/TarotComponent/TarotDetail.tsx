@@ -22,6 +22,7 @@ interface FortuneTabProps {
     onChange: (event: React.ChangeEvent<HTMLDivElement>, newValue: string) => void;
 }
 
+// FortuneTabs 컴포넌트
 const FortuneTabs: React.FC<FortuneTabProps> = ({ fortunes, selectedFortune, onChange }) => (
     <Tabs value={selectedFortune} onChange={onChange} variant="scrollable" scrollButtons="auto" indicatorColor="primary" textColor="primary" aria-label="fortune selection tabs" style={{ backgroundColor: 'white', width: '500px', maxWidth: '500px' }}>
         {fortunes.map((fortune, index) => (
@@ -63,7 +64,7 @@ function TarotDetail() {
     const [selectedFortune, setSelectedFortune] = useState<string>(fortunes[0].value);
     const [fortuneType, setFortuneType] = useState<string>(fortunes[0].value);
 
-    const handleFortuneChange = (event: React.ChangeEvent<HTMLDivElement>, newValue: string) => {
+    const handleFortuneChange = (event: React.SyntheticEvent, newValue: string) => {
         setSelectedFortune(newValue);
         setFortuneType(newValue);
     };

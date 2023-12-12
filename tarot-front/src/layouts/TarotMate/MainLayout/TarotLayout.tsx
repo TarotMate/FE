@@ -4,8 +4,9 @@ import PropTypes from 'prop-types';
 import { Box } from '@mui/material';
 import React from 'react';
 
-interface MainLayoutProps extends React.PropsWithChildren<Record<string, unknown>> {
-    location?: Location;
+interface MainLayoutProps {
+    children?: React.ReactNode;
+    location?: any; // Add any other props you expect
 }
 
 const TarotLayout: React.FC<MainLayoutProps> = (props) => {
