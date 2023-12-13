@@ -18,6 +18,19 @@ interface TarotCard {
 
 
 
+// 로딩 컴포넌트 스타일
+const loadingStyle: CSSProperties = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.7)', // 투명한 흰색 배경
+    zIndex: 1000,
+};
 
 
 
@@ -58,7 +71,13 @@ function TarotDetail() {
     const handleFortuneChange = (newValue: string) => {
         setSelectedFortune(newValue);
         setFortuneType(newValue);
+
+        // 탭을 변경할 때 카드 선택 상태 초기화
+        setSelectedCards([]);
+        setFlippedCards(new Set());
+        setSelectedCardsText('');
     };
+
 
 
     const cardBackImage = "../images/bcard.png"; // 카드 뒷면 이미
@@ -156,10 +175,12 @@ function TarotDetail() {
             const responseObj = JSON.parse(responseContent);
             return (
                 <div style={{ margin: '10px' }}>
-                    <Typography variant="h6" style={{ fontWeight: 'bold' }}>{responseObj.title}</Typography>
-                    <Typography variant="body1">{responseObj.summary}</Typography>
-                    <Typography variant="body1">{responseObj.detail}</Typography>
-                    {/* 기타 필요한 정보를 렌더링 */}
+                    {Object.entries(responseObj).map(([key, value]) => (
+                        <div key={key}>
+                            <Typography variant="h6" style={{ fontWeight: 'bold' }}>{key}:</Typography>
+                            <Typography variant="body1">{JSON.stringify(value, null, 2)}</Typography>
+                        </div>
+                    ))}
                 </div>
             );
         } catch (error) {
@@ -231,10 +252,74 @@ function TarotDetail() {
         </Card>
     );
 
+// Placeholder for an empty card slot with dynamic border color
+    const EmptyCardSlot = ({ borderColor = 'gray' }) => (
+        <div style={{
+            border: `2px dashed ${borderColor}`,
+            width: '100px',
+            height: '180px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+        }}>
+            {/* Optional: Add text or icon inside the placeholder */}
+        </div>
+    );
+
+    const renderSelectedCards = () => {
+        const cardDescriptions = ["애정운", "재물운", "학업&취업운"];
+        const selectedCardElements = [];
+
+        for (let i = 0; i < 3; i++) {
+            const cardName = selectedCards.length > i ? selectedCards[i] : null;
+            const card = cardName ? tarotCards.find(tarotCard => tarotCard.name === cardName) : null;
+            const isCurrentPick = selectedCards.length === i;
+
+            selectedCardElements.push(
+                <div key={`card-${i}`} style={{ margin: '10px', textAlign: 'center', width: '100px', height: '230px' }}>
+                    <div style={{ height: '180px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        {card ? (
+                            <img
+                                src={card.image}
+                                alt={card.name}
+                                style={{
+                                    width: '100px',
+                                    height: '180px',
+                                    border: '3px solid yellow'
+                                }}
+                            />
+                        ) : (
+                            <EmptyCardSlot borderColor={isCurrentPick ? 'blue' : 'gray'} />
+                        )}
+                    </div>
+                    <Typography variant="subtitle1" style={{ marginTop: '5px' }}>{cardDescriptions[i]}</Typography>
+                    {isCurrentPick && <Typography variant="h6" style={{ color: 'red', height: '20px' }}>Pick</Typography>}
+
+                </div>
+            );
+        }
+
+        return selectedCardElements;
+    };
+
+
+
+
+
+// Rest of your TarotDetail component remains the same
+
+// 로딩 컴포넌트 렌더링
+    const renderLoading = () => (
+        <div style={loadingStyle}>
+            <CircularProgress style={{ color: 'blue', margin: 20 }} size={60} />
+            <Typography variant="h6">로딩 중...</Typography>
+        </div>
+    );
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
             {isLoading ? (
-                <CircularProgress style={{ color: 'blue' }} />
+                <>{isLoading && renderLoading()}</>
             ) : (
                 <div style={{ width: '500px', display: 'flex', backgroundColor: '#eeeeee', flexDirection: 'column', alignItems: 'center', minHeight: '100vh', color: "black" }}>
                     {!showResults && (
@@ -251,8 +336,8 @@ function TarotDetail() {
                                 aria-label="fortune selection tabs"
                                 style={{
                                     backgroundColor: 'white',
-                                    width: '400px',
-                                    maxWidth: '400px', // Ensures Tabs do not exceed 400px
+                                    width: '500px',
+                                    maxWidth: '500px', // Ensures Tabs do not exceed 400px
                                 }}
                             >
                                 {fortunes.map((fortune, index) => (
@@ -267,7 +352,11 @@ function TarotDetail() {
                             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
                                 {tarotCards.map(renderCard)}
                             </div>
-                            <Typography variant="h5" style={{ marginBottom: '20px', marginTop: '20px' }}>{`남은 카드 선택 가능 수: ${3 - selectedCards.length}`}</Typography>
+                            {/* 선택된 카드 이미지를 표시 */}
+                            <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+                                {renderSelectedCards()}
+                            </div>
+
                             <Button variant="contained" color="primary" onClick={handleButtonClick} disabled={selectedCards.length !== 3 || isLoading} style={{ width: '360px', height: '48px', marginTop: '20px', marginBottom: '20px', padding: '15px 30px', fontSize: '1rem', borderRadius: '25px', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)', backgroundColor: selectedCards.length !== 3 || isLoading ? '#bdbdbd' : '', color: selectedCards.length !== 3 || isLoading ? '#757575' : '' }}>타로하기</Button>
                             <Typography variant="h6" style={{ marginTop: '20px' }}>{selectedCardsText}</Typography>
                         </>
