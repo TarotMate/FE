@@ -3,15 +3,7 @@ import {
 } from "@mui/material";
 import {CSSProperties, useState} from "react";
 import { gptTarot, CallGptResponse } from "../../../../utils/gptTarot/getTarot";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-const defaultTheme = createTheme({
-    palette: {
-        action: {
-            disabledBackground: '#e9ebf4', // Dark grey color for disabled button background
-            disabled: '#b0b5c0', // Dark grey color for disabled button text
-        },
-    },
-});
+
 interface ResponseItem {
     message: {
         content: string;
@@ -323,7 +315,6 @@ function TarotDetail() {
     );
 
     return (
-        <ThemeProvider theme={defaultTheme}>
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
                 <>{isLoading && renderLoading()}</>
             <div style={{ width: '500px', display: 'flex', backgroundColor: '#eeeeee', flexDirection: 'column', alignItems: 'center', minHeight: '100vh', color: "black" }}>
@@ -385,7 +376,6 @@ function TarotDetail() {
                     ))}
                 </div>
         </div>
-        </ThemeProvider>
     );
 }
 
