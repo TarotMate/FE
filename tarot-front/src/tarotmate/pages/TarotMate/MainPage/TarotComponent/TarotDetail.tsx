@@ -34,20 +34,21 @@ const loadingStyle: CSSProperties = {
 
 
 
-// 기존 cardStyle에 React.CSSProperties 타입을 명시적으로 적용
+// 카드 스타일
 const cardStyle: CSSProperties = {
     cursor: 'pointer',
-    margin: '3px',
-    width: '50px',
-    height: '90px',
-    borderRadius: '10px',
-    boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+    margin: '10px',
+    width: '120px', // 모바일 환경에서 크기 증가
+    height: '180px', // 모바일 환경에서 크기 증가
+    borderRadius: '15px', // 모서리를 둥글게
+    boxShadow: '0 4px 10px rgba(0,0,0,0.3)', // 그림자 효과 강화
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     transformStyle: 'preserve-3d',
     transition: 'transform 0.3s ease, border 0.3s ease',
 };
+
 
 function TarotDetail() {
     const [isLoading, setIsLoading] = useState(false);
@@ -106,28 +107,6 @@ function TarotDetail() {
         { number: 20, name: "심판", image: "../images/major_arcana_judgement.png" },
         { number: 21, name: "세계", image: "../images/major_arcana_world.png" }
     ];
-
-
-    const toggleCardSelection = (cardName: string) => {
-        if (flippedCards.has(cardName)) {
-            alert("다시 뒤집을 수는 없습니다.");
-            return;
-        }
-
-        if (selectedCards.length >= 3 && !selectedCards.includes(cardName)) {
-            setOpenSnackbar(true);
-            return;
-        }
-
-        const newFlippedCards = new Set(flippedCards);
-        newFlippedCards.add(cardName);
-
-        setFlippedCards(newFlippedCards);
-
-        if (!selectedCards.includes(cardName)) {
-            setSelectedCards([...selectedCards, cardName]);
-        }
-    };
 
     const handleButtonClick = async () => {
         if (selectedCards.length < 3) {
@@ -216,43 +195,6 @@ function TarotDetail() {
                 return <></>;
         }
     };
-
-    const renderCard = (card: TarotCard, index: number): JSX.Element => (
-        <Card
-            key={index}
-            style={selectedCards.includes(card.name) ? { ...cardStyle, border: '3px solid black' } : cardStyle}
-            onClick={() => toggleCardSelection(card.name)}
-        >
-            {/* 카드 전면 */}
-            <CardContent style={{
-                width: '100%',
-                height: '100%',
-                position: 'absolute',
-                backfaceVisibility: 'hidden',
-                border: selectedCards.includes(card.name) ? '2px solid #1976d2' : '1px solid #ddd',
-                transform: flippedCards.has(card.name) ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                zIndex: flippedCards.has(card.name) ? 1 : 0
-            }}>
-                {/* 카드 전면 내용 (예: 카드 이름 표시) */}
-                <Typography variant="subtitle1">{card.name}</Typography>
-            </CardContent>
-
-            {/* 카드 뒷면 */}
-            <CardContent style={{
-                width: '100%',
-                height: '100%',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundImage: `url(${flippedCards.has(card.name) ? card.image : cardBackImage})`,
-                transform: flippedCards.has(card.name) ? 'rotateY(180deg)' : 'rotateY(0deg)',
-                zIndex: flippedCards.has(card.name) ? 1 : 0
-            }}>
-                {/* 뒷면은 이미지만 표시 */}
-            </CardContent>
-        </Card>
-    );
-
-// Placeholder for an empty card slot with dynamic border color
     const EmptyCardSlot = ({ borderColor = 'gray' }) => (
         <div style={{
             border: `2px dashed ${borderColor}`,
@@ -265,6 +207,8 @@ function TarotDetail() {
             {/* Optional: Add text or icon inside the placeholder */}
         </div>
     );
+
+
 
     const renderSelectedCards = () => {
         const cardDescriptions = ["애정운", "재물운", "학업&취업운"];
@@ -303,10 +247,38 @@ function TarotDetail() {
     };
 
 
+    // 카드 덱을 클릭했을 때 호출되는 함수
+    const handleDeckClick = () => {
+        if (selectedCards.length >= 3) {
+            // 이미 3장의 카드가 선택되었다면 추가 선택 방지
+            return;
+        }
 
+        let randomCard;
+        let randomIndex;
+        do {
+            randomIndex = Math.floor(Math.random() * tarotCards.length);
+            randomCard = tarotCards[randomIndex];
+        } while (selectedCards.includes(randomCard.name)); // 이미 선택된 카드가 아닐 때까지 반복
 
+        setSelectedCards([...selectedCards, randomCard.name]);
+        setFlippedCards(new Set([...flippedCards, randomCard.name]));
+    };
 
-// Rest of your TarotDetail component remains the same
+    const renderCardDeck = () => (
+        <Card style={cardStyle} onClick={handleDeckClick}>
+            <CardContent style={{
+                width: '100%',
+                height: '100%',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundImage: `url(${cardBackImage})`,
+                borderRadius: '15px' // 모서리 둥글게
+            }}>
+            </CardContent>
+        </Card>
+    );
+
 
 // 로딩 컴포넌트 렌더링
     const renderLoading = () => (
@@ -318,9 +290,7 @@ function TarotDetail() {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-            {isLoading ? (
                 <>{isLoading && renderLoading()}</>
-            ) : (
                 <div style={{ width: '500px', display: 'flex', backgroundColor: '#eeeeee', flexDirection: 'column', alignItems: 'center', minHeight: '100vh', color: "black" }}>
                     {!showResults && (
                         <>
@@ -344,19 +314,13 @@ function TarotDetail() {
                                     <Tab key={index} label={fortune.label} value={fortune.value} />
                                 ))}
                             </Tabs>
-
-
                             <br /><br />
                             {getDisplayTextForSelectedTab()}
                             <br />
-                            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                {tarotCards.map(renderCard)}
-                            </div>
-                            {/* 선택된 카드 이미지를 표시 */}
+                                {renderCardDeck()}
                             <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
                                 {renderSelectedCards()}
                             </div>
-
                             <Button variant="contained" color="primary" onClick={handleButtonClick} disabled={selectedCards.length !== 3 || isLoading} style={{ width: '360px', height: '48px', marginTop: '20px', marginBottom: '20px', padding: '15px 30px', fontSize: '1rem', borderRadius: '25px', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)', backgroundColor: selectedCards.length !== 3 || isLoading ? '#bdbdbd' : '', color: selectedCards.length !== 3 || isLoading ? '#757575' : '' }}>타로하기</Button>
                             <Typography variant="h6" style={{ marginTop: '20px' }}>{selectedCardsText}</Typography>
                         </>
@@ -367,7 +331,6 @@ function TarotDetail() {
                         </Card>
                     ))}
                 </div>
-            )}
         </div>
     );
 }
