@@ -3,7 +3,15 @@ import {
 } from "@mui/material";
 import {CSSProperties, useState} from "react";
 import { gptTarot, CallGptResponse } from "../../../../utils/gptTarot/getTarot";
-
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+const defaultTheme = createTheme({
+    palette: {
+        action: {
+            disabledBackground: '#e9ebf4', // Dark grey color for disabled button background
+            disabled: '#b0b5c0', // Dark grey color for disabled button text
+        },
+    },
+});
 interface ResponseItem {
     message: {
         content: string;
@@ -24,7 +32,6 @@ const loadingStyle: CSSProperties = {
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    top: 0,
     left: 0,
     width: '100%',
     height: '100%',
@@ -49,15 +56,32 @@ const cardStyle: CSSProperties = {
     transition: 'transform 0.3s ease, border 0.3s ease',
 };
 
+// 카드 이동 스타일
+const movingCardStyle: CSSProperties = {
+    cursor: 'pointer',
+    margin: '10px',
+    width: '120px', // 모바일 환경에서 크기 증가
+    height: '180px', // 모바일 환경에서 크기 증가
+    borderRadius: '15px', // 모서리를 둥글게
+    boxShadow: '0 4px 10px rgba(0,0,0,0.3)', // 그림자 효과 강화
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    transformStyle: 'preserve-3d',
+    transform: 'translateX(100px)', // 예시로 100px 오른쪽으로 이동
+    transition: 'transform 0.5s ease-in-out' // 부드러운 이동 효과
+};
+
+
 
 function TarotDetail() {
     const [isLoading, setIsLoading] = useState(false);
     const [response, setResponse] = useState<ResponseItem[]>([]);
     const [selectedCards, setSelectedCards] = useState<string[]>([]);
-    const [selectedCardsText, setSelectedCardsText] = useState<string>('');
     const [flippedCards, setFlippedCards] = useState<Set<string>>(new Set());
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [showResults, setShowResults] = useState(false);
+    const [isCardMoving, setIsCardMoving] = useState(false);
 
     const fortunes = [
         { label: "오늘의 운세", value: "오늘의 운세" },
@@ -76,10 +100,15 @@ function TarotDetail() {
         // 탭을 변경할 때 카드 선택 상태 초기화
         setSelectedCards([]);
         setFlippedCards(new Set());
-        setSelectedCardsText('');
     };
 
-
+    // 다시하기 버튼 클릭 핸들러
+    const handleReset = () => {
+        setResponse([]);
+        setShowResults(false);
+        setSelectedCards([]);
+        setFlippedCards(new Set());
+    };
 
     const cardBackImage = "../images/bcard.png"; // 카드 뒷면 이미
 
@@ -131,7 +160,6 @@ function TarotDetail() {
         } else if (fortuneType === '이번달 운세') {
             tarotPrompt += " 이번달 운세를 알려주세요.";
         }
-        setSelectedCardsText(`${tarotPrompt}`);
 
         setIsLoading(true);
         try {
@@ -204,7 +232,6 @@ function TarotDetail() {
             justifyContent: 'center',
             alignItems: 'center'
         }}>
-            {/* Optional: Add text or icon inside the placeholder */}
         </div>
     );
 
@@ -233,11 +260,10 @@ function TarotDetail() {
                                 }}
                             />
                         ) : (
-                            <EmptyCardSlot borderColor={isCurrentPick ? 'blue' : 'gray'} />
+    <EmptyCardSlot borderColor={isCurrentPick ? 'blue' : 'gray'} />
                         )}
                     </div>
                     <Typography variant="subtitle1" style={{ marginTop: '5px' }}>{cardDescriptions[i]}</Typography>
-                    {isCurrentPick && <Typography variant="h6" style={{ color: 'red', height: '20px' }}>Pick</Typography>}
 
                 </div>
             );
@@ -263,10 +289,18 @@ function TarotDetail() {
 
         setSelectedCards([...selectedCards, randomCard.name]);
         setFlippedCards(new Set([...flippedCards, randomCard.name]));
+
+
+        setIsCardMoving(true); // 카드 이동 시작
+        // 이동이 완료되면 카드 이미지 변경
+        setTimeout(() => {
+            setIsCardMoving(false);
+            // 카드 뒷면 이미지를 숨기고, 선택된 카드 이미지를 표시하는 로직 추가
+        }, 500); // 0.5초 후에 실행 (애니메이션 시간과 일치)
     };
 
     const renderCardDeck = () => (
-        <Card style={cardStyle} onClick={handleDeckClick}>
+        <Card style={isCardMoving ? movingCardStyle : cardStyle} onClick={handleDeckClick}>
             <CardContent style={{
                 width: '100%',
                 height: '100%',
@@ -283,15 +317,16 @@ function TarotDetail() {
 // 로딩 컴포넌트 렌더링
     const renderLoading = () => (
         <div style={loadingStyle}>
-            <CircularProgress style={{ color: 'blue', margin: 20 }} size={60} />
+            <CircularProgress style={{ color: 'blue', margin: 5 }} size={80} />
             <Typography variant="h6">로딩 중...</Typography>
         </div>
     );
 
     return (
+        <ThemeProvider theme={defaultTheme}>
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
                 <>{isLoading && renderLoading()}</>
-                <div style={{ width: '500px', display: 'flex', backgroundColor: '#eeeeee', flexDirection: 'column', alignItems: 'center', minHeight: '100vh', color: "black" }}>
+            <div style={{ width: '500px', display: 'flex', backgroundColor: '#eeeeee', flexDirection: 'column', alignItems: 'center', minHeight: '100vh', color: "black" }}>
                     {!showResults && (
                         <>
                             <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackbar} message="3장의 카드를 모두 선택하셨습니다." />
@@ -321,8 +356,26 @@ function TarotDetail() {
                             <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
                                 {renderSelectedCards()}
                             </div>
-                            <Button variant="contained" color="primary" onClick={handleButtonClick} disabled={selectedCards.length !== 3 || isLoading} style={{ width: '360px', height: '48px', marginTop: '20px', marginBottom: '20px', padding: '15px 30px', fontSize: '1rem', borderRadius: '25px', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)', backgroundColor: selectedCards.length !== 3 || isLoading ? '#bdbdbd' : '', color: selectedCards.length !== 3 || isLoading ? '#757575' : '' }}>타로하기</Button>
-                            <Typography variant="h6" style={{ marginTop: '20px' }}>{selectedCardsText}</Typography>
+                            <div style={{ position: 'fixed', bottom: '20px', left: '50%', transform: 'translateX(-50%)', display: 'flex', justifyContent: 'center' }}>
+                                <Button
+                                    variant="contained"
+                                    sx={{backgroundColor:'#1f2024',color:'white',fontWeight:'bold'}}
+                                    onClick={handleReset}
+                                    style={{ width: '250px', height: '48px', borderRadius: '0' }}
+                                    disabled={selectedCards.length === 0  || isLoading} // 버튼 비활성화 조건
+                                >
+                                    다시하기
+                                </Button>
+                                <Button
+                                    variant="contained" sx={{backgroundColor:'#fff854',color:'#1f2024',fontWeight:'bold'}}
+                                    onClick={handleButtonClick}
+                                    disabled={selectedCards.length !== 3 || isLoading}
+                                    style={{ width: '250px', height: '48px', borderRadius: '0' }}
+                                >
+                                    타로하기
+                                </Button>
+                            </div>
+
                         </>
                     )}
                     {showResults && response.map((res, index) => (
@@ -332,6 +385,7 @@ function TarotDetail() {
                     ))}
                 </div>
         </div>
+        </ThemeProvider>
     );
 }
 

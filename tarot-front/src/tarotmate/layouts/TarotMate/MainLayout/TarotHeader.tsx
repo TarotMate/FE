@@ -31,7 +31,7 @@ function TarotHeader() {
     };
 
 
-    const navLinks = ['About', 'Services'];
+    const navLinks = ['Home', 'Login'];
 
     const mobileMenu = (
         <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
@@ -52,7 +52,7 @@ function TarotHeader() {
             <Toolbar sx={{
                 borderBottom: 1,
                 borderColor: 'divider',
-                backgroundColor: '#f0f0f0',
+                backgroundColor: 'white',
                 boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.2)',
                 padding: '10px',
                 display: 'flex', // Flex 컨테이너로 설정
