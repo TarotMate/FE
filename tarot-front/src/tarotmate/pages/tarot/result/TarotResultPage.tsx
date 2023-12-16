@@ -4,7 +4,6 @@ import { Typography, Card, CardContent } from "@mui/material";
 import styles from './TarotResultPage.module.css';
 interface ActionItem {
     text: string;
-    // other fields...
 }
 const TarotResultPage = () => {
     const location = useLocation();
@@ -31,7 +30,9 @@ const TarotResultPage = () => {
                         <Typography variant="body1" className={styles.summarize}>{parsedData.summarize}</Typography>
                         <Typography variant="body2" className={styles.tarot}>{parsedData.tarot}</Typography>
                         {parsedData.action_list.map((action: ActionItem, index: number) => (
-                            <Typography key={index} variant="body2" className={styles.action}>{action}</Typography>
+                            <Typography key={index} variant="body2" className={styles.action}>
+                                {action.text}
+                            </Typography>
                         ))}
                     </CardContent>
                 </Card>
