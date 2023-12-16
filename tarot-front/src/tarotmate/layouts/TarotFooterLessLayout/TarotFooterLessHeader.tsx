@@ -12,7 +12,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import {NavLink} from "react-router-dom";
 
-function MainHeader() {
+function TarotFooterLessHeader() {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -31,7 +31,7 @@ function MainHeader() {
     };
 
 
-    const navLinks = ['About', 'Services'];
+    const navLinks = ['Home', 'Login'];
 
     const mobileMenu = (
         <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
@@ -52,9 +52,8 @@ function MainHeader() {
             <Toolbar sx={{
                 borderBottom: 1,
                 borderColor: 'divider',
-                backgroundColor: '#f0f0f0',
+                backgroundColor: 'white',
                 boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.2)',
-                padding: '10px',
                 display: 'flex', // Flex 컨테이너로 설정
             }}>
                 {/* 왼쪽 부분 (네비게이션 링크 또는 빈 공간) */}
@@ -64,7 +63,11 @@ function MainHeader() {
                 {/* 중앙 부분 (로고) */}
                 <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
                     <Link color="inherit" href="/">
-                        DODOINFO
+                    <img
+                        src="/images/TarotMate_logo.png"
+                        alt="TarotMate Logo"
+                        style={{ height: '50px' }}
+                    />
                     </Link>
                 </div>
                 {/* 오른쪽 부분 (메뉴 버튼 또는 빈 공간) */}
@@ -89,4 +92,4 @@ function MainHeader() {
     );
 }
 
-export default MainHeader;
+export default TarotFooterLessHeader;

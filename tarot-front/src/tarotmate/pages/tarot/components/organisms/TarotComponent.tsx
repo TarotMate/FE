@@ -32,8 +32,7 @@ function TarotComponent() {
             }}>
                 {!showTarotCards && (
                <>
-                   <img src="../images/fortune-teller.png" alt="점성술사" width="360" height="360" />
-
+                   <img src="/images/fortune-teller.png" alt="점성술사" width="360" height="360" />
                        <Card
                            style={{
                                width: '360px', // 너비
