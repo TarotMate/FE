@@ -8,7 +8,7 @@ import FortuneTabs from "./components/FortuneTabs";
 import SelectedCards from "./components/SelectedCards";
 import LoadingComponent from "./components/LoadingComponent";
 import styles from './TarotDetailPage.module.css';
-import { tarotCards, fortunes } from './constants';
+import { tarotCards, fortunes, cardBackImage, cardDescriptions } from './constants';
 
 // 카드 스타일
 const cardStyle: CSSProperties = {
@@ -42,13 +42,13 @@ const movingCardStyle: CSSProperties = {
 };
 
 function TarotDetailPage() {
-    const cardBackImage = "../images/bcard.png"; // 카드 뒷면 이미지
-    const [selectedFortune, setSelectedFortune] = useState<string>(fortunes[0].value);
 
+    const [selectedFortune, setSelectedFortune] = useState<string>(fortunes[0].value);
 
     const [isLoading, setIsLoading] = useState(false);
 
     const [selectedCards, setSelectedCards] = useState<string[]>([]);
+
 
     const [isCardMoving, setIsCardMoving] = useState(false);
 
@@ -74,7 +74,7 @@ function TarotDetailPage() {
         });
         let tarotPrompt = `첫번째 카드는 ${selectedCardNumbers[0]}번 카드, 두번째 카드는 ${selectedCardNumbers[1]}번 카드, 세번째 카드는 ${selectedCardNumbers[2]}번 카드를 뽑았다.`;
 
-        if (selectedCards.length === 3) {
+        if (selectedCards.length === cardDescriptions.length) {
             setIsLoading(true);
             try {
                 const result: CallGptResponse = await gptTarot(tarotPrompt);
@@ -89,8 +89,7 @@ function TarotDetailPage() {
 
     // 카드 덱을 클릭했을 때 호출되는 함수
     const handleDeckClick = useCallback(() => {
-        if (selectedCards.length >= 3) {
-            // 이미 3장의 카드가 선택되었다면 추가 선택 방지
+        if (selectedCards.length >= cardDescriptions.length) {
             return;
         }
         let randomCard;
@@ -119,9 +118,10 @@ function TarotDetailPage() {
                     fortunes={fortunes}
                 />
                             <br /><br />
+
                             <DisplayTextForSelectedTab selectedFortune={selectedFortune} />
                             <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
-                                <SelectedCards selectedCards={selectedCards} tarotCards={tarotCards} />
+                                <SelectedCards cardDescriptions={cardDescriptions} selectedCards={selectedCards} tarotCards={tarotCards} />
                             </div>
                             <br />
                     <CardDeck
@@ -136,7 +136,8 @@ function TarotDetailPage() {
                                     handleReset={handleReset}
                                     handleButtonClick={handleButtonClick}
                                     isLoading={isLoading}
-                                    isButtonDisabled={selectedCards.length !== 3}
+                                    selectedCards={selectedCards}
+                                    isButtonDisabled={selectedCards.length !== cardDescriptions.length}
                                 />
                     </div>
                 </div>

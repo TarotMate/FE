@@ -39,3 +39,6 @@ export const fortunes = [
     { label: "연애운", value: "연애운" },
     { label: "이번달 운세", value: "이번달 운세" }
 ];
+
+export const cardBackImage = "../images/bcard.png"; // 카드 뒷면 이미지
+export const cardDescriptions  = ["애정운", "재물운", "학업&취업운"];

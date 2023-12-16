@@ -2,18 +2,20 @@
 import React from 'react';
 import { Typography } from "@mui/material";
 import EmptyCardSlot from './EmptyCardSlot';
+import {TarotCard} from "../constants";
 
 interface SelectedCardsProps {
+    cardDescriptions: string[];
     selectedCards: string[];
     tarotCards: TarotCard[];
 }
 
-const SelectedCards: React.FC<SelectedCardsProps> = ({ selectedCards, tarotCards }) => {
-    const cardDescriptions = ["애정운", "재물운", "학업&취업운"];
+const SelectedCards: React.FC<SelectedCardsProps> = ({ cardDescriptions, selectedCards, tarotCards }) => {
+
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
-            {[...Array(3)].map((_, index) => {
+            {[...Array(cardDescriptions.length)].map((_, index) => {
                 const cardName = selectedCards.length > index ? selectedCards[index] : null;
                 const card = cardName ? tarotCards.find(tarotCard => tarotCard.name === cardName) : null;
                 const isCurrentPick = selectedCards.length === index;
