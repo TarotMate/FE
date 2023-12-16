@@ -35,10 +35,35 @@ export const tarotCards: TarotCard[] = [
 
 // 운세 타입에 관한 정보를 담고 있는 배열
 export const fortunes = [
-    { label: "오늘의 운세", value: "오늘의 운세" },
-    { label: "연애운", value: "연애운" },
-    { label: "이번달 운세", value: "이번달 운세" }
+    {
+        label: "오늘의 운세",
+        value: "오늘의 운세",
+        description: {
+            title: "당신의 하루는 어떨까요?",
+            subtitle: "오늘을 생각하며 카드를 뽑으세요",
+            cardDescriptions: ["애정운", "재물운", "학업&취업운"]
+        }
+    },
+    {
+        label: "연애운",
+        value: "연애운",
+        description: {
+            title: "나의 애정운",
+            subtitle: "이달을 생각하며 카드를 뽑아주세요",
+            cardDescriptions: ["연애운"]
+        }
+    },
+    {
+        label: "이번달 운세",
+        value: "이번달 운세",
+        description: {
+            title: "이번달 운세",
+            subtitle: "이번달 당신의 기운은 어떨까요?",
+            cardDescriptions: ["총운", "행운", "주의", "사건", "처세술"]
+        }
+    }
 ];
 
+
+
 export const cardBackImage = "../images/bcard.png"; // 카드 뒷면 이미지
-export const cardDescriptions  = ["애정운", "재물운", "학업&취업운"];

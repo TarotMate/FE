@@ -1,4 +1,4 @@
-import {CSSProperties, useCallback, useState} from "react";
+import {CSSProperties, useCallback, useEffect, useState} from "react";
 import { gptTarot, CallGptResponse } from "../../../utils/gptTarot/getTarot";
 import {useNavigate} from "react-router-dom";
 import DisplayTextForSelectedTab from "./components/DisplayTextForSelectedTab";
@@ -8,7 +8,9 @@ import FortuneTabs from "./components/FortuneTabs";
 import SelectedCards from "./components/SelectedCards";
 import LoadingComponent from "./components/LoadingComponent";
 import styles from './TarotDetailPage.module.css';
-import { tarotCards, fortunes, cardBackImage, cardDescriptions } from './constants';
+import tarotData from '../../data/TarotData.json';
+import {TarotData} from "../../data/TarotTypes";
+
 
 // 카드 스타일
 const cardStyle: CSSProperties = {
@@ -42,29 +44,53 @@ const movingCardStyle: CSSProperties = {
 };
 
 function TarotDetailPage() {
-
-    const [selectedFortune, setSelectedFortune] = useState<string>(fortunes[0].value);
-
+    // JSON 데이터를 상태로 관리
+    const [tarotCards, setTarotCards] = useState<TarotData['tarotCards']>(tarotData.tarotCards);
+    const [fortunes, setFortunes] = useState<TarotData['fortunes']>(tarotData.fortunes);
+    const [cardBackImage, setCardBackImage] = useState(tarotData.cardBackImage);
+    // 기존 상태
+    const [selectedFortune, setSelectedFortune] = useState(fortunes[0]?.value || '');
     const [isLoading, setIsLoading] = useState(false);
-
     const [selectedCards, setSelectedCards] = useState<string[]>([]);
-
-
     const [isCardMoving, setIsCardMoving] = useState(false);
-
     const navigate = useNavigate();
+
+// TarotData 타입에서 fortunes 배열 원소의 타입에 맞는 기본값
+    const defaultFortuneDetails = {
+        value: "",
+        description: {
+            title: "",
+            subtitle: "",
+            cardDescriptions: []
+        }
+    };
+    const [selectedFortuneDetails, setSelectedFortuneDetails] = useState(fortunes[0] || defaultFortuneDetails);
+
+    useEffect(() => {
+        // JSON 데이터 로딩
+        setTarotCards(tarotCards);
+        setFortunes(fortunes);
+        setCardBackImage(cardBackImage);
+
+        // 초기 선택된 운세 및 상세 정보 설정
+        if (fortunes && fortunes.length > 0) {
+            setSelectedFortune(fortunes[0]?.value || '');
+            setSelectedFortuneDetails(fortunes[0] || defaultFortuneDetails);
+        }
+    }, [fortunes]);
+
 
 
     const handleFortuneChange = useCallback((newValue: string) => {
+        const selected = fortunes.find(fortune => fortune.value === newValue);
         setSelectedFortune(newValue);
+        setSelectedFortuneDetails(selected || fortunes[0]);
         setSelectedCards([]);
-    }, []);
-
+    }, [fortunes]);
     // 다시하기 버튼 클릭 핸들러
     const handleReset = useCallback(() => {
         setSelectedCards([]);
     }, []);
-
 
     const handleButtonClick = useCallback(async () => {
         // 선택된 카드의 번호를 찾습니다
@@ -72,24 +98,34 @@ function TarotDetailPage() {
             const card = tarotCards.find(tarotCard => tarotCard.name === cardName);
             return card ? card.number : null;
         });
-        let tarotPrompt = `첫번째 카드는 ${selectedCardNumbers[0]}번 카드, 두번째 카드는 ${selectedCardNumbers[1]}번 카드, 세번째 카드는 ${selectedCardNumbers[2]}번 카드를 뽑았다.`;
 
-        if (selectedCards.length === cardDescriptions.length) {
+
+        // 타로 프롬프트 생성
+        let tarotPrompt = `
+        운세 유형: ${selectedFortuneDetails.value}
+        제목: ${selectedFortuneDetails.description.title}
+        부제: ${selectedFortuneDetails.description.subtitle}
+        카드 설명: ${selectedFortuneDetails.description.cardDescriptions.join(", ")}
+        선택된 카드 번호: ${selectedCardNumbers.join(", ")}
+    `;
+
+        if (selectedCards.length === selectedFortuneDetails.description.cardDescriptions.length) {
             setIsLoading(true);
             try {
                 const result: CallGptResponse = await gptTarot(tarotPrompt);
-                navigate('/result', { state: { resultData: result.choices } }); // 결과 페이지로 이동하면서 데이터 전달
+                navigate('/result', { state: { resultData: result.choices } });
             } catch (error) {
                 console.error('Error fetching GPT response:', error);
             }
             setIsLoading(false);
         }
-    }, [selectedCards]);
+    }, [selectedCards, selectedFortuneDetails]);
+
 
 
     // 카드 덱을 클릭했을 때 호출되는 함수
     const handleDeckClick = useCallback(() => {
-        if (selectedCards.length >= cardDescriptions.length) {
+        if (selectedCards.length >= selectedFortuneDetails.description.cardDescriptions.length) {
             return;
         }
         let randomCard;
@@ -105,7 +141,7 @@ function TarotDetailPage() {
             setIsCardMoving(false);
             // 카드 뒷면 이미지를 숨기고, 선택된 카드 이미지를 표시하는 로직 추가
         }, 500); // 0.5초 후에 실행 (애니메이션 시간과 일치)
-    }, [selectedCards, isCardMoving]);
+    }, [selectedCards, tarotCards, selectedFortuneDetails]);
 
 
     return (
@@ -119,9 +155,11 @@ function TarotDetailPage() {
                 />
                             <br /><br />
 
-                            <DisplayTextForSelectedTab selectedFortune={selectedFortune} />
+                <DisplayTextForSelectedTab fortuneDetails={selectedFortuneDetails} />
+
+                {/*<DisplayTextForSelectedTab selectedFortune={selectedFortune} />*/}
                             <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
-                                <SelectedCards cardDescriptions={cardDescriptions} selectedCards={selectedCards} tarotCards={tarotCards} />
+                                <SelectedCards cardDescriptions={selectedFortuneDetails.description.cardDescriptions} selectedCards={selectedCards} tarotCards={tarotCards} />
                             </div>
                             <br />
                     <CardDeck
@@ -137,7 +175,7 @@ function TarotDetailPage() {
                                     handleButtonClick={handleButtonClick}
                                     isLoading={isLoading}
                                     selectedCards={selectedCards}
-                                    isButtonDisabled={selectedCards.length !== cardDescriptions.length}
+                                    isButtonDisabled={selectedCards.length !== selectedFortuneDetails.description.cardDescriptions.length}
                                 />
                     </div>
                 </div>

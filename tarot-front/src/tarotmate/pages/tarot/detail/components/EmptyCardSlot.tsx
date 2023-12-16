@@ -1,5 +1,4 @@
 // EmptyCardSlot.tsx
-import React from 'react';
 
 const EmptyCardSlot = ({ borderColor = 'gray' }) => (
     <div style={{

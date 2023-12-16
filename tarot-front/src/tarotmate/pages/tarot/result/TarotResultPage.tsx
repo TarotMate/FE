@@ -1,11 +1,14 @@
+// TarotResultPage.js
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Typography, Card, CardContent } from "@mui/material";
+import styles from './TarotResultPage.module.css';
 
 const TarotResultPage = () => {
     const location = useLocation();
     const { resultData } = location.state || {};
 
+    console.log(resultData)
     // 응답 데이터 파싱
     let parsedData = null;
     if (resultData && resultData.length > 0) {
@@ -18,16 +21,15 @@ const TarotResultPage = () => {
     }
 
     return (
-        <div>
-            {/* 파싱된 데이터를 화면에 표시 */}
+        <div className={styles.pageContainer}>
             {parsedData && (
-                <Card style={{ margin: '10px', maxWidth: 600 }}>
+                <Card className={styles.resultCard}>
                     <CardContent>
-                        <Typography variant="h5">{parsedData.title}</Typography>
-                        <Typography variant="body1">{parsedData.summarize}</Typography>
-                        <Typography variant="body2">{parsedData.tarot}</Typography>
+                        <Typography variant="h5" className={styles.title}>{parsedData.title}</Typography>
+                        <Typography variant="body1" className={styles.summarize}>{parsedData.summarize}</Typography>
+                        <Typography variant="body2" className={styles.tarot}>{parsedData.tarot}</Typography>
                         {parsedData.action_list.map((action, index) => (
-                            <Typography key={index} variant="body2">{action}</Typography>
+                            <Typography key={index} variant="body2" className={styles.action}>{action}</Typography>
                         ))}
                     </CardContent>
                 </Card>

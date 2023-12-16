@@ -1,5 +1,4 @@
 // FortuneTabs.tsx
-import React from 'react';
 import { Tab, Tabs } from "@mui/material";
 
 interface FortuneTabsProps {

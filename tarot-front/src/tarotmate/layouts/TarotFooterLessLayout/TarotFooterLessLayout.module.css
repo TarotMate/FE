@@ -1,0 +1,16 @@
+/* TarotFooterLessLayout.module.css */
+
+.pageContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+
+.mainContent {
+
+    flex-grow: 1;
+    /* 여기에도 필요한 경우 여백을 조절합니다 */
+    padding-left: 0; /* 왼쪽 여백 조절 */
+    padding-right: 0; /* 오른쪽 여백 조절 */
+}

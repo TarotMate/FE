@@ -1,5 +1,4 @@
 // SelectedCards.tsx
-import React from 'react';
 import { Typography } from "@mui/material";
 import EmptyCardSlot from './EmptyCardSlot';
 import {TarotCard} from "../constants";
