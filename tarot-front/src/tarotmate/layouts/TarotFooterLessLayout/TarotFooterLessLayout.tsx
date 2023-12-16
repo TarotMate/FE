@@ -1,10 +1,9 @@
 // TarotFooterLessLayout.js
-import React from 'react';
-import PropTypes from 'prop-types';
 import { ThemeProvider, createTheme } from '@mui/material';
 import TarotFooterLessHeader from './TarotFooterLessHeader';
 import styles from './TarotFooterLessLayout.module.css';
 import TarotFooterLessFooter from "./TarotFooterLessFooter";
+import {FC, ReactNode} from "react";
 
 const theme = createTheme({
     typography: {
@@ -12,7 +11,11 @@ const theme = createTheme({
     },
 });
 
-const TarotFooterLessLayout = ({ children }) => {
+interface TarotFooterLessLayoutProps {
+    children?: ReactNode;
+}
+
+const TarotFooterLessLayout: FC<TarotFooterLessLayoutProps> = ({ children }) => {
     return (
         <ThemeProvider theme={theme}>
             <div className={styles.pageContainer}>
@@ -26,8 +29,5 @@ const TarotFooterLessLayout = ({ children }) => {
     );
 };
 
-TarotFooterLessLayout.propTypes = {
-    children: PropTypes.node,
-};
 
 export default TarotFooterLessLayout;
