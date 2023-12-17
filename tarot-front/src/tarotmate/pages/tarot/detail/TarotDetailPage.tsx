@@ -55,18 +55,31 @@ function TarotDetailPage() {
         setShowModal(true);
     };
     // 모달에서 설명을 선택했을 때 실행하는 함수
-    const handleDescriptionSelect = (description) => {
-        // 선택된 설명을 포함하는 새 Fortune 객체를 생성
-        const newSelectedFortuneDetails = {
-            ...selectedFortuneDetails,
-            descriptions: [description]
-        };
-        setSelectedFortuneDetails(newSelectedFortuneDetails);
+    // const handleDescriptionSelect = (description) => {
+    //     // 선택된 설명을 포함하는 새 Fortune 객체를 생성
+    //     const newSelectedFortuneDetails = {
+    //         ...selectedFortuneDetails,
+    //         descriptions: [description]
+    //     };
+    //     setSelectedFortuneDetails(newSelectedFortuneDetails);
+    //     setShowModal(false);
+    // };
+    const handleDescriptionSelect = (index) => {
+        setSelectedFortuneDetails(prev => ({
+            ...prev,
+            activeDescriptionIndex: index
+        }));
+        setSelectedCards([]); // Reset selected cards when a new description is chosen
         setShowModal(false);
     };
 
 
+
+
+
+
     // 수정된 Fortune 인터페이스에 맞춰 기본값 설정
+    // Initialize selectedFortuneDetails with an activeDescriptionIndex
     const defaultFortuneDetails: Fortune = {
         label: "",
         value: "",
@@ -74,14 +87,19 @@ function TarotDetailPage() {
             title: "",
             subtitle: "",
             cardDescriptions: []
-        }]
+        }],
+        activeDescriptionIndex: 0 // Initialize with 0
     };
 
+
     const [selectedFortuneDetails, setSelectedFortuneDetails] = useState<Fortune>(defaultFortuneDetails);
+    // const activeDescription = selectedFortuneDetails.descriptions[selectedFortuneDetails.activeDescriptionIndex]
+    //     ? selectedFortuneDetails.descriptions[selectedFortuneDetails.activeDescriptionIndex]
+    //     : { title: '', subtitle: '', cardDescriptions: [] };
+    //
 
+    const activeDescription = selectedFortuneDetails.descriptions[selectedFortuneDetails.activeDescriptionIndex] || selectedFortuneDetails.descriptions[0];
 
-    console.log(selectedFortuneDetails)
-    console.log(fortunes)
     const [cardBackImage, setCardBackImage] = useState(tarotData.cardBackImage);
     // 기존 상태
 
@@ -117,6 +135,7 @@ function TarotDetailPage() {
     const handleReset = useCallback(() => {
         setSelectedCards([]);
     }, []);
+    // const activeDescription = selectedFortuneDetails.descriptions[selectedFortuneDetails.activeDescriptionIndex] || selectedFortuneDetails.descriptions[0];
 
     const handleButtonClick = useCallback(async () => {
         // 선택된 카드의 번호를 찾습니다
@@ -131,9 +150,9 @@ function TarotDetailPage() {
         // 타로 프롬프트 생성
         let tarotPrompt = `
     운세 유형: ${selectedFortuneDetails.value}
-    제목: ${firstDescription.title}
-    부제: ${firstDescription.subtitle}
-    카드 설명: ${firstDescription.cardDescriptions.join(", ")}
+    제목: ${activeDescription.title}
+    부제: ${activeDescription.subtitle}
+    카드 설명: ${activeDescription.cardDescriptions.join(", ")}
     선택된 카드 번호: ${selectedCardNumbers.join(", ")}
     `;
 
@@ -147,14 +166,16 @@ function TarotDetailPage() {
             }
             setIsLoading(false);
         }
-    }, [selectedCards, selectedFortuneDetails]);
+    }, [selectedCards, selectedFortuneDetails, activeDescription]);
+
 
 
     const handleDeckClick = useCallback(() => {
         // descriptions 배열의 첫 번째 요소를 사용
-        const firstDescription = selectedFortuneDetails.descriptions[0];
+        // const firstDescription = selectedFortuneDetails.descriptions[0];
+        const currentDescription = selectedFortuneDetails.descriptions[selectedFortuneDetails.activeDescriptionIndex] || selectedFortuneDetails.descriptions[0];
 
-        if (selectedCards.length >= firstDescription.cardDescriptions.length) {
+        if (selectedCards.length >= currentDescription.cardDescriptions.length) {
             return;
         }
         let randomCard;
@@ -170,7 +191,12 @@ function TarotDetailPage() {
             setIsCardMoving(false);
             // 카드 뒷면 이미지를 숨기고, 선택된 카드 이미지를 표시하는 로직 추가
         }, 500); // 0.5초 후에 실행 (애니메이션 시간과 일치)
-    }, [selectedCards, tarotCards, selectedFortuneDetails]);
+    }, [selectedCards, tarotCards, selectedFortuneDetails, selectedFortuneDetails.activeDescriptionIndex]);
+// TarotDetailPage 컴포넌트 내에서 isButtonDisabled 계산
+    const isButtonDisabled = useCallback(() => {
+        const currentDescription = selectedFortuneDetails.descriptions[selectedFortuneDetails.activeDescriptionIndex] || selectedFortuneDetails.descriptions[0];
+        return selectedCards.length !== currentDescription.cardDescriptions.length;
+    }, [selectedCards, selectedFortuneDetails, selectedFortuneDetails.activeDescriptionIndex]);
 
 
     return (
@@ -190,18 +216,19 @@ function TarotDetailPage() {
                     <Modal open={showModal} onClose={() => setShowModal(false)}>
                         <div style={{ /* 모달 스타일 지정 */ }}>
                             {selectedFortuneDetails.descriptions.map((description, index) => (
-                                <button key={index} onClick={() => handleDescriptionSelect(description)}>
+                                <button key={index} onClick={() => handleDescriptionSelect(index)}>
                                     {description.title}
                                 </button>
                             ))}
+
                         </div>
                     </Modal>
                 )}
-                <DisplayTextForSelectedTab fortuneDetails={selectedFortuneDetails}/>
+                <DisplayTextForSelectedTab title={activeDescription.title} subtitle={activeDescription.subtitle} />
                 <div style={{display: 'flex', justifyContent: 'center', flexWrap: 'wrap'}}>
                     {/* descriptions 배열의 첫 번째 요소 사용 */}
                     <SelectedCards
-                        cardDescriptions={selectedFortuneDetails.descriptions[0].cardDescriptions}
+                        cardDescriptions={activeDescription.cardDescriptions}
                         selectedCards={selectedCards}
                         tarotCards={tarotCards}
                     />
@@ -226,7 +253,7 @@ function TarotDetailPage() {
                         handleButtonClick={handleButtonClick}
                         isLoading={isLoading}
                         selectedCards={selectedCards}
-                        isButtonDisabled={selectedCards.length !== selectedFortuneDetails.descriptions[0].cardDescriptions.length}
+                        isButtonDisabled={isButtonDisabled()}
                     />
                 </div>
             </div>

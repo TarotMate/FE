@@ -2,18 +2,11 @@
 import { Typography } from "@mui/material";
 
 interface DisplayTextForSelectedTabProps {
-    fortuneDetails: {
-        descriptions: Array<{
-            title: string;
-            subtitle: string;
-        }>;
-    };
+    title: string;
+    subtitle: string;
 }
 
-const DisplayTextForSelectedTab: React.FC<DisplayTextForSelectedTabProps> = ({ fortuneDetails }) => {
-    // Assuming we want to display the first description in the array
-    const { title, subtitle } = fortuneDetails.descriptions[0];
-
+const DisplayTextForSelectedTab: React.FC<DisplayTextForSelectedTabProps> = ({ title, subtitle }) => {
     return (
         <>
             <Typography variant="h5" style={{ fontWeight: 'bold' }}>{title}</Typography>
