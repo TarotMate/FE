@@ -3,16 +3,16 @@ import { Typography } from "@mui/material";
 
 interface DisplayTextForSelectedTabProps {
     fortuneDetails: {
-        description: {
+        descriptions: Array<{
             title: string;
             subtitle: string;
-        };
+        }>;
     };
 }
+
 const DisplayTextForSelectedTab: React.FC<DisplayTextForSelectedTabProps> = ({ fortuneDetails }) => {
-
-
-    const { title, subtitle } = fortuneDetails.description;
+    // Assuming we want to display the first description in the array
+    const { title, subtitle } = fortuneDetails.descriptions[0];
 
     return (
         <>
@@ -23,3 +23,4 @@ const DisplayTextForSelectedTab: React.FC<DisplayTextForSelectedTabProps> = ({ f
 };
 
 export default DisplayTextForSelectedTab;
+

@@ -9,7 +9,7 @@ import SelectedCards from "./components/SelectedCards";
 import LoadingComponent from "./components/LoadingComponent";
 import styles from './TarotDetailPage.module.css';
 import tarotData from '../../data/TarotData.json';
-import {TarotData} from "../../data/TarotTypes";
+import {Fortune, TarotData} from "../../data/TarotTypes";
 
 
 // 카드 스타일
@@ -44,27 +44,33 @@ const movingCardStyle: CSSProperties = {
 };
 
 function TarotDetailPage() {
-    // JSON 데이터를 상태로 관리
     const [tarotCards, setTarotCards] = useState<TarotData['tarotCards']>(tarotData.tarotCards);
     const [fortunes, setFortunes] = useState<TarotData['fortunes']>(tarotData.fortunes);
+    const [selectedFortune, setSelectedFortune] = useState(fortunes[0]?.value || '');
+
+    // 수정된 Fortune 인터페이스에 맞춰 기본값 설정
+    const defaultFortuneDetails: Fortune = {
+        label: "",
+        value: "",
+        descriptions: [{
+            title: "",
+            subtitle: "",
+            cardDescriptions: []
+        }]
+    };
+
+    const [selectedFortuneDetails, setSelectedFortuneDetails] = useState<Fortune>(defaultFortuneDetails);
+
     const [cardBackImage, setCardBackImage] = useState(tarotData.cardBackImage);
     // 기존 상태
-    const [selectedFortune, setSelectedFortune] = useState(fortunes[0]?.value || '');
+
     const [isLoading, setIsLoading] = useState(false);
     const [selectedCards, setSelectedCards] = useState<string[]>([]);
     const [isCardMoving, setIsCardMoving] = useState(false);
     const navigate = useNavigate();
 
 // TarotData 타입에서 fortunes 배열 원소의 타입에 맞는 기본값
-    const defaultFortuneDetails = {
-        value: "",
-        description: {
-            title: "",
-            subtitle: "",
-            cardDescriptions: []
-        }
-    };
-    const [selectedFortuneDetails, setSelectedFortuneDetails] = useState(fortunes[0] || defaultFortuneDetails);
+
 
     useEffect(() => {
         // JSON 데이터 로딩
@@ -78,7 +84,6 @@ function TarotDetailPage() {
             setSelectedFortuneDetails(fortunes[0] || defaultFortuneDetails);
         }
     }, [fortunes]);
-
 
 
     const handleFortuneChange = useCallback((newValue: string) => {
@@ -99,21 +104,23 @@ function TarotDetailPage() {
             return card ? card.number : null;
         });
 
+        // descriptions 배열의 첫 번째 요소를 사용
+        const firstDescription = selectedFortuneDetails.descriptions[0];
 
         // 타로 프롬프트 생성
         let tarotPrompt = `
-        운세 유형: ${selectedFortuneDetails.value}
-        제목: ${selectedFortuneDetails.description.title}
-        부제: ${selectedFortuneDetails.description.subtitle}
-        카드 설명: ${selectedFortuneDetails.description.cardDescriptions.join(", ")}
-        선택된 카드 번호: ${selectedCardNumbers.join(", ")}
+    운세 유형: ${selectedFortuneDetails.value}
+    제목: ${firstDescription.title}
+    부제: ${firstDescription.subtitle}
+    카드 설명: ${firstDescription.cardDescriptions.join(", ")}
+    선택된 카드 번호: ${selectedCardNumbers.join(", ")}
     `;
 
-        if (selectedCards.length === selectedFortuneDetails.description.cardDescriptions.length) {
+        if (selectedCards.length === firstDescription.cardDescriptions.length) {
             setIsLoading(true);
             try {
                 const result: CallGptResponse = await gptTarot(tarotPrompt);
-                navigate('/result', { state: { resultData: result.choices } });
+                navigate('/result', {state: {resultData: result.choices}});
             } catch (error) {
                 console.error('Error fetching GPT response:', error);
             }
@@ -122,10 +129,11 @@ function TarotDetailPage() {
     }, [selectedCards, selectedFortuneDetails]);
 
 
-
-    // 카드 덱을 클릭했을 때 호출되는 함수
     const handleDeckClick = useCallback(() => {
-        if (selectedCards.length >= selectedFortuneDetails.description.cardDescriptions.length) {
+        // descriptions 배열의 첫 번째 요소를 사용
+        const firstDescription = selectedFortuneDetails.descriptions[0];
+
+        if (selectedCards.length >= firstDescription.cardDescriptions.length) {
             return;
         }
         let randomCard;
@@ -146,38 +154,51 @@ function TarotDetailPage() {
 
     return (
         <div className={styles.pageContainer}>
-            {isLoading && <LoadingComponent />}
+            {isLoading && <LoadingComponent/>}
             <div className={styles.contentContainer}>
                 <FortuneTabs
                     selectedFortune={selectedFortune}
                     handleFortuneChange={handleFortuneChange}
                     fortunes={fortunes}
                 />
-                            <br /><br />
-                <DisplayTextForSelectedTab fortuneDetails={selectedFortuneDetails} />
-                            <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
-                                <SelectedCards cardDescriptions={selectedFortuneDetails.description.cardDescriptions} selectedCards={selectedCards} tarotCards={tarotCards} />
-                            </div>
-                            <br />
-                    <CardDeck
-                        handleDeckClick={handleDeckClick}
-                        isCardMoving={isCardMoving}
-                        cardBackImage={cardBackImage}
-                        cardStyle={cardStyle}
-                        movingCardStyle={movingCardStyle}
+                <br/><br/>
+
+                <DisplayTextForSelectedTab fortuneDetails={selectedFortuneDetails}/>
+                <div style={{display: 'flex', justifyContent: 'center', flexWrap: 'wrap'}}>
+                    {/* descriptions 배열의 첫 번째 요소 사용 */}
+                    <SelectedCards
+                        cardDescriptions={selectedFortuneDetails.descriptions[0].cardDescriptions}
+                        selectedCards={selectedCards}
+                        tarotCards={tarotCards}
                     />
-                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-                                <ControlButtons
-                                    handleReset={handleReset}
-                                    handleButtonClick={handleButtonClick}
-                                    isLoading={isLoading}
-                                    selectedCards={selectedCards}
-                                    isButtonDisabled={selectedCards.length !== selectedFortuneDetails.description.cardDescriptions.length}
-                                />
-                    </div>
                 </div>
+                <br/>
+                <CardDeck
+                    handleDeckClick={handleDeckClick}
+                    isCardMoving={isCardMoving}
+                    cardBackImage={cardBackImage}
+                    cardStyle={cardStyle}
+                    movingCardStyle={movingCardStyle}
+                />
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '100%'
+                }}>
+                    <ControlButtons
+                        handleReset={handleReset}
+                        handleButtonClick={handleButtonClick}
+                        isLoading={isLoading}
+                        selectedCards={selectedCards}
+                        isButtonDisabled={selectedCards.length !== selectedFortuneDetails.descriptions[0].cardDescriptions.length}
+                    />
+                </div>
+            </div>
         </div>
     );
 }
+
 
 export default TarotDetailPage;
