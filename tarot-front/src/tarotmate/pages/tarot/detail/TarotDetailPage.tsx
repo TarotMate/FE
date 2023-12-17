@@ -98,7 +98,10 @@ function TarotDetailPage() {
     //     : { title: '', subtitle: '', cardDescriptions: [] };
     //
 
-    const activeDescription = selectedFortuneDetails.descriptions[selectedFortuneDetails.activeDescriptionIndex] || selectedFortuneDetails.descriptions[0];
+    const activeDescription = selectedFortuneDetails.activeDescriptionIndex !== undefined
+        ? selectedFortuneDetails.descriptions[selectedFortuneDetails.activeDescriptionIndex]
+        : selectedFortuneDetails.descriptions[0];
+
 
     const [cardBackImage, setCardBackImage] = useState(tarotData.cardBackImage);
     // 기존 상태
