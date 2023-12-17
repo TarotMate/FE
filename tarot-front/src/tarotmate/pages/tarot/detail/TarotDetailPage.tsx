@@ -156,10 +156,12 @@ function TarotDetailPage() {
     선택된 카드 번호: ${selectedCardNumbers.join(", ")}
     `;
 
-        if (selectedCards.length === firstDescription.cardDescriptions.length) {
+        if (selectedCards.length === activeDescription.cardDescriptions.length) {
             setIsLoading(true);
             try {
                 const result: CallGptResponse = await gptTarot(tarotPrompt);
+                console.log(result); // 디버깅을 위한 로그
+
                 navigate('/result', {state: {resultData: result.choices}});
             } catch (error) {
                 console.error('Error fetching GPT response:', error);
