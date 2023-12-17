@@ -154,10 +154,7 @@ function TarotDetailPage() {
                     fortunes={fortunes}
                 />
                             <br /><br />
-
                 <DisplayTextForSelectedTab fortuneDetails={selectedFortuneDetails} />
-
-                {/*<DisplayTextForSelectedTab selectedFortune={selectedFortune} />*/}
                             <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
                                 <SelectedCards cardDescriptions={selectedFortuneDetails.description.cardDescriptions} selectedCards={selectedCards} tarotCards={tarotCards} />
                             </div>

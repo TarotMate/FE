@@ -28,7 +28,6 @@ function TarotComponent() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 color: 'white'
-
             }}>
                 {!showTarotCards && (
                <>

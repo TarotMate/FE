@@ -15,6 +15,11 @@
     min-height: 100vh;
     color: black;
 }
+@media (max-width: 600px) {
+    .contentContainer {
+        width: 100%;
+    }
+}
 
 /* TarotDetailPage.module.css */
 .cardStyle {
@@ -47,3 +52,9 @@
     transition: transform 0.5s ease-in-out; /* 부드러운 이동 효과 */
 }
 
+.cardStyle, .movingCardStyle {
+    width: 20vw;
+    height: 30vw; /* 또는 높이에 따라 조정 */
+    max-width: 120px;
+    max-height: 180px;
+}
