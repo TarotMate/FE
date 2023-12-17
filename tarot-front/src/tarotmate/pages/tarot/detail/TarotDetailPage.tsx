@@ -64,7 +64,7 @@ function TarotDetailPage() {
     //     setSelectedFortuneDetails(newSelectedFortuneDetails);
     //     setShowModal(false);
     // };
-    const handleDescriptionSelect = (index) => {
+    const handleDescriptionSelect = (index: number) => {
         setSelectedFortuneDetails(prev => ({
             ...prev,
             activeDescriptionIndex: index
@@ -144,9 +144,6 @@ function TarotDetailPage() {
             return card ? card.number : null;
         });
 
-        // descriptions 배열의 첫 번째 요소를 사용
-        const firstDescription = selectedFortuneDetails.descriptions[0];
-
         // 타로 프롬프트 생성
         let tarotPrompt = `
     운세 유형: ${selectedFortuneDetails.value}
@@ -173,10 +170,10 @@ function TarotDetailPage() {
 
 
     const handleDeckClick = useCallback(() => {
-        // descriptions 배열의 첫 번째 요소를 사용
-        // const firstDescription = selectedFortuneDetails.descriptions[0];
-        const currentDescription = selectedFortuneDetails.descriptions[selectedFortuneDetails.activeDescriptionIndex] || selectedFortuneDetails.descriptions[0];
-
+        // const currentDescription = selectedFortuneDetails.descriptions[selectedFortuneDetails.activeDescriptionIndex] || selectedFortuneDetails.descriptions[0];
+        const currentDescription = selectedFortuneDetails.activeDescriptionIndex !== undefined
+            ? selectedFortuneDetails.descriptions[selectedFortuneDetails.activeDescriptionIndex]
+            : selectedFortuneDetails.descriptions[0];
         if (selectedCards.length >= currentDescription.cardDescriptions.length) {
             return;
         }
@@ -196,7 +193,10 @@ function TarotDetailPage() {
     }, [selectedCards, tarotCards, selectedFortuneDetails, selectedFortuneDetails.activeDescriptionIndex]);
 // TarotDetailPage 컴포넌트 내에서 isButtonDisabled 계산
     const isButtonDisabled = useCallback(() => {
-        const currentDescription = selectedFortuneDetails.descriptions[selectedFortuneDetails.activeDescriptionIndex] || selectedFortuneDetails.descriptions[0];
+        const currentDescription = selectedFortuneDetails.activeDescriptionIndex !== undefined
+            ? selectedFortuneDetails.descriptions[selectedFortuneDetails.activeDescriptionIndex]
+            : selectedFortuneDetails.descriptions[0];
+        // const currentDescription = selectedFortuneDetails.descriptions[selectedFortuneDetails.activeDescriptionIndex] || selectedFortuneDetails.descriptions[0];
         return selectedCards.length !== currentDescription.cardDescriptions.length;
     }, [selectedCards, selectedFortuneDetails, selectedFortuneDetails.activeDescriptionIndex]);
 
