@@ -10,6 +10,7 @@ import LoadingComponent from "./components/LoadingComponent";
 import styles from './TarotDetailPage.module.css';
 import tarotData from '../../data/TarotData.json';
 import {Fortune, TarotData} from "../../data/TarotTypes";
+import {Modal} from "@mui/material";
 
 
 // 카드 스타일
@@ -48,6 +49,23 @@ function TarotDetailPage() {
     const [fortunes, setFortunes] = useState<TarotData['fortunes']>(tarotData.fortunes);
     const [selectedFortune, setSelectedFortune] = useState(fortunes[0]?.value || '');
 
+    const [showModal, setShowModal] = useState(false); // 모달 창 표시 상태
+    // "+" 버튼 클릭 시 모달 창을 띄우는 함수
+    const openModal = () => {
+        setShowModal(true);
+    };
+    // 모달에서 설명을 선택했을 때 실행하는 함수
+    const handleDescriptionSelect = (description) => {
+        // 선택된 설명을 포함하는 새 Fortune 객체를 생성
+        const newSelectedFortuneDetails = {
+            ...selectedFortuneDetails,
+            descriptions: [description]
+        };
+        setSelectedFortuneDetails(newSelectedFortuneDetails);
+        setShowModal(false);
+    };
+
+
     // 수정된 Fortune 인터페이스에 맞춰 기본값 설정
     const defaultFortuneDetails: Fortune = {
         label: "",
@@ -61,6 +79,9 @@ function TarotDetailPage() {
 
     const [selectedFortuneDetails, setSelectedFortuneDetails] = useState<Fortune>(defaultFortuneDetails);
 
+
+    console.log(selectedFortuneDetails)
+    console.log(fortunes)
     const [cardBackImage, setCardBackImage] = useState(tarotData.cardBackImage);
     // 기존 상태
 
@@ -162,7 +183,20 @@ function TarotDetailPage() {
                     fortunes={fortunes}
                 />
                 <br/><br/>
-
+                {selectedFortuneDetails.descriptions.length > 1 && (
+                    <button onClick={openModal}>+</button>
+                )}
+                {showModal && (
+                    <Modal open={showModal} onClose={() => setShowModal(false)}>
+                        <div style={{ /* 모달 스타일 지정 */ }}>
+                            {selectedFortuneDetails.descriptions.map((description, index) => (
+                                <button key={index} onClick={() => handleDescriptionSelect(description)}>
+                                    {description.title}
+                                </button>
+                            ))}
+                        </div>
+                    </Modal>
+                )}
                 <DisplayTextForSelectedTab fortuneDetails={selectedFortuneDetails}/>
                 <div style={{display: 'flex', justifyContent: 'center', flexWrap: 'wrap'}}>
                     {/* descriptions 배열의 첫 번째 요소 사용 */}
