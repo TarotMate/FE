@@ -74,10 +74,6 @@ function TarotDetailPage() {
     };
 
 
-
-
-
-
     // 수정된 Fortune 인터페이스에 맞춰 기본값 설정
     // Initialize selectedFortuneDetails with an activeDescriptionIndex
     const defaultFortuneDetails: Fortune = {

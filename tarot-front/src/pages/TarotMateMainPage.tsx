@@ -2,7 +2,7 @@ import Link from "@mui/material/Link";
 import {Typography} from "@mui/material";
 
 
-function MainPage() {
+function TarotMateMainPage() {
     return (
             <div>
                 <Typography variant="body2" color="text.secondary" align="center">
@@ -14,4 +14,4 @@ function MainPage() {
     )
 }
 
-export default MainPage;
+export default TarotMateMainPage;

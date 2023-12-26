@@ -62,7 +62,7 @@ function TarotFooterLessHeader() {
                 </div>
                 {/* 중앙 부분 (로고) */}
                 <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-                    <Link color="inherit" href="/Users/1/IdeaProjects/FE/tarot-front/src/pages">
+                    <Link color="inherit" href="/">
                     <img
                         src="/images/TarotMate_logo.png"
                         alt="TarotMate Logo"

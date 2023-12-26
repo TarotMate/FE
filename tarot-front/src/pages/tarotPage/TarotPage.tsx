@@ -1,4 +1,4 @@
-import TarotTemplate from "./templates/TarotTemplate";
+import TarotTemplate from "./components/templates/TarotTemplate";
 
 function TarotPage() {
     return (
