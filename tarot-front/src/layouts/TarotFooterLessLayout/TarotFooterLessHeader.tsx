@@ -12,7 +12,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import {NavLink} from "react-router-dom";
 
-function TarotHeader() {
+function TarotFooterLessHeader() {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -54,7 +54,6 @@ function TarotHeader() {
                 borderColor: 'divider',
                 backgroundColor: 'white',
                 boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.2)',
-                padding: '10px',
                 display: 'flex', // Flex 컨테이너로 설정
             }}>
                 {/* 왼쪽 부분 (네비게이션 링크 또는 빈 공간) */}
@@ -63,7 +62,7 @@ function TarotHeader() {
                 </div>
                 {/* 중앙 부분 (로고) */}
                 <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-                    <Link color="inherit" href="/">
+                    <Link color="inherit" href="/Users/1/IdeaProjects/FE/tarot-front/src/pages">
                     <img
                         src="/images/TarotMate_logo.png"
                         alt="TarotMate Logo"
@@ -93,4 +92,4 @@ function TarotHeader() {
     );
 }
 
-export default TarotHeader;
+export default TarotFooterLessHeader;

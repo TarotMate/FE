@@ -8,8 +8,8 @@ import FortuneTabs from "./components/FortuneTabs";
 import SelectedCards from "./components/SelectedCards";
 import LoadingComponent from "./components/LoadingComponent";
 import styles from './TarotDetailPage.module.css';
-import tarotData from '../../data/TarotData.json';
-import {Fortune, TarotData} from "../../data/TarotTypes";
+import tarotData from '../../../data/TarotData.json';
+import {Fortune, TarotData} from "../../../data/TarotTypes";
 import {Modal} from "@mui/material";
 
 
