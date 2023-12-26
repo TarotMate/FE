@@ -1,7 +1,7 @@
 // SelectedCards.tsx
 import { Typography } from "@mui/material";
 import EmptyCardSlot from './EmptyCardSlot';
-import {TarotCard} from "../constants";
+import {TarotCard} from "../../../data/constants";
 
 interface SelectedCardsProps {
     cardDescriptions: string[];

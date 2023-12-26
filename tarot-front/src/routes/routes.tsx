@@ -1,8 +1,8 @@
 // routes.tsx
 import TarotPage from "../pages/tarotPage/TarotPage";
-import TarotDetailPage from "../pages/tarotPage/detail/TarotDetailPage";
+import TarotDetailPage from "../pages/detailPage/TarotDetailPage";
 import TarotLayout from "../layouts/TarotLayout/TarotLayout";
-import TarotResultPage from "../pages/tarotPage/result/TarotResultPage";
+import TarotResultPage from "../pages/resultPage/TarotResultPage";
 import TarotFooterLessLayout from "../layouts/TarotFooterLessLayout/TarotFooterLessLayout";
 
 export const HOME = "/";

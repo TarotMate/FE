@@ -21,7 +21,8 @@ const FortuneTabs: React.FC<FortuneTabsProps> = ({ selectedFortune, handleFortun
                 backgroundColor: 'white',
                 width: '100%',
                 maxWidth: '100%', // 모바일 화면에서 최대 너비로 설정
-                overflowX: 'auto', // 가로 스크롤을 허용하여 잘린 탭을 스크롤 가능하게 함
+                overflowX: 'auto', // 가로 스크롤을 허용하여 잘린 탭을 스크롤 가능하게 함\
+                marginBottom: 30
             }}
         >
             {fortunes.map((fortune, index) => (
