@@ -21,43 +21,8 @@
     }
 }
 
-/* TarotDetailPage.module.css */
-.cardStyle {
-    cursor: pointer;
-    margin: 10px;
-    width: 120px;
-    height: 180px;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transform-style: preserve-3d;
-    transition: transform 0.3s ease, border 0.3s ease;
-}
 
-/* TarotDetailPage.module.css */
-.movingCardStyle {
-    /*cursor: pointer;*/
-    margin: 10px;
-    width: 120px; /* 모바일 환경에서 크기 증가 */
-    height: 180px; /* 모바일 환경에서 크기 증가 */
-    border-radius: 15px; /* 모서리 둥글게 */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3); /* 그림자 효과 강화 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transform-style: preserve-3d;
-    transform: translateX(100px); /* 예시로 100px 오른쪽으로 이동 */
-    transition: transform 0.5s ease-in-out; /* 부드러운 이동 효과 */
-}
 
-.cardStyle, .movingCardStyle {
-    width: 20vw;
-    height: 30vw; /* 또는 높이에 따라 조정 */
-    max-width: 120px;
-    max-height: 180px;
-}
 
 .modalStyle {
     background-color: white; /* 밝고 깨끗한 배경 */

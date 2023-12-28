@@ -1,6 +1,7 @@
 // CardDeck.tsx
 import React from 'react';
 import { Card, CardContent } from "@mui/material";
+import '../../TarotDetailPage.module.css'; // 스타일 시트 임포트
 
 interface CardDeckProps {
     handleDeckClick: () => void;
@@ -9,7 +10,6 @@ interface CardDeckProps {
 }
 
 const CardDeck: React.FC<CardDeckProps> = ({ handleDeckClick, isCardMoving, cardBackImage }) => {
-    // Define the static card style inside the component
     const cardStyle = {
         cursor: 'pointer',
         margin: '10px',
@@ -20,11 +20,9 @@ const CardDeck: React.FC<CardDeckProps> = ({ handleDeckClick, isCardMoving, card
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        transformStyle: 'preserve-3d',
         transition: 'transform 0.3s ease, border 0.3s ease',
     };
 
-    // Define the moving card style inside the component
     const movingCardStyle = {
         ...cardStyle,
         transform: 'translateX(100px)',

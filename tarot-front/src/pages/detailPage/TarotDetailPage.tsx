@@ -75,8 +75,6 @@ function TarotDetailPage() {
         setSelectedCards([]);
     }, []);
 
-
-    // 공통 로직: 타로 카드 번호 추출 및 요청 보내기
 // 공통 로직: 타로 카드 번호 추출 및 요청 보내기
     const processTarotRequest = async (selectedCards: string[]) => {
         const selectedCardNumbers = selectedCards.map((cardName: string) => {
