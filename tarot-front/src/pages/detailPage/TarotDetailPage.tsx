@@ -14,8 +14,8 @@ import {Fortune, TarotData} from "../../data/TarotTypes";
 import {Modal} from "@mui/material";
 
 function TarotDetailPage() {
-    const [tarotCards, setTarotCards] = useState<TarotData['tarotCards']>(tarotData.tarotCards);
-    const [fortunes, setFortunes] = useState<TarotData['fortunes']>(tarotData.fortunes);
+    const [tarotCards] = useState<TarotData['tarotCards']>(tarotData.tarotCards);
+    const [fortunes] = useState<TarotData['fortunes']>(tarotData.fortunes);
     const [selectedFortune, setSelectedFortune] = useState(fortunes[0]?.value || '');
     const [showModal, setShowModal] = useState(false); // 모달 창 표시 상태
     // "+" 버튼 클릭 시 모달 창을 띄우는 함수
@@ -44,7 +44,7 @@ function TarotDetailPage() {
     const activeDescription = selectedFortuneDetails.activeDescriptionIndex !== undefined
         ? selectedFortuneDetails.descriptions[selectedFortuneDetails.activeDescriptionIndex]
         : selectedFortuneDetails.descriptions[0];
-    const [cardBackImage, setCardBackImage] = useState(tarotData.cardBackImage);
+    const [cardBackImage] = useState(tarotData.cardBackImage);
     // 기존 상태
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -75,34 +75,45 @@ function TarotDetailPage() {
         setSelectedCards([]);
     }, []);
 
-    const handleButtonClick = useCallback(async () => {
+
+    // 공통 로직: 타로 카드 번호 추출 및 요청 보내기
+    const processTarotRequest = async (selectedCards) => {
         const selectedCardNumbers = selectedCards.map(cardName => {
             const card = tarotCards.find(tarotCard => tarotCard.name === cardName);
             return card ? card.number : null;
-        });
+        }).join(", ");
 
         let tarotPrompt = `
-        운세 유형: ${selectedFortuneDetails.value}
-        제목: ${activeDescription.title}
-        부제: ${activeDescription.subtitle}
-        카드 설명: ${activeDescription.cardDescriptions.join(", ")}
-        선택된 카드 번호: ${selectedCardNumbers.join(", ")}
+            운세 유형: ${selectedFortuneDetails.value}
+            제목: ${activeDescription.title}
+            부제: ${activeDescription.subtitle}
+            카드 설명: ${activeDescription.cardDescriptions.join(", ")}
+            선택된 카드 번호: ${selectedCardNumbers}
         `;
 
+        try {
+            const result: CallGptResponse = await gptTarot(tarotPrompt);
+            return result;
+        } catch (error) {
+            throw new Error("타로 읽기를 가져오는 데 실패했습니다.");
+        }
+    };
+
+    const handleButtonClick = useCallback(async () => {
         if (selectedCards.length === activeDescription.cardDescriptions.length) {
             setIsLoading(true);
-            setError(null); // 에러 초기화
+            setError(null);
             try {
-                const result: CallGptResponse = await gptTarot(tarotPrompt);
-                navigate('/result', {state: {resultData: result.choices}});
-            } catch (error) {
-                setError("타로 읽기를 가져오는 데 실패했습니다."); // 사용자에게 표시할 에러 설정
+                const result = await processTarotRequest(selectedCards);
+                navigate('/result', { state: { resultData: result.choices } });
+            } catch (error: any) {
+                setError(error.message);
                 console.error('Error fetching GPT response:', error);
             } finally {
-                setIsLoading(false); // 성공/실패 여부와 상관없이 로딩 상태 해제
+                setIsLoading(false);
             }
         }
-    }, [selectedCards, selectedFortuneDetails, activeDescription, navigate]);
+    }, [selectedCards, activeDescription, navigate]);
 
 
     const handleDeckClick = useCallback(() => {
@@ -132,31 +143,14 @@ function TarotDetailPage() {
         return selectedCards.length !== currentDescription.cardDescriptions.length;
     }, [selectedCards, selectedFortuneDetails]);
 
-    const fetchData = async () => {
+    const retryData = async () => {
         setError(null);
         setIsLoading(true);
         try {
-            // 타로 읽기 데이터를 가져오기 위한 프롬프트 준비
-            const selectedCardNumbers = selectedCards.map(cardName => {
-                const card = tarotCards.find(tarotCard => tarotCard.name === cardName);
-                return card ? card.number : null;
-            });
-            let tarotPrompt = `
-            운세 유형: ${selectedFortuneDetails.value}
-            제목: ${activeDescription.title}
-            부제: ${activeDescription.subtitle}
-            카드 설명: ${activeDescription.cardDescriptions.join(", ")}
-            선택된 카드 번호: ${selectedCardNumbers.join(", ")}
-        `;
-
-            // gptTarot 함수를 통해 타로 읽기 데이터 요청
-            const result: CallGptResponse = await gptTarot(tarotPrompt);
-
-            // 결과 페이지로 네비게이션
-            navigate('/result', {state: {resultData: result.choices}});
+            const result = await processTarotRequest(selectedCards);
+            navigate('/result', { state: { resultData: result.choices } });
         } catch (error) {
-            // 에러 처리
-            setError("타로 읽기를 가져오는 데 실패했습니다.");
+            setError(error.message);
             console.error('Error fetching GPT response:', error);
         } finally {
             setIsLoading(false);
@@ -166,7 +160,7 @@ function TarotDetailPage() {
 
     // "다시 시도하기" 버튼 클릭 핸들러
     const handleRetry = () => {
-        fetchData();
+        retryData();
     };
 
     return (
