@@ -77,19 +77,20 @@ function TarotDetailPage() {
 
 
     // 공통 로직: 타로 카드 번호 추출 및 요청 보내기
-    const processTarotRequest = async (selectedCards) => {
-        const selectedCardNumbers = selectedCards.map(cardName => {
+// 공통 로직: 타로 카드 번호 추출 및 요청 보내기
+    const processTarotRequest = async (selectedCards: string[]) => {
+        const selectedCardNumbers = selectedCards.map((cardName: string) => {
             const card = tarotCards.find(tarotCard => tarotCard.name === cardName);
             return card ? card.number : null;
         }).join(", ");
 
-        let tarotPrompt = `
-            운세 유형: ${selectedFortuneDetails.value}
-            제목: ${activeDescription.title}
-            부제: ${activeDescription.subtitle}
-            카드 설명: ${activeDescription.cardDescriptions.join(", ")}
-            선택된 카드 번호: ${selectedCardNumbers}
-        `;
+        const tarotPrompt = `
+        운세 유형: ${selectedFortuneDetails.value}
+        제목: ${activeDescription.title}
+        부제: ${activeDescription.subtitle}
+        카드 설명: ${activeDescription.cardDescriptions.join(", ")}
+        선택된 카드 번호: ${selectedCardNumbers}
+    `;
 
         try {
             const result: CallGptResponse = await gptTarot(tarotPrompt);
@@ -149,7 +150,7 @@ function TarotDetailPage() {
         try {
             const result = await processTarotRequest(selectedCards);
             navigate('/result', { state: { resultData: result.choices } });
-        } catch (error) {
+        } catch (error: any) {
             setError(error.message);
             console.error('Error fetching GPT response:', error);
         } finally {
