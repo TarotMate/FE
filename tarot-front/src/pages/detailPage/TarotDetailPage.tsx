@@ -11,7 +11,7 @@ import LoadingComponent from "./components/LoadingComponent";
 import styles from './TarotDetailPage.module.css';
 import tarotData from '../../data/TarotData.json';
 import {Fortune, TarotData} from "../../data/TarotTypes";
-import {Modal} from "@mui/material";
+import {Card, Modal, Typography} from "@mui/material";
 
 function TarotDetailPage() {
     const [tarotCards] = useState<TarotData['tarotCards']>(tarotData.tarotCards);
@@ -77,21 +77,21 @@ function TarotDetailPage() {
 
 // 공통 로직: 타로 카드 번호 추출 및 요청 보내기
     const processTarotRequest = async (selectedCards: string[]) => {
-        const selectedCardNumbers = selectedCards.map((cardName: string) => {
+        const selectedCardNumbers = selectedCards.map(cardName => {
             const card = tarotCards.find(tarotCard => tarotCard.name === cardName);
             return card ? card.number : null;
-        }).join(", ");
+        }).filter(number => number !== null); // null 값 제거
 
-        const tarotPrompt = `
-        운세 유형: ${selectedFortuneDetails.value}
-        제목: ${activeDescription.title}
-        부제: ${activeDescription.subtitle}
-        카드 설명: ${activeDescription.cardDescriptions.join(", ")}
-        선택된 카드 번호: ${selectedCardNumbers}
-    `;
+        const tarotRequest: { cardDescriptions: string[]; fortuneType: string; subtitle: string; selectedCardNumbers: (number | null)[]; title: string } = {
+            fortuneType: selectedFortuneDetails.value,
+            title: activeDescription.title,
+            subtitle: activeDescription.subtitle,
+            cardDescriptions: activeDescription.cardDescriptions,
+            selectedCardNumbers
+        };
 
         try {
-            const result: CallGptResponse = await gptTarot(tarotPrompt);
+            const result: CallGptResponse = await gptTarot(tarotRequest);
             return result;
         } catch (error) {
             throw new Error("타로 읽기를 가져오는 데 실패했습니다.");
@@ -214,6 +214,31 @@ function TarotDetailPage() {
                     cardBackImage={cardBackImage}
                 />
                 </div>
+
+                <Card
+                    style={{
+                        backgroundColor: '#424242', // 짙은 회색 배경
+                        color: '#fff', // 텍스트 색상을 흰색으로 설정
+                        margin: '20px 0', // 상하 여백
+                        padding: '10px', // 내부 패딩
+                        width: '360px', // 가로 길이 100%
+                        boxSizing: 'border-box', // 박스 크기 설정
+                        borderRadius: '4px', // 모서리 둥글게
+                    }}
+                >
+                    <Typography
+                        variant="body2"
+                        style={{
+                            fontSize: '0.875rem', // 폰트 사이즈 설정
+                            textAlign: 'center', // 중앙 정렬
+                            fontWeight: 'lighter', // 글씨 무게
+                        }}
+                    >
+                        입력하신 정보는 타로메이트 서비스 이용 외 별도 동의없이 공유되지 않으며,
+                        개인정보보호정책에 의해 보호받고 있습니다
+                    </Typography>
+                </Card>
+
                 <div className={styles.controlButtonArea}>
                 <ControlButtons
                         handleReset={handleReset}

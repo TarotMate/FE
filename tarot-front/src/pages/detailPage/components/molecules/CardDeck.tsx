@@ -1,7 +1,7 @@
 // CardDeck.tsx
-import React from 'react';
+import React, {useState} from 'react';
 import { Card, CardContent } from "@mui/material";
-import '../../TarotDetailPage.module.css'; // 스타일 시트 임포트
+import styles from '../../TarotDetailPage.module.css'; // 스타일 시트 임포트
 
 interface CardDeckProps {
     handleDeckClick: () => void;
@@ -9,8 +9,20 @@ interface CardDeckProps {
     cardBackImage: string;
 }
 
-const CardDeck: React.FC<CardDeckProps> = ({ handleDeckClick, isCardMoving, cardBackImage }) => {
+const CardDeck: React.FC<CardDeckProps> = ({ handleDeckClick, cardBackImage }) => {
+    const [isCardMoving, setIsCardMoving] = useState(false);
+
+    const triggerAnimation = () => {
+        setIsCardMoving(true);
+        setTimeout(() => {
+            setIsCardMoving(false);
+        }, 2000); // 회전 1초 + 사라짐 1초, 총 2초 후에 애니메이션 상태를 리셋
+    };
+
+
+
     const cardStyle = {
+        perspective: '1000px',
         cursor: 'pointer',
         margin: '10px',
         width: '120px',
@@ -20,17 +32,20 @@ const CardDeck: React.FC<CardDeckProps> = ({ handleDeckClick, isCardMoving, card
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        transition: 'transform 0.3s ease, border 0.3s ease',
-    };
-
-    const movingCardStyle = {
-        ...cardStyle,
-        transform: 'translateX(100px)',
-        transition: 'transform 0.5s ease-in-out'
+        transformStyle: 'preserve-3d',
+        transform: isCardMoving ? 'scale(1.5)' : 'none',
+        transition: 'transform 0.7s ease, box-shadow 0.7s ease'
     };
 
     return (
-        <Card style={isCardMoving ? movingCardStyle : cardStyle} onClick={handleDeckClick}>
+        <Card
+            style={cardStyle}
+            onClick={() => {
+                handleDeckClick();
+                triggerAnimation();
+            }}
+            className={isCardMoving ? styles.spinAndGrowAnimation : ''}
+        >
             <CardContent style={{
                 width: '100%',
                 height: '100%',

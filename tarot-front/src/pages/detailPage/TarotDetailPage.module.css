@@ -90,3 +90,25 @@
     left: 0;
     z-index: 1000; /* 다른 요소들 위에 표시 */
 }
+
+/* TarotDetailPage.module.css */
+
+@keyframes spinAndGrow {
+    from {
+        transform: rotateY(0deg) scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: rotateY(1080deg) scale(1.5);
+        opacity: 1;
+    }
+}
+
+@keyframes disappear {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.spinAndGrowAnimation {
+    animation: spinAndGrow 1s linear, disappear 1s ease-out 1s;
+}

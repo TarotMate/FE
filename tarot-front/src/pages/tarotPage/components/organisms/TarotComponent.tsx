@@ -50,29 +50,6 @@ function TarotComponent() {
                        </Card>
                 {/* 선택된 운세 유형에 따른 텍스트 표시 */}
 
-                   <Card
-                       style={{
-                           backgroundColor: '#424242', // 짙은 회색 배경
-                           color: '#fff', // 텍스트 색상을 흰색으로 설정
-                           margin: '20px 0', // 상하 여백
-                           padding: '10px', // 내부 패딩
-                           width: '360px', // 가로 길이 100%
-                           boxSizing: 'border-box', // 박스 크기 설정
-                           borderRadius: '4px', // 모서리 둥글게
-                       }}
-                   >
-                       <Typography
-                           variant="body2"
-                           style={{
-                               fontSize: '0.875rem', // 폰트 사이즈 설정
-                               textAlign: 'center', // 중앙 정렬
-                               fontWeight: 'lighter', // 글씨 무게
-                           }}
-                       >
-                           입력하신 정보는 타로메이트 서비스 이용 외 별도 동의없이 공유되지 않으며,
-                           개인정보보호정책에 의해 보호받고 있습니다
-                       </Typography>
-                   </Card>
                    <Button
                        variant="contained"
                        onClick={handleShowTarotCards}
