@@ -17,8 +17,6 @@ function TarotDetailPage() {
     const [tarotCards, setTarotCards] = useState<TarotCard[]>([]);
     const [fortunes, setFortunes] = useState<Fortune[]>([]);
     const [fetchError, setFetchError] = useState<string | null>(null);
-
-
     const [selectedFortune, setSelectedFortune] = useState('');
     const [showModal, setShowModal] = useState(false); // 모달 창 표시 상태
     // "+" 버튼 클릭 시 모달 창을 띄우는 함수
@@ -61,7 +59,8 @@ function TarotDetailPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('/api/api-test');
+                const url = import.meta.env.VITE_TAROT_API_URL+"/api-test";
+                const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error("서버에서 데이터를 가져오는 데 실패했습니다.");
                 }
@@ -83,20 +82,8 @@ function TarotDetailPage() {
                 }
             }
         };
-
         fetchData();
     }, []);
-
-    // useEffect(() => {
-    //     // 초기 선택된 운세 및 상세 정보 설정
-    //     if (fortunes && fortunes.length > 0) {
-    //         setSelectedFortune(fortunes[0]?.value || '');
-    //         setSelectedFortuneDetails(fortunes[0] || defaultFortuneDetails);
-    //     }
-    // }, [fortunes]);
-
-
-
 
     const handleFortuneChange = useCallback((newValue: string) => {
         const selected = fortunes.find(fortune => fortune.value === newValue);
