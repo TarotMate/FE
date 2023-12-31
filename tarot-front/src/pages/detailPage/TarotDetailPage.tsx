@@ -125,7 +125,11 @@ function TarotDetailPage() {
             const result: CallGptResponse = await gptTarot(tarotRequest);
             return result;
         } catch (error) {
-            throw new Error("타로 읽기를 가져오는 데 실패했습니다.");
+            if (error instanceof Error) {
+                setError(error.message);
+            } else {
+                setError('알 수 없는 오류가 발생했습니다.');
+            }
         }
     };
 
