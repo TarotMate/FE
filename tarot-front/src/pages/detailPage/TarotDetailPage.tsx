@@ -16,7 +16,7 @@ import {Card, Modal, Typography} from "@mui/material";
 function TarotDetailPage() {
     const [tarotCards, setTarotCards] = useState<TarotCard[]>([]);
     const [fortunes, setFortunes] = useState<Fortune[]>([]);
-    const [fetchError, setFetchError] = useState(null); // 서버에서 데이터를 가져오는 도중 발생하는 오류를 위한 상태
+    const [fetchError, setFetchError] = useState<string | null>(null);
 
 
     const [selectedFortune, setSelectedFortune] = useState('');
@@ -54,6 +54,7 @@ function TarotDetailPage() {
     const [error, setError] = useState<string | null>(null);
 
 
+
     const [selectedCards, setSelectedCards] = useState<string[]>([]);
     const [isCardMoving, setIsCardMoving] = useState(false);
     const navigate = useNavigate();
@@ -78,7 +79,7 @@ function TarotDetailPage() {
                 if (error instanceof Error) {
                     setFetchError(error.message);
                 } else {
-                    console.log('An unknown error occurred');
+                    setFetchError('알 수 없는 오류가 발생했습니다.');
                 }
             }
         };
