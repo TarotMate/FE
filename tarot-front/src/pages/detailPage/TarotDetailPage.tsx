@@ -10,7 +10,7 @@ import SelectedCards from "./components/SelectedCards";
 import LoadingComponent from "./components/LoadingComponent";
 import styles from './TarotDetailPage.module.css';
 import tarotData from '../../data/TarotData.json';
-import {Fortune, TarotCard, TarotData} from "../../data/TarotTypes";
+import {Fortune, TarotCard} from "../../data/TarotTypes";
 import {Card, Modal, Typography} from "@mui/material";
 
 function TarotDetailPage() {
@@ -73,8 +73,11 @@ function TarotDetailPage() {
                     setSelectedFortuneDetails(initialFortune);
                 }
             } catch (error) {
-                setFetchError(error.message);
-                console.log(fetchError);
+                if (error instanceof Error) {
+                    setFetchError(error.message);
+                } else {
+                    console.log('An unknown error occurred');
+                }
             }
         };
 
