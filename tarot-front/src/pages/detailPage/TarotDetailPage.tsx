@@ -116,24 +116,32 @@ function TarotDetailPage() {
 
 
     const handleDeckClick = useCallback(() => {
+        // 이미 애니메이션이 진행 중인 경우 추가 동작을 방지
+        if (isCardMoving) return;
+
         const currentDescription = selectedFortuneDetails.activeDescriptionIndex !== undefined
             ? selectedFortuneDetails.descriptions[selectedFortuneDetails.activeDescriptionIndex]
             : selectedFortuneDetails.descriptions[0];
         if (selectedCards.length >= currentDescription.cardDescriptions.length) {
             return;
         }
+
         let randomCard;
         let randomIndex;
         do {
             randomIndex = Math.floor(Math.random() * tarotCards.length);
             randomCard = tarotCards[randomIndex];
         } while (selectedCards.includes(randomCard.name));
+
         setSelectedCards([...selectedCards, randomCard.name]);
         setIsCardMoving(true);
         setTimeout(() => {
             setIsCardMoving(false);
-        }, 500);
-    }, [selectedCards, tarotCards, selectedFortuneDetails]);
+        }, 3000); // 애니메이션 지속 시간을 3초로 설정
+    }, [selectedCards, tarotCards, selectedFortuneDetails, isCardMoving]);
+
+
+
 
     const isButtonDisabled = useCallback(() => {
         const currentDescription = selectedFortuneDetails.activeDescriptionIndex !== undefined

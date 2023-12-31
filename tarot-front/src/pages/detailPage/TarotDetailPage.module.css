@@ -110,5 +110,5 @@
 }
 
 .spinAndGrowAnimation {
-    animation: spinAndGrow 1s linear, disappear 1s ease-out 1s;
+    animation: spinAndGrow 2s linear, disappear 1s ease-out 2s;
 }

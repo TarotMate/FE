@@ -1,27 +1,18 @@
 // CardDeck.tsx
-import React, {useState} from 'react';
+import React from 'react';
 import { Card, CardContent } from "@mui/material";
 import styles from '../../TarotDetailPage.module.css'; // 스타일 시트 임포트
 
 interface CardDeckProps {
     handleDeckClick: () => void;
-    isCardMoving: boolean;
+    isCardMoving: boolean; // 이 상태는 외부에서 관리되며, 여기서는 사용만 합니다.
     cardBackImage: string;
 }
 
-const CardDeck: React.FC<CardDeckProps> = ({ handleDeckClick, cardBackImage }) => {
-    const [isCardMoving, setIsCardMoving] = useState(false);
-
-    const triggerAnimation = () => {
-        setIsCardMoving(true);
-        setTimeout(() => {
-            setIsCardMoving(false);
-        }, 2000); // 회전 1초 + 사라짐 1초, 총 2초 후에 애니메이션 상태를 리셋
-    };
-
-
+const CardDeck: React.FC<CardDeckProps> = ({ handleDeckClick, isCardMoving, cardBackImage }) => {
 
     const cardStyle = {
+
         perspective: '1000px',
         cursor: 'pointer',
         margin: '10px',
@@ -33,16 +24,20 @@ const CardDeck: React.FC<CardDeckProps> = ({ handleDeckClick, cardBackImage }) =
         justifyContent: 'center',
         alignItems: 'center',
         transformStyle: 'preserve-3d',
-        transform: isCardMoving ? 'scale(1.5)' : 'none',
+        transform: isCardMoving ? 'scale(1.5)' : 'none', // isCardMoving 상태에 따라 transform 스타일이 결정됩니다.
         transition: 'transform 0.7s ease, box-shadow 0.7s ease'
     };
+
+
+
+
+
 
     return (
         <Card
             style={cardStyle}
             onClick={() => {
-                handleDeckClick();
-                triggerAnimation();
+                handleDeckClick()
             }}
             className={isCardMoving ? styles.spinAndGrowAnimation : ''}
         >
