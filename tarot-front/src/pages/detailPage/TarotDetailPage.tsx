@@ -14,8 +14,14 @@ import {Fortune, TarotData} from "../../data/TarotTypes";
 import {Card, Modal, Typography} from "@mui/material";
 
 function TarotDetailPage() {
-    const [tarotCards] = useState<TarotData['tarotCards']>(tarotData.tarotCards);
-    const [fortunes] = useState<TarotData['fortunes']>(tarotData.fortunes);
+    // const [tarotCards] = useState<TarotData['tarotCards']>(tarotData.tarotCards);
+    // const [fortunes] = useState<TarotData['fortunes']>(tarotData.fortunes);
+    const [tarotCards, setTarotCards] = useState([]);
+    const [fortunes, setFortunes] = useState([]);
+    const [fetchError, setFetchError] = useState(null); // 서버에서 데이터를 가져오는 도중 발생하는 오류를 위한 상태
+
+
+
     const [selectedFortune, setSelectedFortune] = useState(fortunes[0]?.value || '');
     const [showModal, setShowModal] = useState(false); // 모달 창 표시 상태
     // "+" 버튼 클릭 시 모달 창을 띄우는 함수
@@ -52,14 +58,38 @@ function TarotDetailPage() {
     const [selectedCards, setSelectedCards] = useState<string[]>([]);
     const [isCardMoving, setIsCardMoving] = useState(false);
     const navigate = useNavigate();
-
     useEffect(() => {
-        // 초기 선택된 운세 및 상세 정보 설정
-        if (fortunes && fortunes.length > 0) {
-            setSelectedFortune(fortunes[0]?.value || '');
-            setSelectedFortuneDetails(fortunes[0] || defaultFortuneDetails);
-        }
-    }, [fortunes]);
+        const fetchData = async () => {
+            try {
+                const response = await fetch('/api/api-test');
+                if (!response.ok) {
+                    throw new Error("서버에서 데이터를 가져오는 데 실패했습니다.");
+                }
+                const data = await response.json();
+                setTarotCards(data.response.tarotCards);
+                setFortunes(data.response.fortunes);
+
+                // API 호출 완료 후 초기 타로 및 상세 정보 설정
+                if (data.response.fortunes && data.response.fortunes.length > 0) {
+                    const initialFortune = data.response.fortunes[0];
+                    setSelectedFortune(initialFortune.value);
+                    setSelectedFortuneDetails(initialFortune);
+                }
+            } catch (error) {
+                setFetchError(error.message);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    // useEffect(() => {
+    //     // 초기 선택된 운세 및 상세 정보 설정
+    //     if (fortunes && fortunes.length > 0) {
+    //         setSelectedFortune(fortunes[0]?.value || '');
+    //         setSelectedFortuneDetails(fortunes[0] || defaultFortuneDetails);
+    //     }
+    // }, [fortunes]);
 
 
 

@@ -1,10 +1,16 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  // server: {
-  //   host: true // 모든 네트워크 인터페이스를 듣도록 설정
-  // }
-})
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://api.tarotmate.kr',
+        changeOrigin: true, // 서버에 대한 요청에서 origin 헤더를 변경
+        secure: false, // https 사용 시 SSL 검증을 건너뜁니다 (개발용)
+        rewrite: (path) => path.replace(/^\/api/, '') // 경로 재작성
+      }
+    }
+  }
+});
