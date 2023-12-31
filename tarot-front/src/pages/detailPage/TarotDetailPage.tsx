@@ -10,19 +10,16 @@ import SelectedCards from "./components/SelectedCards";
 import LoadingComponent from "./components/LoadingComponent";
 import styles from './TarotDetailPage.module.css';
 import tarotData from '../../data/TarotData.json';
-import {Fortune, TarotData} from "../../data/TarotTypes";
+import {Fortune, TarotCard, TarotData} from "../../data/TarotTypes";
 import {Card, Modal, Typography} from "@mui/material";
 
 function TarotDetailPage() {
-    // const [tarotCards] = useState<TarotData['tarotCards']>(tarotData.tarotCards);
-    // const [fortunes] = useState<TarotData['fortunes']>(tarotData.fortunes);
-    const [tarotCards, setTarotCards] = useState([]);
-    const [fortunes, setFortunes] = useState([]);
+    const [tarotCards, setTarotCards] = useState<TarotCard[]>([]);
+    const [fortunes, setFortunes] = useState<Fortune[]>([]);
     const [fetchError, setFetchError] = useState(null); // 서버에서 데이터를 가져오는 도중 발생하는 오류를 위한 상태
 
 
-
-    const [selectedFortune, setSelectedFortune] = useState(fortunes[0]?.value || '');
+    const [selectedFortune, setSelectedFortune] = useState('');
     const [showModal, setShowModal] = useState(false); // 모달 창 표시 상태
     // "+" 버튼 클릭 시 모달 창을 띄우는 함수
     const openModal = () => {
@@ -77,6 +74,7 @@ function TarotDetailPage() {
                 }
             } catch (error) {
                 setFetchError(error.message);
+                console.log(fetchError);
             }
         };
 
@@ -206,6 +204,9 @@ function TarotDetailPage() {
                 <div className={styles.loadingContainer}>
                     <LoadingComponent /> {/* 로딩 인디케이터 컴포넌트 */}
                 </div>
+            )}
+            {fetchError && (
+                <div className="error-message">{fetchError}</div>
             )}
             {error && (
                 <div className={styles.errorMessage}>

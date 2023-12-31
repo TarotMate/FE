@@ -23,7 +23,6 @@ const CardDeck: React.FC<CardDeckProps> = ({ handleDeckClick, isCardMoving, card
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        transformStyle: 'preserve-3d',
         transform: isCardMoving ? 'scale(1.5)' : 'none', // isCardMoving 상태에 따라 transform 스타일이 결정됩니다.
         transition: 'transform 0.7s ease, box-shadow 0.7s ease'
     };
