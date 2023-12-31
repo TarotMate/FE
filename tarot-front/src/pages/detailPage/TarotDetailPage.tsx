@@ -50,7 +50,9 @@ function TarotDetailPage() {
     const [cardBackImage] = useState(tarotData.cardBackImage);
     // 기존 상태
     const [isLoading, setIsLoading] = useState(false);
+    // 상태 정의 부분
     const [error, setError] = useState<string | null>(null);
+
 
     const [selectedCards, setSelectedCards] = useState<string[]>([]);
     const [isCardMoving, setIsCardMoving] = useState(false);
@@ -139,7 +141,12 @@ function TarotDetailPage() {
             setError(null);
             try {
                 const result = await processTarotRequest(selectedCards);
-                navigate('/result', { state: { resultData: result.choices } });
+                if (result) {
+                    navigate('/result', { state: { resultData: result.choices } });
+                } else {
+                    // result가 없는 경우 처리 로직
+                    setError('결과를 가져오는 데 실패했습니다.');
+                }
             } catch (error: any) {
                 setError(error.message);
                 console.error('Error fetching GPT response:', error);
@@ -190,7 +197,11 @@ function TarotDetailPage() {
         setIsLoading(true);
         try {
             const result = await processTarotRequest(selectedCards);
-            navigate('/result', { state: { resultData: result.choices } });
+            if (result) {
+                navigate('/result', { state: { resultData: result.choices } });
+            } else {
+                setError('결과를 가져오는 데 실패했습니다.');
+            }
         } catch (error: any) {
             setError(error.message);
             console.error('Error fetching GPT response:', error);
