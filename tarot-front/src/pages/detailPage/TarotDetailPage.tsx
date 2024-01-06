@@ -11,7 +11,7 @@ import LoadingComponent from "./components/LoadingComponent";
 import styles from './TarotDetailPage.module.css';
 import tarotData from '../../data/TarotData.json';
 import {Fortune, TarotCard} from "../../data/TarotTypes";
-import {Card, Modal, Typography} from "@mui/material";
+import {Card, Modal, Tooltip, Typography} from "@mui/material";
 
 function TarotDetailPage() {
     const [tarotCards, setTarotCards] = useState<TarotCard[]>([]);
@@ -203,6 +203,11 @@ function TarotDetailPage() {
     const handleRetry = () => {
         retryData();
     };
+    const currentCardIndex = selectedCards.length;
+    const isAllCardsSelected = currentCardIndex === activeDescription.cardDescriptions.length;
+    const currentCardDescription = isAllCardsSelected ?
+        "모든 카드를 선택하셨습니다." :
+        activeDescription.cardDescriptions[currentCardIndex];
 
     return (
         <div className={styles.pageContainer}>
@@ -229,9 +234,6 @@ function TarotDetailPage() {
                     fortunes={fortunes}
                 />
 
-                {selectedFortuneDetails.descriptions.length > 1 && (
-                    <button onClick={openModal}>+</button>
-                )}
                 {showModal && (
                     <Modal open={showModal} onClose={() => setShowModal(false)}>
                         <div className={styles.modalStyle}>
@@ -243,8 +245,46 @@ function TarotDetailPage() {
                         </div>
                     </Modal>
                 )}
+                <div style={{ marginTop: '20px', marginBottom: '20px' }}>
 
                 <DisplayTextForSelectedTab title={activeDescription.title} subtitle={activeDescription.subtitle} />
+                </div>
+                <div className={styles.cardDeckArea}>
+                    <CardDeck
+                        handleDeckClick={handleDeckClick}
+                        isCardMoving={isCardMoving}
+                        cardBackImage={cardBackImage}
+                    />
+                </div>
+                {!isAllCardsSelected && (
+                    <>
+                        <h3>카드를 눌러주세요</h3>
+                        <span>{currentCardDescription}에 대한 카드를 뽑겠습니다.</span>
+                    </>
+                )}
+                {isAllCardsSelected && (
+                    <span>{currentCardDescription}</span>
+                )}
+                {selectedFortuneDetails.descriptions.length > 1 && (
+                    <Tooltip title="더 많은 타로 설명 보기" placement="right">
+                        <button
+                            onClick={openModal}
+                            style={{
+                                backgroundColor: '#fff', // 배경색
+                                color: '#1976d2', // 텍스트 색상
+                                border: 'none', // 테두리 없음
+                                borderRadius: '4px', // 둥근 모서리
+                                padding: '10px 20px', // 내부 패딩
+                                margin: '5px', // 여백
+                                boxShadow: '0px 2px 4px rgba(0,0,0,0.2)', // 그림자 효과
+                                cursor: 'pointer', // 마우스 커서 변경
+                                transition: 'background-color 0.3s ease', // 배경색 변경시 부드러운 전환 효과
+                            }}
+                        >
+                            <span style={{ marginLeft: '5px' }}>다른 운세 보기</span>
+                        </button>
+                    </Tooltip>
+                )}
                 <div className={styles.cardSelectionArea}>
                     <SelectedCards
                         cardDescriptions={activeDescription.cardDescriptions}
@@ -252,14 +292,6 @@ function TarotDetailPage() {
                         tarotCards={tarotCards}
                     />
                 </div>
-                <div className={styles.cardDeckArea}>
-                <CardDeck
-                    handleDeckClick={handleDeckClick}
-                    isCardMoving={isCardMoving}
-                    cardBackImage={cardBackImage}
-                />
-                </div>
-
                 <Card
                     style={{
                         backgroundColor: '#424242', // 짙은 회색 배경
@@ -283,7 +315,6 @@ function TarotDetailPage() {
                         개인정보보호정책에 의해 보호받고 있습니다
                     </Typography>
                 </Card>
-
                 <div className={styles.controlButtonArea}>
                 <ControlButtons
                         handleReset={handleReset}
