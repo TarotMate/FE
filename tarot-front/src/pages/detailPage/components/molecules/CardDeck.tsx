@@ -16,8 +16,8 @@ const CardDeck: React.FC<CardDeckProps> = ({ handleDeckClick, isCardMoving, card
         perspective: '1000px',
         cursor: 'pointer',
         margin: '10px',
-        width: '120px',
-        height: '180px',
+        width: '150px', // 너비 조정
+        height: '260px', // 높이 조정
         borderRadius: '15px',
         boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
         display: 'flex',

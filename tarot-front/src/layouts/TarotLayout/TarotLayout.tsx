@@ -5,9 +5,9 @@ import {Box} from '@mui/material';
 import React from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-interface MainLayoutProps {
+interface TarotMainLayoutProps {
     children?: React.ReactNode;
-    location?: any; // Add any other props you expect
+    location?: any;
 }
 
 // MUI 테마 생성
@@ -22,7 +22,7 @@ const theme = createTheme({
 });
 
 
-const TarotLayout: React.FC<MainLayoutProps> = (props) => {
+const TarotLayout: React.FC<TarotMainLayoutProps> = (props) => {
     return (
         <ThemeProvider theme={theme}>
             <Box sx={{

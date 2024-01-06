@@ -11,6 +11,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import {NavLink} from "react-router-dom";
+import NavLinksInfo from "../NavLinksInfo";
 
 function TarotHeader() {
     const theme = useTheme();
@@ -31,15 +32,15 @@ function TarotHeader() {
     };
 
 
-    const navLinks = ['Home', 'Login'];
+
 
     const mobileMenu = (
         <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
             <List>
-                {navLinks.map((text) => (
-                    <ListItem key={text} onClick={toggleDrawer(false)}>
-                        <NavLink to={`/${text.toLowerCase()}`}>
-                            <ListItemText primary={text} />
+                {NavLinksInfo.map(({ title, path }) => (
+                    <ListItem key={title} onClick={toggleDrawer(false)}>
+                        <NavLink to={path}>
+                            <ListItemText primary={title} />
                         </NavLink>
                     </ListItem>
                 ))}
@@ -79,9 +80,9 @@ function TarotHeader() {
                     </IconButton>
                 ) : (
                     <div>
-                        {navLinks.map((text) => (
-                            <Link color="inherit" href={`/${text.toLowerCase()}`} key={text}>
-                            <Button color="inherit">{text}</Button>
+                        {NavLinksInfo.map(({ title, path }) => (
+                            <Link color="inherit" href={path} key={title}>
+                                <Button color="inherit">{title}</Button>
                             </Link>
                         ))}
                     </div>
