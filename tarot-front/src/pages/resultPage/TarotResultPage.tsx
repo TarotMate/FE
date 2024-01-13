@@ -9,7 +9,7 @@ const TarotResultPage = () => {
 
     return (
         <div className={styles.pageContainer}>
-            {resultData && resultData.fortune && resultData.fortune.map((card, index) => (
+            {resultData && resultData.fortune.map((card: any, index:any) => (
                 <Card key={index} className={styles.resultCard}>
                     <CardContent>
                         <Typography variant="h5" className={styles.title}>{card.cardName}</Typography>
@@ -21,7 +21,6 @@ const TarotResultPage = () => {
                                 <li key={tagIndex}>{tag}</li>
                             ))}
                         </ul>
-                        {card.cardImage && <img src={card.cardImage} alt={card.cardName} className={styles.cardImage} />}
                     </CardContent>
                 </Card>
             ))}

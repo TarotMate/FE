@@ -1,6 +1,5 @@
 /* TarotDetailPage.tsx */
 import {useCallback, useEffect, useState} from "react";
-import { gptTarot, CallGptResponse } from "../../utils/gptTarot/getTarot";
 import {useNavigate} from "react-router-dom";
 import DisplayTextForSelectedTab from "./components/DisplayTextForSelectedTab";
 import ControlButtons from "./components/ControlButtons";
