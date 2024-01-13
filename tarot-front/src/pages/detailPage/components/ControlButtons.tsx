@@ -39,7 +39,7 @@ const ControlButtons: React.FC<ControlButtonsProps> = ({ handleReset, handleButt
                 sx={{backgroundColor:'#fff854', color:'#1f2024', fontWeight:'bold'}}
                 onClick={handleButtonClick}
                 style={buttonStyle}
-                disabled={isButtonDisabled || isLoading}
+                disabled={isButtonDisabled || isLoading || selectedCards.length === 0}
             >
                 타로하기
             </Button>

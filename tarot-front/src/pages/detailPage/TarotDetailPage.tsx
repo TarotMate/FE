@@ -12,6 +12,7 @@ import styles from './TarotDetailPage.module.css';
 import tarotData from '../../data/TarotData.json';
 import {Fortune, TarotCard} from "../../data/TarotTypes";
 import {Card, Modal, Tooltip, Typography} from "@mui/material";
+import {gptTarotNew} from "../../utils/gptTarot/gptTarotNew";
 
 function TarotDetailPage() {
     const [tarotCards, setTarotCards] = useState<TarotCard[]>([]);
@@ -59,8 +60,9 @@ function TarotDetailPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const url = import.meta.env.VITE_TAROT_API_URL+"/api-test";
+                const url = import.meta.env.VITE_TAROT_API_URL+"/init";
                 const response = await fetch(url);
+
                 if (!response.ok) {
                     throw new Error("서버에서 데이터를 가져오는 데 실패했습니다.");
                 }
@@ -97,24 +99,38 @@ function TarotDetailPage() {
     }, []);
 
 // 공통 로직: 타로 카드 번호 추출 및 요청 보내기
+
     const processTarotRequest = async (selectedCards: string[]) => {
+        // 요청에 필요한 카드 번호 추출
         const selectedCardNumbers = selectedCards.map(cardName => {
             const card = tarotCards.find(tarotCard => tarotCard.name === cardName);
             return card ? card.number : null;
-        }).filter(number => number !== null); // null 값 제거
-
-        const tarotRequest: { cardDescriptions: string[]; fortuneType: string; subtitle: string; selectedCardNumbers: (number | null)[]; title: string } = {
-            fortuneType: selectedFortuneDetails.value,
-            title: activeDescription.title,
-            subtitle: activeDescription.subtitle,
-            cardDescriptions: activeDescription.cardDescriptions,
-            selectedCardNumbers
+        }).filter(number => number !== null);
+        //
+        // // 요청 객체 구성
+        const tarotRequest = {
+            fortuneType: selectedFortuneDetails.label,
+            theme: activeDescription.title,
+            selectedCardNumbers,
+            cardDescriptions: activeDescription.cardDescriptions
         };
 
+        const testRequestData = {
+            fortuneType: "연애타로",
+            theme: "사랑의 길을 밝혀주는 별빛",
+            selectedCardNumbers: [7, 15, 21],
+            cardDescriptions: ["심장의 메시지", "새로운 인연", "애정의 조화와 갈등"]
+        };
+        console.log(testRequestData);
+        console.log(tarotRequest);
+
         try {
-            const result: CallGptResponse = await gptTarot(tarotRequest);
+            // gptTarotNew 함수를 사용하여 서버 요청
+            const result = await gptTarotNew(tarotRequest);
+            console.log(result)
             return result;
         } catch (error) {
+            // 오류 처리
             if (error instanceof Error) {
                 setError(error.message);
             } else {
@@ -123,6 +139,7 @@ function TarotDetailPage() {
         }
     };
 
+
     const handleButtonClick = useCallback(async () => {
         if (selectedCards.length === activeDescription.cardDescriptions.length) {
             setIsLoading(true);
@@ -130,7 +147,7 @@ function TarotDetailPage() {
             try {
                 const result = await processTarotRequest(selectedCards);
                 if (result) {
-                    navigate('/result', { state: { resultData: result.choices } });
+                    navigate('/result', { state: { resultData: result.response } });
                 } else {
                     // result가 없는 경우 처리 로직
                     setError('결과를 가져오는 데 실패했습니다.');

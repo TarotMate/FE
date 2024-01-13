@@ -38,3 +38,36 @@
 .action {
     margin-top: 10px;
 }
+
+.detail {
+    color: #000000; /* 어두운 글씨색 */
+    margin-top: 10px; /* 상단 여백 */
+    font-size: 1rem; /* 폰트 크기 */
+}
+
+.hashTags {
+    list-style: none; /* 리스트 기본 스타일 제거 */
+    padding: 0; /* 내부 여백 제거 */
+    display: flex; /* 가로로 나열 */
+    flex-wrap: wrap; /* 내용이 넘칠 경우 줄 바꿈 */
+    gap: 10px; /* 간격 설정 */
+    margin-top: 10px; /* 상단 여백 */
+}
+
+.hashTags li {
+    background-color: #d4af37; /* 배경색 */
+    color: #000000; /* 글씨색 */
+    padding: 5px 10px; /* 내부 여백 */
+    border-radius: 5px; /* 모서리 둥글게 */
+}
+.comment {
+    margin: 10px 0;
+    font-style: italic;
+    color: #d4af37;
+}
+
+.cardImage {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+}
