@@ -1,6 +1,14 @@
 const API_URL = import.meta.env.VITE_TAROT_API_URL;
 
-export async function gptTarotNew(requestData) {
+type RequestData = {
+    fortuneType: string;
+    theme: string;
+    selectedCardNumbers: number[];
+    cardDescriptions: string[];
+};
+
+
+export async function gptTarotNew(requestData: RequestData) {
     try {
         const response = await fetch(`${API_URL}/tarot`, {
             method: 'POST',
