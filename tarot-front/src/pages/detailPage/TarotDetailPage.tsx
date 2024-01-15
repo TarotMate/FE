@@ -100,13 +100,13 @@ function TarotDetailPage() {
 // 공통 로직: 타로 카드 번호 추출 및 요청 보내기
 
     const processTarotRequest = async (selectedCards: string[]) => {
-        // 요청에 필요한 카드 번호 추출
+        // Extract card numbers, filtering out null values
         const selectedCardNumbers = selectedCards.map(cardName => {
             const card = tarotCards.find(tarotCard => tarotCard.name === cardName);
             return card ? card.number : null;
-        }).filter(number => number !== null);
-        //
-        // // 요청 객체 구성
+        }).filter((number): number is number => number !== null);
+
+        // Construct request object
         const tarotRequest = {
             fortuneType: selectedFortuneDetails.label,
             theme: activeDescription.title,
