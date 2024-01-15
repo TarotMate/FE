@@ -114,15 +114,6 @@ function TarotDetailPage() {
             cardDescriptions: activeDescription.cardDescriptions
         };
 
-        const testRequestData = {
-            fortuneType: "연애타로",
-            theme: "사랑의 길을 밝혀주는 별빛",
-            selectedCardNumbers: [7, 15, 21],
-            cardDescriptions: ["심장의 메시지", "새로운 인연", "애정의 조화와 갈등"]
-        };
-        console.log(testRequestData);
-        console.log(tarotRequest);
-
         try {
             // gptTarotNew 함수를 사용하여 서버 요청
             const result = await gptTarotNew(tarotRequest);

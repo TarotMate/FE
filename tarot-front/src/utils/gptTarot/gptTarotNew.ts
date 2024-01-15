@@ -30,7 +30,12 @@ export async function gptTarotNew(requestData: RequestData) {
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error during fetch operation:', error.message);
+        // Check if error is an instance of Error
+        if (error instanceof Error) {
+            console.error('Error during fetch operation:', error.message);
+        } else {
+            console.error('A non-error object was thrown during fetch operation');
+        }
         throw new Error('Error fetching tarot data');
     }
 }
