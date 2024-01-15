@@ -6,7 +6,6 @@ export interface TarotCard {
 
 export interface FortuneDescription {
     title: string;
-    subtitle: string;
     cardDescriptions: string[];
 }
 

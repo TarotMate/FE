@@ -36,7 +36,6 @@ function TarotDetailPage() {
         value: "",
         descriptions: [{
             title: "",
-            subtitle: "",
             cardDescriptions: []
         }],
         activeDescriptionIndex: 0 // Initialize with 0
@@ -254,7 +253,16 @@ function TarotDetailPage() {
                 )}
                 <div style={{ marginTop: '20px', marginBottom: '20px' }}>
 
-                <DisplayTextForSelectedTab title={activeDescription.title} subtitle={activeDescription.subtitle} />
+                <DisplayTextForSelectedTab title={activeDescription.title} />
+                    {!isAllCardsSelected && (
+                        <>
+                            <h3>카드를 눌러주세요</h3>
+                            <span>{currentCardDescription}에 대한 카드를 뽑겠습니다.</span>
+                        </>
+                    )}
+                    {isAllCardsSelected && (
+                        <span>{currentCardDescription}</span>
+                    )}
                 </div>
                 <div className={styles.cardDeckArea}>
                     <CardDeck
@@ -263,15 +271,7 @@ function TarotDetailPage() {
                         cardBackImage={cardBackImage}
                     />
                 </div>
-                {!isAllCardsSelected && (
-                    <>
-                        <h3>카드를 눌러주세요</h3>
-                        <span>{currentCardDescription}에 대한 카드를 뽑겠습니다.</span>
-                    </>
-                )}
-                {isAllCardsSelected && (
-                    <span>{currentCardDescription}</span>
-                )}
+
                 {selectedFortuneDetails.descriptions.length > 1 && (
                     <Tooltip title="더 많은 타로 설명 보기" placement="right">
                         <button
