@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
+import {cardBackImage} from "../../data/constants";
 
 // 타입 정의
 type SelectedCard = {

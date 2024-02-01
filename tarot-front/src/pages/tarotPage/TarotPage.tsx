@@ -2,7 +2,7 @@ import React from 'react';
 // 필요한 추가 컴포넌트를 임포트
 import TarotReadingSection from '../../components/TarotReadingSection';
 import TarotMateBanner from "./components/organisms/TarotMateBanner";
-import UserQuestionSection from "../../components/UserQuestionSection";
+
 
 const TarotPage: React.FC = () => {
     return (

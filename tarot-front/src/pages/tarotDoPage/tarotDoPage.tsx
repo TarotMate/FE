@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { gptTarotNew } from "../../utils/gptTarot/gptTarotNew";
 import LoadingComponent from "../detailPage/components/LoadingComponent";
@@ -13,7 +13,7 @@ const TarotDoPage = () => {
     const [fetchError, setFetchError] = useState('');
     const [isLoading, setIsLoading] = useState(false); // 데이터 로딩 상태 추가
 
-    const [buttonLoading, setButtonLoading] = useState(false);
+    const [buttonLoading] = useState(false);
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
