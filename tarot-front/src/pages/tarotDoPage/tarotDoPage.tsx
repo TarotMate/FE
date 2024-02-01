@@ -64,23 +64,23 @@ const TarotDoPage = () => {
     };
 
     const processTarotRequest = async () => {
-        setIsLoading(true); // 로딩 시작
         if (selectedCards.length === 0) return;
 
-        // selectedCards 배열에서 카드의 번호를 추출하는 로직 수정
+        setIsLoading(true); // 사용자가 결과 보기를 클릭하면 로딩 시작
+        setError(''); // 기존 에러 메시지 초기화
+
+        // selectedCards 배열에서 카드의 번호를 추출하는 로직
         const selectedCardNumbers = selectedCards.map(card => {
-            // selectedCards가 카드의 이름을 담고 있다고 가정할 때
             const foundCard = tarotCards.find(tarotCard => tarotCard.name === card.name);
             return foundCard ? foundCard.number : null;
-        }).filter(number => number !== null); // null 값을 제거하여 유효한 번호만 남깁니다.
+        }).filter(number => number !== null);
 
         if (selectedCardNumbers.length === 0) {
             console.error("No valid card numbers found.");
+            setIsLoading(false); // 유효한 카드 번호가 없으면 로딩 종료
             return;
         }
 
-        setButtonLoading(true);
-        setError('');
         try {
             const result = await gptTarotNew({
                 fortuneType: selectedMajor,
@@ -88,19 +88,16 @@ const TarotDoPage = () => {
                 selectedCardNumbers: selectedCardNumbers,
                 cardDescriptions: fortunes.find(fortune => fortune.label === selectedMajor)?.descriptions.find(desc => desc.title === selectedMinor)?.cardDescriptions || [],
             });
-            // navigate('/tarot/result', { state: { resultData: result } });
-            // 선택한 카드의 이름과 이미지 URL을 포함하여 결과 페이지로 전달
             navigate('/tarot/result', {
                 state: {
                     resultData: result,
                     selectedCards: selectedCards.map(card => ({ name: card.name, image: card.image || cardBackImage })) // card.image가 없을 경우 대체 이미지 사용
                 }
             });
-            setIsLoading(false); // 로딩 시작
         } catch (error) {
             setError(error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.');
         } finally {
-            setButtonLoading(false);
+            setIsLoading(false); // 요청이 완료되면 로딩 종료
         }
     };
 
