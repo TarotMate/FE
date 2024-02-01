@@ -1,33 +1,26 @@
 import './App.css'
-import {allRoutes} from "./routes/routes";
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {CircularProgress} from "@mui/material";
-import React, { Suspense } from 'react';
-import TarotLayout from "./layouts/TarotLayout/TarotLayout";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import MainLayout from './layouts/MainLayout/MainLayout';
+import TarotPage from './pages/TarotPage/TarotPage';
+import TarotDetailPage from "./pages/detailPage/TarotDetailPage";
+import TarotResultPage from "./pages/resultPage/TarotResultPage";
+import TarotDoPage from "./pages/tarotDoPage/tarotDoPage";
+import TarotDoResultPage from "./pages/tarotDoPage/TarotDoResultPage";
 
-function App() {
+
+const App = () => {
     return (
-        <>
-            <React.Fragment>
-                <BrowserRouter>
-                    <Suspense fallback={<CircularProgress />}>
-                        <Routes>
-                            {allRoutes.map((route, idx) => {
-                                const RouteLayout = route.layout || TarotLayout;
-                                return (
-                                    <Route
-                                        path={route.path}
-                                        element={<RouteLayout>{route.component}</RouteLayout>}
-                                        key={idx}
-                                    />
-                                );
-                            })}
-                        </Routes>
-                    </Suspense>
-                </BrowserRouter>
-            </React.Fragment>
-        </>
-    )
-}
+        <Router>
+            <MainLayout>
+                <Routes>
+                    <Route path="/" element={<TarotPage />} />
+                    <Route path="/tarot" element={<TarotDoPage />} />
+                    <Route path="/tarot/result" element={<TarotDoResultPage />} />
+                </Routes>
+            </MainLayout>
+        </Router>
+    );
+};
 
-export default App
+export default App;

@@ -116,7 +116,6 @@ function TarotDetailPage() {
         try {
             // gptTarotNew 함수를 사용하여 서버 요청
             const result = await gptTarotNew(tarotRequest);
-            console.log(result)
             return result;
         } catch (error) {
             // 오류 처리
@@ -136,7 +135,7 @@ function TarotDetailPage() {
             try {
                 const result = await processTarotRequest(selectedCards);
                 if (result) {
-                    navigate('/result', { state: { resultData: result.response } });
+                    navigate('/tarot/result', { state: { resultData: result } });
                 } else {
                     // result가 없는 경우 처리 로직
                     setError('결과를 가져오는 데 실패했습니다.');
@@ -192,7 +191,7 @@ function TarotDetailPage() {
         try {
             const result = await processTarotRequest(selectedCards);
             if (result) {
-                navigate('/result', { state: { resultData: result.choices } });
+                navigate('/tarot/result', { state: { resultData: result.choices } });
             } else {
                 setError('결과를 가져오는 데 실패했습니다.');
             }
@@ -252,11 +251,30 @@ function TarotDetailPage() {
                     </Modal>
                 )}
                 <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-
+                    {selectedFortuneDetails.descriptions.length > 1 && (
+                        <Tooltip title="더 많은 타로 설명 보기" placement="right">
+                            <button
+                                onClick={openModal}
+                                style={{
+                                    backgroundColor: '#fff', // 배경색
+                                    color: '#1976d2', // 텍스트 색상
+                                    border: 'none', // 테두리 없음
+                                    borderRadius: '4px', // 둥근 모서리
+                                    padding: '10px 20px', // 내부 패딩
+                                    margin: '5px', // 여백
+                                    boxShadow: '0px 2px 4px rgba(0,0,0,0.2)', // 그림자 효과
+                                    cursor: 'pointer', // 마우스 커서 변경
+                                    transition: 'background-color 0.3s ease', // 배경색 변경시 부드러운 전환 효과
+                                }}
+                            >
+                                <span style={{ marginLeft: '5px' }}>운세 주제 정하기</span>
+                            </button>
+                        </Tooltip>
+                    )}
                 <DisplayTextForSelectedTab title={activeDescription.title} />
                     {!isAllCardsSelected && (
                         <>
-                            <h3>카드를 눌러주세요</h3>
+
                             <span>{currentCardDescription}에 대한 카드를 뽑겠습니다.</span>
                         </>
                     )}
@@ -264,34 +282,15 @@ function TarotDetailPage() {
                         <span>{currentCardDescription}</span>
                     )}
                 </div>
+                <h3>카드를 눌러주세요</h3>
                 <div className={styles.cardDeckArea}>
+
                     <CardDeck
                         handleDeckClick={handleDeckClick}
                         isCardMoving={isCardMoving}
                         cardBackImage={cardBackImage}
                     />
                 </div>
-
-                {selectedFortuneDetails.descriptions.length > 1 && (
-                    <Tooltip title="더 많은 타로 설명 보기" placement="right">
-                        <button
-                            onClick={openModal}
-                            style={{
-                                backgroundColor: '#fff', // 배경색
-                                color: '#1976d2', // 텍스트 색상
-                                border: 'none', // 테두리 없음
-                                borderRadius: '4px', // 둥근 모서리
-                                padding: '10px 20px', // 내부 패딩
-                                margin: '5px', // 여백
-                                boxShadow: '0px 2px 4px rgba(0,0,0,0.2)', // 그림자 효과
-                                cursor: 'pointer', // 마우스 커서 변경
-                                transition: 'background-color 0.3s ease', // 배경색 변경시 부드러운 전환 효과
-                            }}
-                        >
-                            <span style={{ marginLeft: '5px' }}>다른 운세 보기</span>
-                        </button>
-                    </Tooltip>
-                )}
                 <div className={styles.cardSelectionArea}>
                     <SelectedCards
                         cardDescriptions={activeDescription.cardDescriptions}
