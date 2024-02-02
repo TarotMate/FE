@@ -5,11 +5,34 @@ import LoadingComponent from "../detailPage/components/LoadingComponent";
 import {cardBackImage} from "../../data/constants";
 
 const TarotDoPage = () => {
-    const [tarotCards, setTarotCards] = useState([]);
-    const [fortunes, setFortunes] = useState([]);
+
+    interface TarotCard {
+        name: string;
+        number?: number;
+        image?: string;
+        description?: string;
+    }
+
+    interface Fortune {
+        label: string;
+        descriptions: Description[];
+    }
+
+    interface Description {
+        title: string;
+        cardDescriptions?: string[]; // Adjust based on your actual data structure
+    }
+
+
+    const [tarotCards, setTarotCards] = useState<TarotCard[]>([]);
+    const [fortunes, setFortunes] = useState<Fortune[]>([]);
+    const [selectedCards, setSelectedCards] = useState<TarotCard[]>([]);
+
+
+
     const [selectedMajor, setSelectedMajor] = useState('');
     const [selectedMinor, setSelectedMinor] = useState('');
-    const [selectedCards, setSelectedCards] = useState([]);
+
     const [fetchError, setFetchError] = useState('');
     const [isLoading, setIsLoading] = useState(false); // 데이터 로딩 상태 추가
 
@@ -19,7 +42,8 @@ const TarotDoPage = () => {
     const navigate = useNavigate();
 
     const fetchData = async () => {
-        setIsLoading(true); // 로딩 시작
+        setIsLoading(true);
+        // 로딩 시작
         try {
             const url = `${import.meta.env.VITE_TAROT_API_URL}/init`;
             const response = await fetch(url);
@@ -27,8 +51,9 @@ const TarotDoPage = () => {
             const data = await response.json();
 
             // 데이터 설정
-            setTarotCards(data.response.tarotCards);
-            setFortunes(data.response.fortunes);
+            setTarotCards(data.response.tarotCards as TarotCard[]);
+            setFortunes(data.response.fortunes as Fortune[]);
+
 
             // 자동으로 첫 번째 대분류 선택
             if (data.response.fortunes.length > 0) {
