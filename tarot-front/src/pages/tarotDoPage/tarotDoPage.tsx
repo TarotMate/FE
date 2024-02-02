@@ -3,26 +3,28 @@ import { useNavigate } from 'react-router-dom';
 import { gptTarotNew } from "../../utils/gptTarot/gptTarotNew";
 import LoadingComponent from "../detailPage/components/LoadingComponent";
 import {cardBackImage} from "../../data/constants";
-import {Fortune} from "../../data/TarotTypes";
+
+interface TarotCard {
+    name: string;
+    number?: number;
+    image?: string;
+    description?: string;
+}
+
+interface Fortune {
+    label: string;
+    value: string;
+    descriptions: FortuneDescription[]; // 변경된 부분
+    activeDescriptionIndex?: number; // 현재 활성화된 설명의 인덱스
+
+}
+
+interface FortuneDescription {
+    title: string;
+    cardDescriptions: string[];
+}
 
 const TarotDoPage = () => {
-
-    interface TarotCard {
-        name: string;
-        number?: number;
-        image?: string;
-        description?: string;
-    }
-
-    interface Fortune {
-        label: string;
-        descriptions: Description[];
-    }
-
-    interface Description {
-        title: string;
-        cardDescriptions?: string[]; // Adjust based on your actual data structure
-    }
 
 
     const [tarotCards, setTarotCards] = useState<TarotCard[]>([]);
@@ -137,9 +139,6 @@ const TarotDoPage = () => {
             setIsLoading(false); // 요청이 완료되면 로딩 종료
         }
     };
-
-
-
 
     return (
         <div className="container mx-auto p-4">
