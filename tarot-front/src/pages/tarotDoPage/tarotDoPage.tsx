@@ -95,10 +95,10 @@ const TarotDoPage = () => {
         setError(''); // 기존 에러 메시지 초기화
 
         // selectedCards 배열에서 카드의 번호를 추출하는 로직
-        const selectedCardNumbers = selectedCards.map(card => {
+        const selectedCardNumbers: number[] = selectedCards.map(card => {
             const foundCard = tarotCards.find(tarotCard => tarotCard.name === card.name);
             return foundCard ? foundCard.number : null;
-        }).filter(number => number !== null);
+        }).filter((number): number is number => number !== null) as number[];
 
         if (selectedCardNumbers.length === 0) {
             console.error("No valid card numbers found.");
@@ -113,6 +113,7 @@ const TarotDoPage = () => {
                 selectedCardNumbers: selectedCardNumbers,
                 cardDescriptions: fortunes.find(fortune => fortune.label === selectedMajor)?.descriptions.find(desc => desc.title === selectedMinor)?.cardDescriptions || [],
             });
+
             navigate('/tarot/result', {
                 state: {
                     resultData: result,
