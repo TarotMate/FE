@@ -106,18 +106,18 @@ const TarotDoPage = () => {
             return;
         }
 
-        const cardDescriptions: string[] = fortunes
-            .find(fortune => fortune.label === selectedMajor)?.descriptions
-            .find(desc => desc.title === selectedMinor)?.cardDescriptions || [];
+        const tarotRequest = {
+            fortuneType: selectedMajor,
+            theme: selectedMinor,
+            selectedCardNumbers: selectedCardNumbers,
+            cardDescriptions: fortunes
+                .find(fortune => fortune.label === selectedMajor)?.descriptions
+                .find(desc => desc.title === selectedMinor)?.cardDescriptions
+        };
 
 
         try {
-            const result = await gptTarotNew({
-                fortuneType: selectedMajor,
-                theme: selectedMinor,
-                selectedCardNumbers: selectedCardNumbers,
-                cardDescriptions: cardDescriptions || [],
-            });
+            const result = await gptTarotNew(tarotRequest);
 
             navigate('/tarot/result', {
                 state: {
