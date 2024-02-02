@@ -116,7 +116,7 @@ const TarotDoPage = () => {
                 fortuneType: selectedMajor,
                 theme: selectedMinor,
                 selectedCardNumbers: selectedCardNumbers,
-                cardDescriptions: cardDescriptions,
+                cardDescriptions: cardDescriptions || [],
             });
 
             navigate('/tarot/result', {
