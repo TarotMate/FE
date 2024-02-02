@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { gptTarotNew } from "../../utils/gptTarot/gptTarotNew";
 import LoadingComponent from "../detailPage/components/LoadingComponent";
 import {cardBackImage} from "../../data/constants";
+import {Fortune} from "../../data/TarotTypes";
 
 const TarotDoPage = () => {
 
@@ -106,14 +107,19 @@ const TarotDoPage = () => {
             return;
         }
 
+        // fortunes가 undefined가 아니라면 선택적 체이닝과 논리 연산자를 사용하여 activeDescription 값을 설정
+        const activeDescription = fortunes
+            ?.find(fortune => fortune.label === selectedMajor)?.descriptions
+            .find(desc => desc.title === selectedMinor)?.cardDescriptions || []; // 찾고자 하는 값이 없을 경우 기본값으로 []
+
+        // tarotRequest 객체에 activeDescription 사용
         const tarotRequest = {
             fortuneType: selectedMajor,
             theme: selectedMinor,
             selectedCardNumbers: selectedCardNumbers,
-            cardDescriptions: fortunes
-                .find(fortune => fortune.label === selectedMajor)?.descriptions
-                .find(desc => desc.title === selectedMinor)?.cardDescriptions
+            cardDescriptions: activeDescription
         };
+
 
 
         try {
