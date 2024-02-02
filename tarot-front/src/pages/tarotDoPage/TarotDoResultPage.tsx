@@ -49,24 +49,43 @@ const TarotDoResultPage: React.FC = () => {
 
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">타로 결과</h1>
+        <div className="container mx-auto px-4 py-8 bg-[#FFF8F0]">
+            <h1 className="text-3xl font-bold mb-8 text-center text-[#333333]">타로 결과</h1>
             {fortune.map((card, index) => (
-                <div key={index} className="mb-4 p-4 rounded-lg shadow-lg bg-white">
-                    <h2 className="text-xl font-semibold">{card.cardName} - {card.cardDescription}</h2>
-                    <p className="text-sm">{card.shortComment}</p>
-                    <div className="text-gray-600">
-                        {card.hashTags.map((tag, idx) => (
-                            <span key={idx} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">#{tag}</span>
-                        ))}
+                <div key={index} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden md:flex md:h-auto">
+                    {/* 이미지 컨테이너에 고정된 비율을 적용하고, 이미지가 컨테이너를 꽉 채우도록 설정 */}
+                    <div className="md:flex-shrink-0 md:w-48 relative">
+                        <img src={card.cardImage || selectedCards.find(sc => sc.name === card.cardName)?.image || cardBackImage} alt={card.cardName} className="absolute inset-0 w-full h-full object-scale-down rounded-l-lg" />
                     </div>
-                    <p className="mt-2">{card.detail}</p>
-                    {/* 이미지가 있을 경우에만 표시, 없으면 selectedCards에서 찾아 대체 이미지 사용 */}
-                    <img src={card.cardImage || selectedCards.find(sc => sc.name === card.cardName)?.image || cardBackImage} alt={card.cardName} className="mt-2 max-w-xs" />
-                    <div className="mt-2">총점: {'★'.repeat(card.starRating)}</div>
+                    <div className="p-6 flex flex-col justify-between">
+                        <div>
+                            <h2 className="text-2xl font-bold text-[#333333] mb-2">당신이 뽑은 카드이름은 {card.cardName} 입니다.</h2>
+                            <p className="text-md text-[#555555] mb-4">타로 점 : {card.cardDescription}</p>
+                            <p className="text-sm text-[#666666] mb-2">요약: {card.shortComment}</p>
+                            <p className="text-sm text-[#666666]">내용: {card.detail}</p>
+                        </div>
+                        <div className="mt-4">
+                            <div className="flex items-center mb-4">
+                                <span className="text-lg font-medium mr-2">평점:</span>
+                                <span className="text-yellow-500">{Array(card.starRating).fill('★').join('')}</span>
+                                <span className="text-gray-300">{Array(5 - card.starRating).fill('★').join('')}</span>
+                            </div>
+                            <div className="flex flex-wrap">
+                                <span className="text-lg font-medium mr-2 mb-2">키워드:</span>
+                                {card.hashTags.map((tag, idx) => (
+                                    <span key={idx} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-medium text-gray-700 mr-2 mb-2">#{tag}</span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             ))}
         </div>
+
+
+
+
+
     );
 };
 
