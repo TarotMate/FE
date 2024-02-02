@@ -18,7 +18,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     return (
         <div className="flex flex-col min-h-screen">
             <MainHeader logo={logo} onMenuClick={handleMenuClick} />
-            <main className="flex-grow" style={{ marginTop: '60px' }}>{children}</main>
+            <main className="flex-grow">{children}</main>
             <MainFooter />
         </div>
     );

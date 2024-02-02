@@ -59,7 +59,7 @@ const TarotDoResultPage: React.FC = () => {
                     </div>
                     <div className="p-6 flex flex-col justify-between">
                         <div>
-                            <h2 className="text-2xl font-bold text-[#333333] mb-2">당신이 뽑은 카드이름은 {card.cardName} 입니다.</h2>
+                            <h2 className="text-2xl font-bold text-[#333333] mb-2">{card.cardName}</h2>
                             <p className="text-md text-[#555555] mb-4">타로 점 : {card.cardDescription}</p>
                             <p className="text-sm text-[#666666] mb-2">요약: {card.shortComment}</p>
                             <p className="text-sm text-[#666666]">내용: {card.detail}</p>
