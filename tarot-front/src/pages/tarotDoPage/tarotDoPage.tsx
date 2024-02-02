@@ -106,12 +106,17 @@ const TarotDoPage = () => {
             return;
         }
 
+        const cardDescriptions: string[] = fortunes
+            .find(fortune => fortune.label === selectedMajor)?.descriptions
+            .find(desc => desc.title === selectedMinor)?.cardDescriptions || [];
+
+
         try {
             const result = await gptTarotNew({
                 fortuneType: selectedMajor,
                 theme: selectedMinor,
                 selectedCardNumbers: selectedCardNumbers,
-                cardDescriptions: fortunes.find(fortune => fortune.label === selectedMajor)?.descriptions.find(desc => desc.title === selectedMinor)?.cardDescriptions || [],
+                cardDescriptions: cardDescriptions,
             });
 
             navigate('/tarot/result', {
