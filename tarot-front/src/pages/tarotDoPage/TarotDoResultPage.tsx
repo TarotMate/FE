@@ -53,9 +53,11 @@ const TarotDoResultPage: React.FC = () => {
             <h1 className="text-3xl font-bold mb-8 text-center text-[#333333]">타로 결과</h1>
             {fortune.map((card, index) => (
                 <div key={index} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden md:flex md:h-auto">
-                    {/* 이미지 컨테이너에 고정된 비율을 적용하고, 이미지가 컨테이너를 꽉 채우도록 설정 */}
-                    <div className="md:flex-shrink-0 md:w-48 relative">
-                        <img src={card.cardImage || selectedCards.find(sc => sc.name === card.cardName)?.image || cardBackImage} alt={card.cardName} className="absolute inset-0 w-full h-full object-scale-down rounded-l-lg" />
+                    {/* 이미지 컨테이너 정렬 조정 */}
+                    <div className="flex-shrink-0 w-full md:w-48 h-64 relative mx-auto">
+                        <img
+                            src={card.cardImage || selectedCards.find(sc => sc.name === card.cardName)?.image || cardBackImage}
+                            alt={card.cardName} className="w-full h-full object-contain rounded-l-lg"/>
                     </div>
                     <div className="p-6 flex flex-col justify-between">
                         <div>

@@ -139,99 +139,112 @@ const TarotDoPage = () => {
             setIsLoading(false); // 요청이 완료되면 로딩 종료
         }
     };
-
+    // 초기화 함수
+    const resetSelections = () => {
+        setSelectedCards([]);
+        // 필요하다면, 여기에 추가적인 상태 초기화 로직을 추가하세요.
+    };
     return (
-        <div className="container mx-auto p-4">
-            {isLoading && <LoadingComponent />} {/* 데이터 로딩 중 로더 표시 */}
+        <div className="container mx-auto px-4 py-8 bg-[#FFF8F0]">
+            {isLoading && <LoadingComponent/>}
             {fetchError && <p className="text-red-500">{fetchError}</p>}
 
-            <div className="flex flex-wrap items-end gap-4 mb-4">
-                {/* 대분류 선택 */}
-                <select
-                    className="p-2 border rounded"
-                    value={selectedMajor}
-                    onChange={(e) => {
-                        setSelectedMajor(e.target.value);
-                        setSelectedMinor(''); // 대분류를 변경하면 중분류 선택 초기화
-                    }}
-                >
-                    <option value="">대분류 선택</option>
-                    {fortunes.map((fortune, index) => (
-                        <option key={index} value={fortune.label}>
-                            {fortune.label}
-                        </option>
-                    ))}
-                </select>
 
-                {/* 중분류 선택 */}
-                <select
-                    className="p-2 border rounded"
-                    value={selectedMinor}
-                    onChange={(e) => setSelectedMinor(e.target.value)}
-                    disabled={!selectedMajor} // 대분류가 선택되지 않으면 중분류 선택 비활성화
-                >
-                    <option value="">중분류 선택</option>
-                    {fortunes
-                        .find(fortune => fortune.label === selectedMajor)?.descriptions
-                        .map((desc, index) => (
-                            <option key={index} value={desc.title}>
-                                {desc.title}
-                            </option>
-                        ))}
-                </select>
-
-                {/* 중분류에 대한 설명 (선택된 경우) */}
-                {selectedMinor && fortunes
-                    .find(fortune => fortune.label === selectedMajor)?.descriptions
-                    .find(desc => desc.title === selectedMinor) && (
-                        <></>
-                )
-                }
-
-                {/* 타로 카드 선택하기 버튼 (항상 보이되, 중분류가 선택되지 않았다면 비활성화) */}
-                <button
-                    onClick={handleSelectCards}
-                    disabled={!selectedMinor} // 중분류가 선택되지 않으면 비활성화
-                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700 disabled:bg-green-300 transition duration-300"
-                >
-                    타로 카드 선택하기
-                </button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* 카드 표시 영역 스타일 조정 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {selectedCards.length > 0 ? selectedCards.map((card, index) => (
-                    <div key={index} className="max-w-sm rounded overflow-hidden shadow-lg">
-                        <img className="w-full" src={card.image} alt={card.name} />
-                        <div className="px-6 py-4">
-                            <div className="font-bold text-xl mb-2">{card.name}</div>
-                            <p>{card.description}</p>
+                    <div key={index} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
+                        <div className="flex-shrink-0 w-full h-64 relative mx-auto">
+                            <img src={card.image || cardBackImage} alt={card.name}
+                                 className="w-full h-full object-contain rounded-l-lg"/>
+                        </div>
+                        <div className="p-6">
+                            <h2 className="text-2xl font-bold text-[#333333] mb-2">{card.name}</h2>
+                            <p className="text-md text-[#555555]">{card.description}</p>
                         </div>
                     </div>
                 )) : (
                     <>
-                        {fortunes.find(fortune => fortune.label === selectedMajor)?.descriptions.find(desc => desc.title === selectedMinor)?.cardDescriptions.map((_, index) => (
-                            <div key={index} className="max-w-sm rounded overflow-hidden shadow-lg p-4 flex justify-center items-center">
-                                <img src={cardBackImage} alt="Card Back" className="w-full" /> {/* '/path/to/bcard.png'를 이미지의 실제 경로로 바꿔주세요. */}
+                        {fortunes.find(fortune => fortune.label === selectedMajor)?.descriptions.find(desc => desc.title === selectedMinor)?.cardDescriptions.map((desc, index) => (
+                            <div key={index} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
+                                <div className="flex-shrink-0 w-full h-64 relative mx-auto">
+                                    <img src={cardBackImage} alt="Card Back"
+                                         className="w-full h-full object-contain rounded-l-lg"/>
+                                </div>
+                                <div className="p-6">
+                                    <h2 className="text-2xl font-bold text-[#333333] mb-2">{index + 1}번째 카드</h2>
+                                    <p className="text-md text-[#555555]">{desc} 설명을 나타냅니다.</p>
+                                </div>
                             </div>
                         ))}
                     </>
                 )}
             </div>
+            <div className="flex flex-col md:flex-row justify-between items-end gap-4 mb-6">
+                <div className="flex flex-col md:flex-row gap-4 flex-grow">
+                    <select
+                        className="flex-grow p-2 border border-gray-300 rounded text-gray-700 bg-white shadow hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        value={selectedMajor}
+                        onChange={(e) => {
+                            setSelectedMajor(e.target.value);
+                            setSelectedMinor('');
+                        }}
+                    >
+                        <option value="">대분류 선택</option>
+                        {fortunes.map((fortune, index) => (
+                            <option key={index} value={fortune.label}>
+                                {fortune.label}
+                            </option>
+                        ))}
+                    </select>
+                    <select
+                        className="flex-grow p-2 border border-gray-300 rounded text-gray-700 bg-white shadow hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        value={selectedMinor}
+                        onChange={(e) => setSelectedMinor(e.target.value)}
+                        disabled={!selectedMajor}
+                    >
+                        <option value="">중분류 선택</option>
+                        {fortunes.find(fortune => fortune.label === selectedMajor)?.descriptions.map((desc, index) => (
+                            <option key={index} value={desc.title}>
+                                {desc.title}
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
-            {/* 타로 결과 보기 버튼 */}
+                <div className="flex gap-4">
+                    <button
+                        onClick={handleSelectCards}
+                        disabled={!selectedMinor}
+                        className="px-4 py-2 bg-emerald-500 text-white rounded hover:bg-emerald-600 transition duration-300 ease-in-out shadow hover:shadow-md"
+                    >
+                        타로 카드 선택하기
+                    </button>
+                    <button
+                        onClick={resetSelections}
+                        className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition duration-300 ease-in-out shadow hover:shadow-md"
+                    >
+                        선택 초기화
+                    </button>
+                    <button
+                        className={`mt-4 px-6 py-3 ${buttonLoading ? 'bg-gray-500' : 'bg-emerald-500 hover:bg-emerald-600'} focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-opacity-50 transition duration-300 ease-in-out transform hover:scale-105 shadow-lg text-white font-bold rounded-full w-full block text-center`}
+                        onClick={processTarotRequest}
+                        disabled={buttonLoading || selectedCards.length === 0}
+                    >
+                        {buttonLoading ? '로딩 중...' : '타로 결과 보기'}
+                    </button>
+                </div>
+
+            </div>
             <div>
-                <button
-                    className={`px-6 py-3 ${buttonLoading ? 'bg-gray-500' : 'bg-emerald-500 hover:bg-emerald-600'} focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-opacity-50 transition duration-300 ease-in-out transform hover:scale-105 shadow-lg text-white font-bold rounded-full w-full block text-center`}
-                    onClick={processTarotRequest}
-                    disabled={buttonLoading || selectedCards.length === 0}
-                >
-                    {buttonLoading ? '로딩 중...' : '타로 결과 보기'}
-                </button>
                 {error && <p className="text-red-500">{error}</p>}
             </div>
-
         </div>
-    );
+    )
+        ;
 };
 
 export default TarotDoPage;
+
+
 
