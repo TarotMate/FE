@@ -178,7 +178,7 @@ const TarotDoPage = () => {
 
 
 
-    const handleMajorSelect = (major) => {
+    const handleMajorSelect = (major: string) => {
         setSelectedMajor(major);
         // 중분류와 선택된 카드 초기화
         setSelectedMinor('');
@@ -194,7 +194,7 @@ const TarotDoPage = () => {
 
 
 // 중분류를 선택했을 때 실행되는 함수
-    const handleMinorSelect = (minor) => {
+    const handleMinorSelect = (minor: string) => {
         setSelectedMinor(minor);
         // 선택된 카드만 초기화
         setSelectedCards([]);
@@ -239,6 +239,7 @@ const TarotDoPage = () => {
                 {selectedCards.length > 0 ? selectedCards.map((card, index) => (
                     <div key={index} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
                         <div className="p-6">
+                            <h2 className="text-2xl font-bold text-[#333333] mb-2">{index + 1}번째 카드</h2>
                             <h2 className="text-2xl font-bold text-[#333333] mb-2">{card.description}</h2>
                         </div>
                         <div className="flex-shrink-0 w-full h-64 relative mb-8 mx-auto">
@@ -252,6 +253,7 @@ const TarotDoPage = () => {
                             <div key={index} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
                                 <div className="p-6">
                                     <h2 className="text-2xl font-bold text-[#333333] mb-2">{index + 1}번째 카드</h2>
+                                    <h2 className="text-2xl font-bold text-[#333333] mb-2">{desc}</h2>
                                 </div>
                                 <div className="flex-shrink-0 w-full h-64 relative mb-8 mx-auto">
                                     <img src={cardBackImage} alt="Card Back"
