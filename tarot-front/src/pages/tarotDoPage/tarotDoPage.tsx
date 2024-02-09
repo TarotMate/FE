@@ -77,25 +77,27 @@ const TarotDoPage = () => {
 
     useEffect(() => { fetchData(); }, []);
 
-    const flipAllCardsToFront = () => {
-
+    const isAllCardsFlipped = () => {
+        // Ensure displayedCards and flippedCards are defined and not null
+        if (!displayedCards || !flippedCards) {
+            return false; // Default to false if data isn't ready
+        }
+        return flippedCards.length === displayedCards.length;
     };
-
 
     const handleButtonClick = () => {
-        // 카드가 선택되지 않았거나 중분류가 선택되었지만 카드가 아직 선택되지 않은 경우, 카드 선택하기
-        if (selectedCards.length === 0 && selectedMinor) {
-            handleSelectCards();
-        }
-        if (selectedCards.length > 0) {
-            // 선택된 카드가 있으면, 타로 결과 보기
+        if (isAllCardsFlipped()) {
+            // Logic to execute when all cards are flipped
             processTarotRequest();
+        } else {
+            // Optionally handle the case when not all cards are flipped
         }
     };
 
 
 
-    const buttonLabel = selectedCards.length > 0 ? "타로 결과 보기" : (selectedMinor ? "타로 카드 선택하기" : "테마를 선택하세요");
+
+    const buttonLabel = "타로 결과 보기";
 
 
     const handleSelectCards = () => {
@@ -238,6 +240,7 @@ const TarotDoPage = () => {
         });
     };
 
+
     // 필요한 useState 추가
     const [availableCardDescriptions, setAvailableCardDescriptions] = useState<string[]>([]);
     const [displayedCards, setDisplayedCards] = useState<TarotCard[]>([]);
@@ -254,13 +257,17 @@ const TarotDoPage = () => {
         setFlippedCards([]);
     }, [selectedMajor, selectedMinor, tarotCards]);
 
-// handleCardClick 함수 수정
+
     const handleCardClick = (card: TarotCard) => {
         // 선택된 카드의 수가 descriptions의 길이와 동일하면 추가 선택 불가
+        // 이 조건은 주로 선택된 카드의 개수를 제한하는 데 사용됩니다.
+        // 카드를 뒤집는 로직에는 영향을 주지 않아야 합니다.
         if (selectedCards.length < availableCardDescriptions.length) {
             toggleCardSelection(card);
         }
-        toggleFlipCard(card.name); // 카드 뒤집기
+
+        // 카드를 뒤집기 상태에 추가하거나 제거하는 로직을 실행합니다.
+        toggleFlipCard(card.name);
     };
 
     if (isLoading) {
@@ -356,15 +363,15 @@ const TarotDoPage = () => {
                         <div className="fixed inset-x-0 bottom-0 bg-white py-4 shadow-lg">
                             <div className="max-w-screen-md mx-auto px-4">
                                 {/* 타로 결과 보기 상태일 때만 타로 초기화 버튼을 보여주기 */}
-                                {selectedCards.length > 0 && (
-                                    <button onClick={resetSelections} className="w-full mb-4 px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition ease-in-out">
-                                        타로 초기화
-                                    </button>
-                                )}
+                                {/*{selectedCards.length > 0 && (*/}
+                                {/*    <button onClick={resetSelections} className="w-full mb-4 px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition ease-in-out">*/}
+                                {/*        타로 초기화*/}
+                                {/*    </button>*/}
+                                {/*)}*/}
                                 <button
                                     onClick={handleButtonClick}
-                                    className={`w-full px-6 py-2 ${selectedCards.length > 0 ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-emerald-500 hover:bg-emerald-600'} text-white rounded-lg transition ease-in-out`}
-                                    disabled={isLoading || (!selectedMinor && selectedCards.length === 0)}
+                                    className={`w-full px-6 py-2 ${isAllCardsFlipped() ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-gray-500'} text-white rounded-lg transition ease-in-out`}
+                                    disabled={!isAllCardsFlipped() || isLoading}
                                 >
                                     {buttonLabel}
                                 </button>
