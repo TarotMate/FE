@@ -32,6 +32,7 @@ const TarotDoPage = () => {
     const [fortunes, setFortunes] = useState<Fortune[]>([]);
     const [selectedCards, setSelectedCards] = useState<TarotCard[]>([]);
 
+    const [flippedCards, setFlippedCards] = useState<string[]>([]); // 뒤집힌 카드 이름들을 저장하는 상태
 
 
     const [selectedMajor, setSelectedMajor] = useState('');
@@ -76,11 +77,17 @@ const TarotDoPage = () => {
 
     useEffect(() => { fetchData(); }, []);
 
+    const flipAllCardsToFront = () => {
+
+    };
+
+
     const handleButtonClick = () => {
         // 카드가 선택되지 않았거나 중분류가 선택되었지만 카드가 아직 선택되지 않은 경우, 카드 선택하기
         if (selectedCards.length === 0 && selectedMinor) {
             handleSelectCards();
-        } else if (selectedCards.length > 0) {
+        }
+        if (selectedCards.length > 0) {
             // 선택된 카드가 있으면, 타로 결과 보기
             processTarotRequest();
         }
@@ -105,6 +112,10 @@ const TarotDoPage = () => {
             description: selectedDescriptions[index]
         }));
         setSelectedCards(selected);
+        // 모든 tarotCards의 이름을 flippedCards 상태에 추가
+        const allCardNames = tarotCards.map(card => card.name);
+        const allCardDescriptions = tarotCards.map(card => card.description)
+        setFlippedCards(allCardNames);
     };
 
     const processTarotRequest = async () => {
@@ -174,6 +185,7 @@ const TarotDoPage = () => {
         }
 
         setSelectedCards([]); // 선택된 카드 초기화
+        setFlippedCards([]);
     };
 
 
@@ -200,7 +212,56 @@ const TarotDoPage = () => {
         setSelectedCards([]);
     };
 
+    console.log(selectedMinor);
 
+// 타로 카드 선택/해제 기능을 추가합니다.
+    const toggleCardSelection = (card: TarotCard) => {
+        const isSelected = selectedCards.find(selected => selected.name === card.name);
+        if (isSelected) {
+            // 이미 선택된 카드를 다시 클릭하면 선택 해제
+            setSelectedCards(selectedCards.filter(selected => selected.name !== card.name));
+        } else {
+            // 카드 선택
+            setSelectedCards([...selectedCards, card]);
+        }
+    };
+
+    const toggleFlipCard = (cardName: string) => {
+        setFlippedCards(current => {
+            if (current.includes(cardName)) {
+                // 이미 뒤집힌 카드를 다시 클릭하면 뒤집기 상태에서 제거
+                return current.filter(name => name !== cardName);
+            } else {
+                // 카드를 뒤집기 상태에 추가
+                return [...current, cardName];
+            }
+        });
+    };
+
+    // 필요한 useState 추가
+    const [availableCardDescriptions, setAvailableCardDescriptions] = useState<string[]>([]);
+    const [displayedCards, setDisplayedCards] = useState<TarotCard[]>([]);
+// useEffect 내에서 displayedCards 상태 업데이트 로직 수정
+    useEffect(() => {
+        const descriptions = fortunes.find(fortune => fortune.label === selectedMajor)?.descriptions.find(desc => desc.title === selectedMinor)?.cardDescriptions || [];
+        setAvailableCardDescriptions(descriptions);
+
+        // TarotCards 상태를 직접 수정하지 않도록 복사본 사용
+        const shuffledCards = [...tarotCards].sort(() => 0.5 - Math.random());
+        // descriptions 길이만큼 카드를 표시하도록 설정
+        setDisplayedCards(shuffledCards.slice(0, descriptions.length));
+        // 뒤집힌 카드 상태 초기화
+        setFlippedCards([]);
+    }, [selectedMajor, selectedMinor, tarotCards]);
+
+// handleCardClick 함수 수정
+    const handleCardClick = (card: TarotCard) => {
+        // 선택된 카드의 수가 descriptions의 길이와 동일하면 추가 선택 불가
+        if (selectedCards.length < availableCardDescriptions.length) {
+            toggleCardSelection(card);
+        }
+        toggleFlipCard(card.name); // 카드 뒤집기
+    };
 
     if (isLoading) {
         // 로딩 중일 때 로딩 컴포넌트만 표시
@@ -233,37 +294,57 @@ const TarotDoPage = () => {
                     </div>
                 </div>
             )}
-
-            {/* 카드 표시 영역 스타일 조정 */}
+            {selectedMinor && (
+                <div className="bg-white p-4 rounded-lg shadow mb-6">
+                    <h2 className="text-xl font-semibold mb-4 text-left">타로점</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {selectedCards.length > 0 ? selectedCards.map((card, index) => (
-                    <div key={index} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
-                        <div className="p-6">
-                            <h2 className="text-2xl font-bold text-[#333333] mb-2">{index + 1}번째 카드</h2>
-                            <h2 className="text-2xl font-bold text-[#333333] mb-2">{card.description}</h2>
-                        </div>
-                        <div className="flex-shrink-0 w-full h-64 relative mb-8 mx-auto">
-                            <img src={card.image || cardBackImage} alt={card.name}
-                                 className="w-full h-full object-contain rounded-l-lg"/>
-                        </div>
+                {displayedCards.map((card, index) => (
+                <div key={index} onClick={() => handleCardClick(card)} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div className="p-6">
+                        <h2 className="text-2xl font-bold text-[#333333] mb-2">{index+1}번째 카드</h2>
                     </div>
-                )) : (
-                    <>
-                        {fortunes.find(fortune => fortune.label === selectedMajor)?.descriptions.find(desc => desc.title === selectedMinor)?.cardDescriptions.map((desc, index) => (
-                            <div key={index} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
-                                <div className="p-6">
-                                    <h2 className="text-2xl font-bold text-[#333333] mb-2">{index + 1}번째 카드</h2>
-                                    <h2 className="text-2xl font-bold text-[#333333] mb-2">{desc}</h2>
-                                </div>
-                                <div className="flex-shrink-0 w-full h-64 relative mb-8 mx-auto">
-                                    <img src={cardBackImage} alt="Card Back"
-                                         className="w-full h-full object-contain rounded-l-lg"/>
-                                </div>
-                            </div>
-                        ))}
-                    </>
-                )}
+                    <div className="flex-shrink-0 w-full h-64 relative mb-8 mx-auto">
+                        {flippedCards.includes(card.name) || selectedCards.includes(card) ? (
+                            <img src={card.image || cardBackImage} alt={card.name} className="w-full h-full object-contain"/>
+                        ) : (
+                            <img src={cardBackImage} alt="Card Back" className="w-full h-full object-contain"/>
+                        )}
+                    </div>
+                </div>
+                    ))}
             </div>
+            </div>
+            )}
+            {/* 카드 표시 영역 스타일 조정 */}
+            {/*<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">*/}
+            {/*    {selectedCards.length > 0 ? selectedCards.map((card, index) => (*/}
+            {/*        <div key={index} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">*/}
+            {/*            <div className="p-6">*/}
+            {/*                <h2 className="text-2xl font-bold text-[#333333] mb-2">{index + 1}번째 카드</h2>*/}
+            {/*                <h2 className="text-2xl font-bold text-[#333333] mb-2">{card.description}</h2>*/}
+            {/*            </div>*/}
+            {/*            <div className="flex-shrink-0 w-full h-64 relative mb-8 mx-auto">*/}
+            {/*                <img src={card.image || cardBackImage} alt={card.name}*/}
+            {/*                     className="w-full h-full object-contain rounded-l-lg"/>*/}
+            {/*            </div>*/}
+            {/*        </div>*/}
+            {/*    )) : (*/}
+            {/*        <>*/}
+            {/*            {fortunes.find(fortune => fortune.label === selectedMajor)?.descriptions.find(desc => desc.title === selectedMinor)?.cardDescriptions.map((desc, index) => (*/}
+            {/*                <div key={index} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">*/}
+            {/*                    <div className="p-6">*/}
+            {/*                        <h2 className="text-2xl font-bold text-[#333333] mb-2">{index + 1}번째 카드</h2>*/}
+            {/*                        <h2 className="text-2xl font-bold text-[#333333] mb-2">{desc}</h2>*/}
+            {/*                    </div>*/}
+            {/*                    <div className="flex-shrink-0 w-full h-64 relative mb-8 mx-auto">*/}
+            {/*                        <img src={cardBackImage} alt="Card Back"*/}
+            {/*                             className="w-full h-full object-contain rounded-l-lg"/>*/}
+            {/*                    </div>*/}
+            {/*                </div>*/}
+            {/*            ))}*/}
+            {/*        </>*/}
+            {/*    )}*/}
+            {/*</div>*/}
             <div>
                 {error && <p className="text-red-500">{error}</p>}
             </div>
@@ -282,7 +363,7 @@ const TarotDoPage = () => {
                                 )}
                                 <button
                                     onClick={handleButtonClick}
-                                    className={`w-full px-6 py-2 ${selectedCards.length > 0 ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-gray-500 hover:bg-gray-600'} text-white rounded-lg transition ease-in-out`}
+                                    className={`w-full px-6 py-2 ${selectedCards.length > 0 ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-emerald-500 hover:bg-emerald-600'} text-white rounded-lg transition ease-in-out`}
                                     disabled={isLoading || (!selectedMinor && selectedCards.length === 0)}
                                 >
                                     {buttonLabel}
