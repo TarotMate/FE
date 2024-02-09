@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { gptTarotNew } from "../../utils/gptTarot/gptTarotNew";
 import LoadingComponent from "../detailPage/components/LoadingComponent";
 import {cardBackImage} from "../../data/constants";
+
 
 interface TarotCard {
     name: string;
@@ -75,6 +76,22 @@ const TarotDoPage = () => {
     };
 
     useEffect(() => { fetchData(); }, []);
+
+    const handleButtonClick = () => {
+        // 카드가 선택되지 않았거나 중분류가 선택되었지만 카드가 아직 선택되지 않은 경우, 카드 선택하기
+        if (selectedCards.length === 0 && selectedMinor) {
+            handleSelectCards();
+        } else if (selectedCards.length > 0) {
+            // 선택된 카드가 있으면, 타로 결과 보기
+            processTarotRequest();
+        }
+    };
+
+
+
+    const buttonLabel = selectedCards.length > 0 ? "타로 결과 보기" : (selectedMinor ? "타로 카드 선택하기" : "테마를 선택하세요");
+
+
     const handleSelectCards = () => {
         const selectedDescriptions = fortunes
             .find(fortune => fortune.label === selectedMajor)?.descriptions
@@ -139,112 +156,170 @@ const TarotDoPage = () => {
             setIsLoading(false); // 요청이 완료되면 로딩 종료
         }
     };
-    // 초기화 함수
     const resetSelections = () => {
-        setSelectedCards([]);
-        // 필요하다면, 여기에 추가적인 상태 초기화 로직을 추가하세요.
+        // 초기 상태에서 대분류의 첫 번째 항목 선택
+        if (fortunes.length > 0) {
+            const firstMajor = fortunes[0].label;
+            setSelectedMajor(firstMajor);
+
+            // 대분류에 따른 중분류의 첫 번째 항목 선택
+            if (fortunes[0].descriptions.length > 0) {
+                const firstMinor = fortunes[0].descriptions[0].title;
+                setSelectedMinor(firstMinor);
+            } else {
+                setSelectedMinor(''); // 중분류 데이터가 없는 경우
+            }
+        } else {
+            setSelectedMajor(''); // 대분류 데이터가 없는 경우
+            setSelectedMinor('');
+        }
+
+        setSelectedCards([]); // 선택된 카드 초기화
     };
+
+
+    // 대분류 버튼 컴포넌트 수정
+    const MajorCategoryButton = ({ label, onClick }) => {
+        // 선택된 경우 추가 스타일 적용
+        const isSelected = label === selectedMajor;
+        return (
+            <button
+                onClick={onClick}
+                className={`m-2 p-2 rounded hover:bg-blue-700 text-white ${isSelected ? 'bg-blue-700' : 'bg-blue-500'}`}
+            >
+                {label}
+            </button>
+        );
+    };
+
+    const handleMajorSelect = (major) => {
+        setSelectedMajor(major);
+        // 중분류와 선택된 카드 초기화
+        setSelectedMinor('');
+        setSelectedCards([]);
+
+        // 새로 선택된 대분류에 따라 첫 번째 중분류를 자동으로 설정
+        const selectedFortune = fortunes.find(fortune => fortune.label === major);
+        if (selectedFortune && selectedFortune.descriptions.length > 0) {
+            const firstMinor = selectedFortune.descriptions[0].title; // 첫 번째 중분류의 제목을 가져옴
+            setSelectedMinor(firstMinor); // 첫 번째 중분류를 선택된 중분류로 설정
+        }
+    };
+
+
+// 중분류를 선택했을 때 실행되는 함수
+    const handleMinorSelect = (minor) => {
+        setSelectedMinor(minor);
+        // 선택된 카드만 초기화
+        setSelectedCards([]);
+    };
+
+
+
+// 중분류 버튼 컴포넌트 수정
+    const MinorCategoryButton = ({ title, onClick }) => {
+        // 선택된 경우 추가 스타일 적용
+        const isSelected = title === selectedMinor;
+        return (
+            <button
+                onClick={onClick}
+                className={`m-2 p-2 rounded hover:bg-green-700 text-white ${isSelected ? 'bg-green-700' : 'bg-green-500'}`}
+            >
+                {title}
+            </button>
+        );
+    };
+
+    if (isLoading) {
+        // 로딩 중일 때 로딩 컴포넌트만 표시
+        return <LoadingComponent />;
+    }
+
     return (
         <div className="container mx-auto px-4 py-8 bg-[#FFF8F0]">
-            {isLoading && <LoadingComponent/>}
+            <h1 className="text-3xl font-bold mb-8 text-center text-[#333333]">타로하기</h1>
             {fetchError && <p className="text-red-500">{fetchError}</p>}
-
+            {/* UI Components directly defined in return */}
+            <div className="bg-gray-200 p-4 rounded-lg flex items-center mb-4">
+                <p className="text-sm text-gray-700">타로 카테고리를 선택하여 시작하세요. 각 카테고리는 다양한 타로 테마와 카드를 제공합니다!<br />타로 테마를 선택하여 보고싶은 타로를 제공합니다</p>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow mb-6">
+                <h2 className="text-xl font-semibold mb-4 text-left">타로 카테고리</h2>
+                <div className="flex flex-wrap justify-start">
+                    {fortunes.map((fortune, index) => (
+                        <button key={index} onClick={() => handleMajorSelect(fortune.label)} className={`m-2 p-2 rounded hover:bg-blue-700 text-white ${selectedMajor === fortune.label ? 'bg-blue-700' : 'bg-blue-500'}`}>{fortune.label}</button>
+                    ))}
+                </div>
+            </div>
+            {selectedMajor && (
+                <div className="bg-white p-4 rounded-lg shadow mb-6">
+                    <h2 className="text-xl font-semibold mb-4 text-left">타로테마</h2>
+                    <div className="flex flex-wrap justify-start">
+                        {fortunes.find(fortune => fortune.label === selectedMajor)?.descriptions.map((desc, index) => (
+                            <button key={index} onClick={() => handleMinorSelect(desc.title)} className={`m-2 p-2 rounded hover:bg-green-700 text-white ${selectedMinor === desc.title ? 'bg-green-700' : 'bg-green-500'}`}>{desc.title}</button>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* 카드 표시 영역 스타일 조정 */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {selectedCards.length > 0 ? selectedCards.map((card, index) => (
                     <div key={index} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
-                        <div className="flex-shrink-0 w-full h-64 relative mx-auto">
+                        <div className="p-6">
+                            <h2 className="text-2xl font-bold text-[#333333] mb-2">{card.description}</h2>
+                        </div>
+                        <div className="flex-shrink-0 w-full h-64 relative mb-8 mx-auto">
                             <img src={card.image || cardBackImage} alt={card.name}
                                  className="w-full h-full object-contain rounded-l-lg"/>
-                        </div>
-                        <div className="p-6">
-                            <h2 className="text-2xl font-bold text-[#333333] mb-2">{card.name}</h2>
-                            <p className="text-md text-[#555555]">{card.description}</p>
                         </div>
                     </div>
                 )) : (
                     <>
                         {fortunes.find(fortune => fortune.label === selectedMajor)?.descriptions.find(desc => desc.title === selectedMinor)?.cardDescriptions.map((desc, index) => (
                             <div key={index} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
-                                <div className="flex-shrink-0 w-full h-64 relative mx-auto">
-                                    <img src={cardBackImage} alt="Card Back"
-                                         className="w-full h-full object-contain rounded-l-lg"/>
-                                </div>
                                 <div className="p-6">
                                     <h2 className="text-2xl font-bold text-[#333333] mb-2">{index + 1}번째 카드</h2>
-                                    <p className="text-md text-[#555555]">{desc} 설명을 나타냅니다.</p>
+                                </div>
+                                <div className="flex-shrink-0 w-full h-64 relative mb-8 mx-auto">
+                                    <img src={cardBackImage} alt="Card Back"
+                                         className="w-full h-full object-contain rounded-l-lg"/>
                                 </div>
                             </div>
                         ))}
                     </>
                 )}
             </div>
-            <div className="flex flex-col md:flex-row justify-between items-end gap-4 mb-6">
-                <div className="flex flex-col md:flex-row gap-4 flex-grow">
-                    <select
-                        className="flex-grow p-2 border border-gray-300 rounded text-gray-700 bg-white shadow hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                        value={selectedMajor}
-                        onChange={(e) => {
-                            setSelectedMajor(e.target.value);
-                            setSelectedMinor('');
-                        }}
-                    >
-                        <option value="">대분류 선택</option>
-                        {fortunes.map((fortune, index) => (
-                            <option key={index} value={fortune.label}>
-                                {fortune.label}
-                            </option>
-                        ))}
-                    </select>
-                    <select
-                        className="flex-grow p-2 border border-gray-300 rounded text-gray-700 bg-white shadow hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                        value={selectedMinor}
-                        onChange={(e) => setSelectedMinor(e.target.value)}
-                        disabled={!selectedMajor}
-                    >
-                        <option value="">중분류 선택</option>
-                        {fortunes.find(fortune => fortune.label === selectedMajor)?.descriptions.map((desc, index) => (
-                            <option key={index} value={desc.title}>
-                                {desc.title}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                <div className="flex gap-4">
-                    <button
-                        onClick={handleSelectCards}
-                        disabled={!selectedMinor}
-                        className="px-4 py-2 bg-emerald-500 text-white rounded hover:bg-emerald-600 transition duration-300 ease-in-out shadow hover:shadow-md"
-                    >
-                        타로 카드 선택하기
-                    </button>
-                    <button
-                        onClick={resetSelections}
-                        className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition duration-300 ease-in-out shadow hover:shadow-md"
-                    >
-                        선택 초기화
-                    </button>
-                    <button
-                        className={`mt-4 px-6 py-3 ${buttonLoading ? 'bg-gray-500' : 'bg-emerald-500 hover:bg-emerald-600'} focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-opacity-50 transition duration-300 ease-in-out transform hover:scale-105 shadow-lg text-white font-bold rounded-full w-full block text-center`}
-                        onClick={processTarotRequest}
-                        disabled={buttonLoading || selectedCards.length === 0}
-                    >
-                        {buttonLoading ? '로딩 중...' : '타로 결과 보기'}
-                    </button>
-                </div>
-
-            </div>
             <div>
                 {error && <p className="text-red-500">{error}</p>}
+            </div>
+            {/* 페이지 하단에 고정된 컨트롤 컨테이너 */}
+            <div className="fixed inset-x-0 bottom-0 bg-white py-4 shadow-lg">
+                <div className="max-w-screen-md mx-auto px-4">
+                    <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+                        {/* 버튼 그룹 */}
+                        <div className="fixed inset-x-0 bottom-0 bg-white py-4 shadow-lg">
+                            <div className="max-w-screen-md mx-auto px-4">
+                                {/* 타로 결과 보기 상태일 때만 타로 초기화 버튼을 보여주기 */}
+                                {selectedCards.length > 0 && (
+                                    <button onClick={resetSelections} className="w-full mb-4 px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition ease-in-out">
+                                        타로 초기화
+                                    </button>
+                                )}
+                                <button
+                                    onClick={handleButtonClick}
+                                    className={`w-full px-6 py-2 ${selectedCards.length > 0 ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-gray-500 hover:bg-gray-600'} text-white rounded-lg transition ease-in-out`}
+                                    disabled={isLoading || (!selectedMinor && selectedCards.length === 0)}
+                                >
+                                    {buttonLabel}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )
         ;
 };
-
 export default TarotDoPage;
-
-
-
