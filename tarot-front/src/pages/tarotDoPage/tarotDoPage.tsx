@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { gptTarotNew } from "../../utils/gptTarot/gptTarotNew";
 import LoadingComponent from "../detailPage/components/LoadingComponent";
@@ -40,7 +40,6 @@ const TarotDoPage = () => {
     const [fetchError, setFetchError] = useState('');
     const [isLoading, setIsLoading] = useState(false); // 데이터 로딩 상태 추가
 
-    const [buttonLoading] = useState(false);
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
@@ -178,19 +177,6 @@ const TarotDoPage = () => {
     };
 
 
-    // 대분류 버튼 컴포넌트 수정
-    const MajorCategoryButton = ({ label, onClick }) => {
-        // 선택된 경우 추가 스타일 적용
-        const isSelected = label === selectedMajor;
-        return (
-            <button
-                onClick={onClick}
-                className={`m-2 p-2 rounded hover:bg-blue-700 text-white ${isSelected ? 'bg-blue-700' : 'bg-blue-500'}`}
-            >
-                {label}
-            </button>
-        );
-    };
 
     const handleMajorSelect = (major) => {
         setSelectedMajor(major);
@@ -215,20 +201,6 @@ const TarotDoPage = () => {
     };
 
 
-
-// 중분류 버튼 컴포넌트 수정
-    const MinorCategoryButton = ({ title, onClick }) => {
-        // 선택된 경우 추가 스타일 적용
-        const isSelected = title === selectedMinor;
-        return (
-            <button
-                onClick={onClick}
-                className={`m-2 p-2 rounded hover:bg-green-700 text-white ${isSelected ? 'bg-green-700' : 'bg-green-500'}`}
-            >
-                {title}
-            </button>
-        );
-    };
 
     if (isLoading) {
         // 로딩 중일 때 로딩 컴포넌트만 표시
