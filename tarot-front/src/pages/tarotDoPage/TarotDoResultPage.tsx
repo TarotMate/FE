@@ -28,25 +28,36 @@ type TarotResult = {
 
 const TarotDoResultPage: React.FC = () => {
     const navigate = useNavigate();
-
     const location = useLocation();
-    const { resultData, selectedCards } = location.state as { resultData: TarotResult; selectedCards: SelectedCard[] };
+    const state = location.state as { resultData?: TarotResult; selectedCards?: SelectedCard[] } | undefined;
 
     useEffect(() => {
-        if (!resultData) {
-            navigate('/'); // 또는 사용자를 안내하는 페이지로 리다이렉트
+        if (!state || !state.resultData || !state.selectedCards) {
+            // 사용자에게 안내 메시지 후 리다이렉션
+            setTimeout(() => navigate('/tarot'), 3000); // 3초 후 타로 선택 페이지로 이동
         }
-    }, [navigate, resultData]);
+    }, [navigate, state]);
 
-    // resultData가 유효한지 확인하고, 그렇지 않다면 로딩 중이거나 에러 메시지를 표시
-    if (!resultData || !resultData.response) {
+    if (!state || !state.resultData || !state.selectedCards) {
+        return (
+            <div className="container mx-auto px-4 py-8 bg-[#FFF8F0]">
+                <div className="flex justify-center items-center h-screen">
+                    <div className="text-center">
+                        <h1 className="text-3xl font-bold mb-4 text-[#333333]">안내 메시지</h1>
+                        <p className="text-lg text-gray-700">결과를 보려면 먼저 타로를 선택해주세요. 잠시 후 타로 선택 페이지로 이동합니다.</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    const { resultData, selectedCards } = state;
+
+    if (!resultData.response) {
         return <div>결과를 불러오는 중이거나 결과 데이터가 없습니다.</div>;
     }
 
     const { fortune } = resultData.response;
-
-
-
 
     return (
         <div className="container mx-auto px-4 py-8 bg-[#FFF8F0]">

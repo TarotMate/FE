@@ -296,16 +296,16 @@ const TarotDoPage = () => {
                     <h2 className="text-xl font-semibold mb-4 text-left">타로점</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {displayedCards.map((card, index) => (
-                <div key={index} onClick={() => handleCardClick(card)} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer">
+                <div key={index} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
                     <div className="p-6">
                         <p className="text-lg text-[#333333] mb-1">{`${index+1}번 타로점`}</p>
                         <h2 className="text-2xl font-bold text-[#333333] mb-2">{availableCardDescriptions[index]}</h2>
                     </div>
-                    <div className="flex-shrink-0 w-full h-64 relative mb-8 mx-auto">
+                    <div className="flex-shrink-0 w-full h-64 relative mb-8 mx-auto cursor-pointer">
                         {flippedCards.includes(card.name) || selectedCards.includes(card) ? (
-                            <img src={card.image || cardBackImage} alt={card.name} className="w-full h-full object-contain"/>
+                            <img src={card.image || cardBackImage} alt={card.name} onClick={() => handleCardClick(card)} className="w-full h-full object-contain"/>
                         ) : (
-                            <img src={cardBackImage} alt="Card Back" className="w-full h-full object-contain"/>
+                            <img src={cardBackImage} alt="Card Back" onClick={() => handleCardClick(card)} className="w-full h-full object-contain"/>
                         )}
                     </div>
                 </div>
@@ -316,13 +316,13 @@ const TarotDoPage = () => {
                             onClick={shuffleTarotCards}
                             className="mb-4 px-6 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-lg shadow-md"
                         >
-                            타로 다시 섞기
+                            다시섞기
                         </button>
                         <button
                             onClick={selectAllTarotCards}
                             className="mb-4 px-6 py-2 bg-purple-500 hover:bg-purple-600 text-white font-semibold rounded-lg shadow-md"
                         >
-                            타로 한번에 선택하기
+                            일괄선택
                         </button>
                     </div>
             </div>
