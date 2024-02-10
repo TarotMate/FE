@@ -17,7 +17,7 @@ const MainFooter: React.FC = () => {
                 </div>
                 <div className="container mx-auto pb-4 px-5 flex flex-wrap flex-col sm:flex-row">
           <span className="sm:ml-auto sm:mt-0 mt-2 sm:w-auto w-full sm:text-left text-center text-gray-500 text-sm">
-            Developed by kabalport
+            Developed by tarotmate Team
           </span>
                 </div>
             </div>
