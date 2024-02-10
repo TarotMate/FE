@@ -298,14 +298,18 @@ const TarotDoPage = () => {
                 {displayedCards.map((card, index) => (
                 <div key={index} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
                     <div className="p-6">
-                        <p className="text-lg text-[#333333] mb-1">{`${index+1}번 타로점`}</p>
                         <h2 className="text-2xl font-bold text-[#333333] mb-2">{availableCardDescriptions[index]}</h2>
                     </div>
                     <div className="flex-shrink-0 w-full h-64 relative mb-8 mx-auto cursor-pointer">
                         {flippedCards.includes(card.name) || selectedCards.includes(card) ? (
+                            <>
                             <img src={card.image || cardBackImage} alt={card.name} onClick={() => handleCardClick(card)} className="w-full h-full object-contain"/>
+                            </>
                         ) : (
+                            <>
                             <img src={cardBackImage} alt="Card Back" onClick={() => handleCardClick(card)} className="w-full h-full object-contain"/>
+                            <p className="text-lg text-[#333333] mb-1 text-center">{`타로를 선택해주세요`}</p>
+                            </>
                         )}
                     </div>
                 </div>
