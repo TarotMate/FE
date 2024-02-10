@@ -99,27 +99,6 @@ const TarotDoPage = () => {
 
     const buttonLabel = "타로 결과 보기";
 
-
-    const handleSelectCards = () => {
-        const selectedDescriptions = fortunes
-            .find(fortune => fortune.label === selectedMajor)?.descriptions
-            .find(desc => desc.title === selectedMinor)?.cardDescriptions;
-
-        if (!selectedDescriptions) return;
-
-        // 랜덤으로 타로 카드 선택
-        const shuffledCards = tarotCards.sort(() => 0.5 - Math.random());
-        const selected = shuffledCards.slice(0, selectedDescriptions.length).map((card, index) => ({
-            ...card,
-            description: selectedDescriptions[index]
-        }));
-        setSelectedCards(selected);
-        // 모든 tarotCards의 이름을 flippedCards 상태에 추가
-        const allCardNames = tarotCards.map(card => card.name);
-        const allCardDescriptions = tarotCards.map(card => card.description)
-        setFlippedCards(allCardNames);
-    };
-
     const processTarotRequest = async () => {
         if (selectedCards.length === 0) return;
 
@@ -168,29 +147,6 @@ const TarotDoPage = () => {
             setIsLoading(false); // 요청이 완료되면 로딩 종료
         }
     };
-    const resetSelections = () => {
-        // 초기 상태에서 대분류의 첫 번째 항목 선택
-        if (fortunes.length > 0) {
-            const firstMajor = fortunes[0].label;
-            setSelectedMajor(firstMajor);
-
-            // 대분류에 따른 중분류의 첫 번째 항목 선택
-            if (fortunes[0].descriptions.length > 0) {
-                const firstMinor = fortunes[0].descriptions[0].title;
-                setSelectedMinor(firstMinor);
-            } else {
-                setSelectedMinor(''); // 중분류 데이터가 없는 경우
-            }
-        } else {
-            setSelectedMajor(''); // 대분류 데이터가 없는 경우
-            setSelectedMinor('');
-        }
-
-        setSelectedCards([]); // 선택된 카드 초기화
-        setFlippedCards([]);
-    };
-
-
 
     const handleMajorSelect = (major: string) => {
         setSelectedMajor(major);
@@ -259,13 +215,8 @@ const TarotDoPage = () => {
 
 
     const handleCardClick = (card: TarotCard) => {
-        // 선택된 카드의 수가 descriptions의 길이와 동일하면 추가 선택 불가
-        // 이 조건은 주로 선택된 카드의 개수를 제한하는 데 사용됩니다.
-        // 카드를 뒤집는 로직에는 영향을 주지 않아야 합니다.
-        if (selectedCards.length < availableCardDescriptions.length) {
-            toggleCardSelection(card);
-        }
-
+        // 카드 뒤집기
+        toggleCardSelection(card);
         // 카드를 뒤집기 상태에 추가하거나 제거하는 로직을 실행합니다.
         toggleFlipCard(card.name);
     };
@@ -274,6 +225,24 @@ const TarotDoPage = () => {
         // 로딩 중일 때 로딩 컴포넌트만 표시
         return <LoadingComponent />;
     }
+
+    const shuffleTarotCards = () => {
+        // Creating a copy of the tarotCards array to shuffle
+        let shuffledCards = [...tarotCards];
+
+        // Fisher-Yates shuffle algorithm
+        for (let i = shuffledCards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledCards[i], shuffledCards[j]] = [shuffledCards[j], shuffledCards[i]]; // Swap elements
+        }
+
+        // Updating the tarotCards state with the shuffled array
+        setTarotCards(shuffledCards);
+
+        // Optional: Reset selected cards and flipped cards if necessary
+        setSelectedCards([]);
+        setFlippedCards([]);
+    };
 
     return (
         <div className="container mx-auto px-4 py-8 bg-[#FFF8F0]">
@@ -287,7 +256,10 @@ const TarotDoPage = () => {
                 <h2 className="text-xl font-semibold mb-4 text-left">타로 카테고리</h2>
                 <div className="flex flex-wrap justify-start">
                     {fortunes.map((fortune, index) => (
-                        <button key={index} onClick={() => handleMajorSelect(fortune.label)} className={`m-2 p-2 rounded hover:bg-blue-700 text-white ${selectedMajor === fortune.label ? 'bg-blue-700' : 'bg-blue-500'}`}>{fortune.label}</button>
+                        <button key={index} onClick={() => handleMajorSelect(fortune.label)}
+                                className={`m-2 p-2 rounded hover:bg-blue-700 text-white ${selectedMajor === fortune.label ? 'bg-blue-700 border-4 border-blue-300' : 'bg-blue-500'} transition ease-in-out`}
+                        >
+                            {fortune.label}</button>
                     ))}
                 </div>
             </div>
@@ -296,7 +268,10 @@ const TarotDoPage = () => {
                     <h2 className="text-xl font-semibold mb-4 text-left">타로테마</h2>
                     <div className="flex flex-wrap justify-start">
                         {fortunes.find(fortune => fortune.label === selectedMajor)?.descriptions.map((desc, index) => (
-                            <button key={index} onClick={() => handleMinorSelect(desc.title)} className={`m-2 p-2 rounded hover:bg-green-700 text-white ${selectedMinor === desc.title ? 'bg-green-700' : 'bg-green-500'}`}>{desc.title}</button>
+                            <button key={index} onClick={() => handleMinorSelect(desc.title)}
+                                    className={`m-2 p-2 rounded hover:bg-green-700 text-white ${selectedMinor === desc.title ? 'bg-green-700 border-4 border-green-300' : 'bg-green-500'} transition ease-in-out`}
+                            >
+                                {desc.title}</button>
                         ))}
                     </div>
                 </div>
@@ -304,6 +279,12 @@ const TarotDoPage = () => {
             {selectedMinor && (
                 <div className="bg-white p-4 rounded-lg shadow mb-6">
                     <h2 className="text-xl font-semibold mb-4 text-left">타로점</h2>
+                    <button
+                        onClick={shuffleTarotCards}
+                        className="mb-4 px-6 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-lg shadow-md"
+                    >
+                        타로 섞기
+                    </button>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {displayedCards.map((card, index) => (
                 <div key={index} onClick={() => handleCardClick(card)} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
