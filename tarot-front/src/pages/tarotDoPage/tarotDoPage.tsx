@@ -170,8 +170,6 @@ const TarotDoPage = () => {
         setSelectedCards([]);
     };
 
-    console.log(selectedMinor);
-
 // 타로 카드 선택/해제 기능을 추가합니다.
     const toggleCardSelection = (card: TarotCard) => {
         const isSelected = selectedCards.find(selected => selected.name === card.name);
@@ -199,6 +197,7 @@ const TarotDoPage = () => {
 
     // 필요한 useState 추가
     const [availableCardDescriptions, setAvailableCardDescriptions] = useState<string[]>([]);
+
     const [displayedCards, setDisplayedCards] = useState<TarotCard[]>([]);
 // useEffect 내에서 displayedCards 상태 업데이트 로직 수정
     useEffect(() => {
@@ -244,13 +243,29 @@ const TarotDoPage = () => {
         setFlippedCards([]);
     };
 
+    const selectAllTarotCards = () => {
+        // Assuming 'displayedCards' contains the cards currently shown to the user
+        // and you want to select all these cards for the reading
+
+        // Update the state to include all displayed cards as selected
+        setSelectedCards(displayedCards);
+
+        // Assuming selecting a card also means flipping it, update the state to mark all displayed cards as flipped
+        const allFlippedCardNames = displayedCards.map(card => card.name);
+        setFlippedCards(allFlippedCardNames);
+    };
+
     return (
         <div className="container mx-auto px-4 py-8 bg-[#FFF8F0]">
             <h1 className="text-3xl font-bold mb-8 text-center text-[#333333]">타로하기</h1>
             {fetchError && <p className="text-red-500">{fetchError}</p>}
             {/* UI Components directly defined in return */}
             <div className="bg-gray-200 p-4 rounded-lg flex items-center mb-4">
-                <p className="text-sm text-gray-700">타로 카테고리를 선택하여 시작하세요. 각 카테고리는 다양한 타로 테마와 카드를 제공합니다!<br />타로 테마를 선택하여 보고싶은 타로를 제공합니다</p>
+                <p className="text-sm text-gray-700">
+                    1.타로 카테고리를 선택하여 시작하세요.
+                    <br />2.타로 테마를 선택하여 보고싶은 타로를 제공합니다
+                    <br />3.타로점을 보기 위해 카드를 선택한후 타로 결과보기를 클릭하세요
+                </p>
             </div>
             <div className="bg-white p-4 rounded-lg shadow mb-6">
                 <h2 className="text-xl font-semibold mb-4 text-left">타로 카테고리</h2>
@@ -279,17 +294,12 @@ const TarotDoPage = () => {
             {selectedMinor && (
                 <div className="bg-white p-4 rounded-lg shadow mb-6">
                     <h2 className="text-xl font-semibold mb-4 text-left">타로점</h2>
-                    <button
-                        onClick={shuffleTarotCards}
-                        className="mb-4 px-6 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-lg shadow-md"
-                    >
-                        타로 섞기
-                    </button>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {displayedCards.map((card, index) => (
-                <div key={index} onClick={() => handleCardClick(card)} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
+                <div key={index} onClick={() => handleCardClick(card)} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer">
                     <div className="p-6">
-                        <h2 className="text-2xl font-bold text-[#333333] mb-2">{index+1}번째 카드</h2>
+                        <p className="text-lg text-[#333333] mb-1">{`${index+1}번 타로점`}</p>
+                        <h2 className="text-2xl font-bold text-[#333333] mb-2">{availableCardDescriptions[index]}</h2>
                     </div>
                     <div className="flex-shrink-0 w-full h-64 relative mb-8 mx-auto">
                         {flippedCards.includes(card.name) || selectedCards.includes(card) ? (
@@ -301,6 +311,20 @@ const TarotDoPage = () => {
                 </div>
                     ))}
             </div>
+                    <div className="flex justify-center gap-4">
+                        <button
+                            onClick={shuffleTarotCards}
+                            className="mb-4 px-6 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-lg shadow-md"
+                        >
+                            타로 다시 섞기
+                        </button>
+                        <button
+                            onClick={selectAllTarotCards}
+                            className="mb-4 px-6 py-2 bg-purple-500 hover:bg-purple-600 text-white font-semibold rounded-lg shadow-md"
+                        >
+                            타로 한번에 선택하기
+                        </button>
+                    </div>
             </div>
             )}
             {/* 카드 표시 영역 스타일 조정 */}
@@ -343,12 +367,6 @@ const TarotDoPage = () => {
                         {/* 버튼 그룹 */}
                         <div className="fixed inset-x-0 bottom-0 bg-white py-4 shadow-lg">
                             <div className="max-w-screen-md mx-auto px-4">
-                                {/* 타로 결과 보기 상태일 때만 타로 초기화 버튼을 보여주기 */}
-                                {/*{selectedCards.length > 0 && (*/}
-                                {/*    <button onClick={resetSelections} className="w-full mb-4 px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition ease-in-out">*/}
-                                {/*        타로 초기화*/}
-                                {/*    </button>*/}
-                                {/*)}*/}
                                 <button
                                     onClick={handleButtonClick}
                                     className={`w-full px-6 py-2 ${isAllCardsFlipped() ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-gray-500'} text-white rounded-lg transition ease-in-out`}
