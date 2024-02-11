@@ -1,11 +1,11 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {cardBackImage} from "../../data/constants";
 
 // 타입 정의
 type SelectedCard = {
     name: string;
-    image: string; // 이전 예제에서는 string | null이었지만, 여기서는 항상 이미지 URL을 기대합니다.
+    image: string;
 };
 
 type Fortune = {
@@ -15,7 +15,7 @@ type Fortune = {
     hashTags: string[];
     shortComment: string;
     detail: string;
-    cardImage: string | null; // 카드 이미지가 없을 수도 있으므로 null 가능성 포함
+    cardImage: string | null;
 };
 
 type TarotResult = {
@@ -29,6 +29,8 @@ type TarotResult = {
 const TarotDoResultPage: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
     const state = location.state as { resultData?: TarotResult; selectedCards?: SelectedCard[] } | undefined;
 
     useEffect(() => {
@@ -58,6 +60,50 @@ const TarotDoResultPage: React.FC = () => {
     }
 
     const { fortune } = resultData.response;
+
+
+    // 주소 복사 기능
+    const copyTarotLinkToClipboard = async () => {
+        try {
+            await navigator.clipboard.writeText(`${window.location.origin}/tarot`);
+            setToastMessage('링크가 클립보드에 복사되었습니다. 친구들과 공유해보세요!');
+            setShowToast(true);
+        } catch (err) {
+            setToastMessage('링크 복사에 실패했습니다.');
+            setShowToast(true);
+        }
+    };
+
+
+// 간단한 토스트 컴포넌트
+    const Toast = ({ message, show, onClose }) => {
+        useEffect(() => {
+            if (show) {
+                const timer = setTimeout(() => {
+                    onClose();
+                }, 3000); // 3초 후 토스트 메시지 자동 숨김
+                return () => clearTimeout(timer);
+            }
+        }, [show, onClose]);
+
+        return (
+            show ? (
+                <div style={{
+                    position: 'fixed',
+                    bottom: '20px',
+                    right: '20px',
+                    backgroundColor: 'black',
+                    color: 'white',
+                    padding: '10px',
+                    borderRadius: '5px',
+                    zIndex: 1000,
+                }}>
+                    {message}
+                </div>
+            ) : null
+        );
+    };
+
 
     return (
         <div className="container mx-auto px-4 py-8 bg-[#FFF8F0]">
@@ -93,12 +139,22 @@ const TarotDoResultPage: React.FC = () => {
                     </div>
                 </div>
             ))}
+            <div className="text-center mt-8 flex justify-center gap-4">
+                <button
+                    onClick={() => navigate('/tarot')}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
+                    aria-label="타로 다시 하기">
+                    다시하러가기
+                </button>
+                <button
+                    onClick={copyTarotLinkToClipboard}
+                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
+                    aria-label="타로하기 링크 복사하기">
+                    링크 복사하기
+                </button>
+            </div>
+            <Toast message={toastMessage} show={showToast} onClose={() => setShowToast(false)} />
         </div>
-
-
-
-
-
     );
 };
 
