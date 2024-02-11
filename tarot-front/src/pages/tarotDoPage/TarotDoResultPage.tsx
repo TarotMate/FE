@@ -26,6 +26,40 @@ type TarotResult = {
     error: any;
 };
 
+// Define a type for the Toast props
+interface ToastProps {
+    message: string;
+    show: boolean;
+    onClose: () => void; // Assuming onClose is a function that doesn't take any arguments and doesn't return anything
+}
+
+const Toast: React.FC<ToastProps> = ({ message, show, onClose }) => {
+    useEffect(() => {
+        if (show) {
+            const timer = setTimeout(() => {
+                onClose();
+            }, 3000); // 3초 후 토스트 메시지 자동 숨김
+            return () => clearTimeout(timer);
+        }
+    }, [show, onClose]);
+
+    return show ? (
+        <div style={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            backgroundColor: 'black',
+            color: 'white',
+            padding: '10px',
+            borderRadius: '5px',
+            zIndex: 1000,
+        }}>
+            {message}
+        </div>
+    ) : null;
+};
+
+
 const TarotDoResultPage: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -76,33 +110,6 @@ const TarotDoResultPage: React.FC = () => {
 
 
 // 간단한 토스트 컴포넌트
-    const Toast = ({ message, show, onClose }) => {
-        useEffect(() => {
-            if (show) {
-                const timer = setTimeout(() => {
-                    onClose();
-                }, 3000); // 3초 후 토스트 메시지 자동 숨김
-                return () => clearTimeout(timer);
-            }
-        }, [show, onClose]);
-
-        return (
-            show ? (
-                <div style={{
-                    position: 'fixed',
-                    bottom: '20px',
-                    right: '20px',
-                    backgroundColor: 'black',
-                    color: 'white',
-                    padding: '10px',
-                    borderRadius: '5px',
-                    zIndex: 1000,
-                }}>
-                    {message}
-                </div>
-            ) : null
-        );
-    };
 
 
     return (

@@ -40,6 +40,7 @@ const TarotDoPage = () => {
 
     const [fetchError, setFetchError] = useState('');
     const [isLoading, setIsLoading] = useState(false); // 데이터 로딩 상태 추가
+    const [isImageLoading, setIsImageLoading] = useState(false); // 데이터 로딩 상태 추가
 
     const [error, setError] = useState('');
 
@@ -214,6 +215,7 @@ const TarotDoPage = () => {
 
 
     const handleCardClick = (card: TarotCard) => {
+        setIsImageLoading(true);
         // 카드 뒤집기
         toggleCardSelection(card);
         // 카드를 뒤집기 상태에 추가하거나 제거하는 로직을 실행합니다.
@@ -303,7 +305,17 @@ const TarotDoPage = () => {
                     <div className="flex-shrink-0 w-full h-64 relative mb-8 mx-auto cursor-pointer">
                         {flippedCards.includes(card.name) || selectedCards.includes(card) ? (
                             <>
-                            <img src={card.image || cardBackImage} alt={card.name} onClick={() => handleCardClick(card)} className="w-full h-full object-contain"/>
+                                {isImageLoading && <div className="absolute inset-0 flex justify-center items-center">로딩중...</div>}
+                                <img
+                                    src={card.image || cardBackImage}
+                                    alt={card.name}
+                                    onClick={() => handleCardClick(card)}
+                                    style={{ display: isLoading ? 'none' : 'block' }}
+                                    onLoad={() => setIsImageLoading(false)}
+                                    className="w-full h-full object-contain"
+                                />
+                            {/*<img src={card.image || cardBackImage} alt={card.name} onClick={() => handleCardClick(card)} className="w-full h-full object-contain"/>*/}
+                            <p className="text-lg text-[#333333] mb-1 text-center">{`선택완료`}</p>
                             </>
                         ) : (
                             <>
