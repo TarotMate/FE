@@ -213,22 +213,12 @@ const TarotDoPage = () => {
     }, [selectedMajor, selectedMinor, tarotCards]);
 
 
-    // 각 카드별 로딩 상태를 저장하는 객체를 만듭니다.
-    const [cardLoadingStatus, setCardLoadingStatus] = useState<{ [key: string]: boolean }>({});
-
-// 카드 클릭 핸들러 내에서 카드별 로딩 상태를 업데이트 합니다.
     const handleCardClick = (card: TarotCard) => {
-        // 카드 로딩 시작
-        setCardLoadingStatus(prev => ({ ...prev, [card.name]: true }));
+        // 카드 뒤집기
         toggleCardSelection(card);
+        // 카드를 뒤집기 상태에 추가하거나 제거하는 로직을 실행합니다.
         toggleFlipCard(card.name);
     };
-
-// 카드 이미지의 onLoad 이벤트에서 로딩 상태를 false로 설정합니다.
-    const handleImageLoaded = (cardName: string) => {
-        setCardLoadingStatus(prev => ({ ...prev, [cardName]: false }));
-    };
-
 
     if (isLoading) {
         // 로딩 중일 때 로딩 컴포넌트만 표시
@@ -254,8 +244,13 @@ const TarotDoPage = () => {
     };
 
     const selectAllTarotCards = () => {
+        // Assuming 'displayedCards' contains the cards currently shown to the user
+        // and you want to select all these cards for the reading
+
+        // Update the state to include all displayed cards as selected
         setSelectedCards(displayedCards);
 
+        // Assuming selecting a card also means flipping it, update the state to mark all displayed cards as flipped
         const allFlippedCardNames = displayedCards.map(card => card.name);
         setFlippedCards(allFlippedCardNames);
     };
@@ -308,14 +303,8 @@ const TarotDoPage = () => {
                     <div className="flex-shrink-0 w-full h-64 relative mb-8 mx-auto cursor-pointer">
                         {flippedCards.includes(card.name) || selectedCards.includes(card) ? (
                             <>
-                                {cardLoadingStatus[card.name] && <div className="absolute inset-0 flex justify-center items-center">로딩중...</div>}
-                                <img
-                                    src={card.image || cardBackImage}
-                                    alt={card.name}
-                                    onLoad={() => handleImageLoaded(card.name)}
-                                    className="w-full h-full object-contain"
-                                />
-                                <p className="text-lg text-[#333333] mb-1 text-center">{`선택완료`}</p>
+                            <img src={card.image || cardBackImage} alt={card.name} onClick={() => handleCardClick(card)} className="w-full h-full object-contain"/>
+                            <p className="text-lg text-[#333333] mb-1 text-center">{`선택완료`}</p>
                             </>
                         ) : (
                             <>
