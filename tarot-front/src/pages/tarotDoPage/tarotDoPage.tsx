@@ -246,6 +246,7 @@ const TarotDoPage = () => {
     };
 
     const selectAllTarotCards = () => {
+        setIsImageLoading(true)
         // Assuming 'displayedCards' contains the cards currently shown to the user
         // and you want to select all these cards for the reading
 
