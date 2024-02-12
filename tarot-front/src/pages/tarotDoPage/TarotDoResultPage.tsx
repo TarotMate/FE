@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {cardBackImage} from "../../data/constants";
+import html2canvas from "html2canvas";
 
 // 타입 정의
 type SelectedCard = {
@@ -109,16 +110,36 @@ const TarotDoResultPage: React.FC = () => {
     };
 
 
-// 간단한 토스트 컴포넌트
+    const captureAndDownload = async () => {
+        const nodeToCapture = document.getElementById("capture");
+        if (!nodeToCapture) {
+            alert("error: 캡처할 요소를 찾을 수 없습니다.")
+            return;
+        }
+
+        html2canvas(nodeToCapture, {
+            allowTaint: true,
+            useCORS: true,
+        }).then(function (canvas) {
+            // 스크린샷을 이미지로 변환합니다.
+            const image = canvas.toDataURL("image/png");
+            // 이미지를 다운로드할 수 있는 링크를 생성합니다.
+            const a = document.createElement("a");
+            a.href = image;
+            a.download = "tarot-card-result.png";
+            a.click();
+        });
+    }
 
 
     return (
         <div className="container mx-auto px-4 py-8 bg-[#FFF8F0]">
+            <div id="capture">
             <h1 className="text-3xl font-bold mb-8 text-center text-[#333333]">타로 결과</h1>
             {fortune.map((card, index) => (
                 <div key={index} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden md:flex md:h-auto">
                     {/* 이미지 컨테이너 정렬 조정 */}
-                    <div className="flex-shrink-0 w-full md:w-48 h-64 relative mx-auto">
+                    <div className="flex-shrink-0  md:w-48 h-64 relative mx-auto my-auto">
                         <img
                             src={card.cardImage || selectedCards.find(sc => sc.name === card.cardName)?.image || cardBackImage}
                             alt={card.cardName} className="w-full h-full object-contain rounded-l-lg"/>
@@ -136,16 +157,19 @@ const TarotDoResultPage: React.FC = () => {
                                 <span className="text-yellow-500">{Array(card.starRating).fill('★').join('')}</span>
                                 <span className="text-gray-300">{Array(5 - card.starRating).fill('★').join('')}</span>
                             </div>
-                            <div className="flex flex-wrap">
+                            <div className="mt-4 flex flex-wrap items-center">
                                 <span className="text-lg font-medium mr-2 mb-2">키워드:</span>
+                                <div>
                                 {card.hashTags.map((tag, idx) => (
-                                    <span key={idx} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-medium text-gray-700 mr-2 mb-2">#{tag}</span>
+                                    <span key={idx} className="inline-block px-3 py-1 text-sm font-medium text-gray-700 mr-2 mb-2">#{tag}</span>
                                 ))}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             ))}
+            </div>
             <div className="text-center mt-8 flex justify-center gap-4">
                 <button
                     onClick={() => navigate('/tarot')}
@@ -158,6 +182,13 @@ const TarotDoResultPage: React.FC = () => {
                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
                     aria-label="타로하기 링크 복사하기">
                     링크 복사하기
+                </button>
+                <button
+                    aria-label="타로결과페이지 저장하기"
+                    className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
+                    onClick={captureAndDownload}
+                >
+                    이미지로 저장
                 </button>
             </div>
             <Toast message={toastMessage} show={showToast} onClose={() => setShowToast(false)} />
