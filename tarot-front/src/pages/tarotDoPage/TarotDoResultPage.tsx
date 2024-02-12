@@ -113,7 +113,8 @@ const TarotDoResultPage: React.FC = () => {
     const captureAndDownload = async () => {
         const nodeToCapture = document.getElementById("capture");
         if (!nodeToCapture) {
-            alert("error: 캡처할 요소를 찾을 수 없습니다.")
+            setToastMessage('error: 캡처할 요소를 찾을 수 없습니다.');
+            setShowToast(true);
             return;
         }
 
@@ -134,20 +135,20 @@ const TarotDoResultPage: React.FC = () => {
 
     return (
         <div className="container mx-auto px-4 py-8 bg-[#FFF8F0]">
-            <div id="capture">
+        <div id="capture" className="container mx-auto px-4 py-8 bg-[#FFF8F0]">
             <h1 className="text-3xl font-bold mb-8 text-center text-[#333333]">타로 결과</h1>
             {fortune.map((card, index) => (
                 <div key={index} className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden md:flex md:h-auto">
                     {/* 이미지 컨테이너 정렬 조정 */}
-                    <div className="flex-shrink-0  md:w-48 h-64 relative mx-auto my-auto">
+                    <div className="flex justify-center relative "> {/* Tailwind CSS 클래스 적용 */}
                         <img
                             src={card.cardImage || selectedCards.find(sc => sc.name === card.cardName)?.image || cardBackImage}
-                            alt={card.cardName} className="w-full h-full object-contain rounded-l-lg"/>
+                            alt={card.cardName} className="md:w-48 h-64 m-4"/>
                     </div>
                     <div className="p-6 flex flex-col justify-between">
                         <div>
-                            <h2 className="text-2xl font-bold text-[#333333] mb-2">{card.cardName}</h2>
-                            <p className="text-md text-[#555555] mb-4">타로 점 : {card.cardDescription}</p>
+                            <h2 className="text-2xl font-bold text-[#333333] mb-2">타로: {card.cardDescription}</h2>
+                            <p className="text-md text-[#555555] mb-4">{card.cardName}</p>
                             <p className="text-sm text-[#666666] mb-2">요약: {card.shortComment}</p>
                             <p className="text-sm text-[#666666]">내용: {card.detail}</p>
                         </div>
@@ -170,7 +171,8 @@ const TarotDoResultPage: React.FC = () => {
                 </div>
             ))}
             </div>
-            <div className="text-center mt-8 flex justify-center gap-4">
+            <Toast message={toastMessage} show={showToast} onClose={() => setShowToast(false)} />
+            <div className="text-center mt-8 flex flex-col sm:flex-row justify-center gap-4">
                 <button
                     onClick={() => navigate('/tarot')}
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
@@ -191,7 +193,6 @@ const TarotDoResultPage: React.FC = () => {
                     이미지로 저장
                 </button>
             </div>
-            <Toast message={toastMessage} show={showToast} onClose={() => setShowToast(false)} />
         </div>
     );
 };
