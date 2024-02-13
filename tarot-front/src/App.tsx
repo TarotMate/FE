@@ -7,6 +7,7 @@ import TarotDoResultPage from "./pages/tarotDoPage/TarotDoResultPage";
 import TarotPage from "./pages/tarotPage/TarotPage";
 import LuckyNumbers from "./pages/tarotDoPage/LuckyNumbers";
 import {useEffect} from "react";
+import ThumbnailMaker from "./pages/tarotDoPage/ThumbnailMaker.tsx";
 
 function ScrollToTop() {
     const { pathname } = useLocation();
@@ -28,6 +29,8 @@ const App = () => {
                     <Route path="/tarot" element={<TarotDoPage />} />
                     <Route path="/tarot/result" element={<TarotDoResultPage />} />
                     <Route path="/random-number-card" element={<LuckyNumbers />} />
+                    <Route path="/thumb" element={<ThumbnailMaker />} />
+                    ThumbnailMaker
                 </Routes>
             </MainLayout>
         </Router>
