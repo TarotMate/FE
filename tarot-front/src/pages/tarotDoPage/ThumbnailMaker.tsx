@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useRef, useState} from 'react';
+import {ChangeEvent, useRef, useState} from 'react';
 import html2canvas from 'html2canvas';
 import 'tailwindcss/tailwind.css';
 
@@ -58,16 +58,16 @@ const ThumbnailMaker = () => {
     import React, { ChangeEvent } from 'react'; // Ensure ChangeEvent is imported
 
     const handleBackgroundChange = (event: ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files.length > 0) {
+        if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
             const reader = new FileReader();
             reader.onloadend = () => {
+                // Ensure reader.result is not null before calling setBackgroundImage
                 if (reader.result) {
-                    setBackgroundImage(reader.result.toString());
+                    setBackgroundImage(reader.result as string);
                     setBackground('');
                 } else {
-                    // Handle the case where reader.result is null
-                    console.error('File read failed');
+                    console.error('Failed to read file');
                 }
             };
             reader.readAsDataURL(file);
@@ -137,7 +137,7 @@ const ThumbnailMaker = () => {
 
     // 버튼 클릭 시 input 클릭 이벤트 트리거
     const handleUploadButtonClick = () => {
-        fileInputRef.current.click();
+        fileInputRef.current?.click(); // Use optional chaining to safely access current
     };
 
 
@@ -158,10 +158,12 @@ const ThumbnailMaker = () => {
 
     // 썸네일을 클립보드에 복사하는 함수
     const copyToClipboard = () => {
-        html2canvas(document.querySelector("#thumbnail-preview")).then(canvas => {
+        html2canvas(document.querySelector("#thumbnail-preview") as HTMLElement).then(canvas => {
             canvas.toBlob(blob => {
-                const item = new ClipboardItem({ "image/png": blob });
-                navigator.clipboard.write([item]);
+                if (blob) {
+                    const item = new ClipboardItem({ "image/png": blob });
+                    navigator.clipboard.write([item]);
+                }
             });
         });
     };
