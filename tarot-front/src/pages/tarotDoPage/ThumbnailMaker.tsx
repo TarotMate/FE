@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {ChangeEvent, useRef, useState} from 'react';
 import html2canvas from 'html2canvas';
 import 'tailwindcss/tailwind.css';
 
@@ -17,11 +17,11 @@ const ThumbnailMaker = () => {
     const colorInputRef = useRef(null);
 
     // 사용자가 색상을 선택하면 배경색을 변경하는 함수
-    const handleColorChange = (event) => {
+    const handleColorChange = (event: ChangeEvent<HTMLInputElement>) => {
         const newColor = event.target.value;
-        setCustomBackgroundColor(newColor); // 사용자가 선택한 색상으로 상태 업데이트
-        setBackground(newColor); // 배경색을 사용자가 선택한 색상으로 변경
-        setBackgroundImage(''); // 배경 이미지 초기화
+        setCustomBackgroundColor(newColor);
+        setBackground(newColor);
+        setBackgroundImage('');
     };
 
     const [borderSize, setBorderSize] = useState('0px'); // 테두리 크기 상태
@@ -31,12 +31,14 @@ const ThumbnailMaker = () => {
     const borderColorInputRef = useRef(null);
 
     // 테두리 색상 변경 핸들러
-    const handleBorderColorChange = (event) => {
+    const handleBorderColorChange = (event: ChangeEvent<HTMLInputElement>) => {
         setBorderColor(event.target.value);
     };
 
+
     // 테두리 크기 변경 핸들러
-    const handleBorderSizeChange = (size) => {
+
+    const handleBorderSizeChange = (size: string) => { // Consider defining a more specific type if the size is limited to certain values
         setBorderSize(size);
     };
 
@@ -53,16 +55,25 @@ const ThumbnailMaker = () => {
         setBackground(randomColor);
         setBackgroundImage(''); // Reset background image when changing color
     };
+    import React, { ChangeEvent } from 'react'; // Ensure ChangeEvent is imported
 
-    const handleBackgroundChange = (event) => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setBackgroundImage(reader.result.toString());
-            setBackground(''); // Reset solid background when setting image
-        };
-        reader.readAsDataURL(file);
+    const handleBackgroundChange = (event: ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files.length > 0) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                if (reader.result) {
+                    setBackgroundImage(reader.result.toString());
+                    setBackground('');
+                } else {
+                    // Handle the case where reader.result is null
+                    console.error('File read failed');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
     };
+
 
     const generateRandomGradient = () => {
         const gradientStart = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
@@ -82,7 +93,7 @@ const ThumbnailMaker = () => {
         });
     };
 
-    const handleInputChange = (event) => {
+    const handleInputChange = (event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = event.target;
         switch (name) {
             case 'title':
@@ -117,7 +128,7 @@ const ThumbnailMaker = () => {
         }
     };
 
-    const updateAspectRatio = (ratio) => {
+    const updateAspectRatio = (ratio: string) => { // Consider defining a more specific type if the ratio is limited to certain values
         setAspectRatio(ratio);
     };
 
