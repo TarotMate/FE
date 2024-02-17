@@ -55,8 +55,6 @@ const ThumbnailMaker = () => {
         setBackground(randomColor);
         setBackgroundImage(''); // Reset background image when changing color
     };
-    import React, { ChangeEvent } from 'react'; // Ensure ChangeEvent is imported
-
 
     const generateRandomGradient = () => {
         const gradientStart = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
@@ -218,6 +216,8 @@ const ThumbnailMaker = () => {
                             테두리 없애기
                         </button>
                     </div>
+
+
 
 
                     {/* Title 설정 */}
