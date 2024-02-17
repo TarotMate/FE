@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useRef, useState} from 'react';
 import html2canvas from 'html2canvas';
 import 'tailwindcss/tailwind.css';
 
@@ -8,10 +8,46 @@ const ThumbnailMaker = () => {
     const [category, setCategory] = useState('');
     const [background, setBackground] = useState('white');
     const [backgroundImage, setBackgroundImage] = useState('');
-    const [textColor, setTextColor] = useState('#000000');
-    const [fontSize, setFontSize] = useState('text-base');
+    const [textColor] = useState('#000000');
     const [aspectRatio, setAspectRatio] = useState('16:9');
 
+    // 커스텀 배경색
+    const [customBackgroundColor, setCustomBackgroundColor] = useState('#FFFFFF'); // 사용자 정의 배경색 상태 추가
+    // 숨겨진 색상 선택기를 위한 ref
+    const colorInputRef = useRef(null);
+
+    // 사용자가 색상을 선택하면 배경색을 변경하는 함수
+    const handleColorChange = (event) => {
+        const newColor = event.target.value;
+        setCustomBackgroundColor(newColor); // 사용자가 선택한 색상으로 상태 업데이트
+        setBackground(newColor); // 배경색을 사용자가 선택한 색상으로 변경
+        setBackgroundImage(''); // 배경 이미지 초기화
+    };
+
+    const [borderSize, setBorderSize] = useState('0px'); // 테두리 크기 상태
+    const [borderColor, setBorderColor] = useState('#000000'); // 테두리 색상 상태
+
+    // 테두리 색상 선택기를 위한 ref
+    const borderColorInputRef = useRef(null);
+
+    // 테두리 색상 변경 핸들러
+    const handleBorderColorChange = (event) => {
+        setBorderColor(event.target.value);
+    };
+
+    // 테두리 크기 변경 핸들러
+    const handleBorderSizeChange = (size) => {
+        setBorderSize(size);
+    };
+
+
+    // 제목, 소제목, 카테고리에 대한 색상 및 크기 상태
+    const [titleColor, setTitleColor] = useState('#000000');
+    const [titleSize, setTitleSize] = useState('text-base');
+    const [subtitleColor, setSubtitleColor] = useState('#000000');
+    const [subtitleSize, setSubtitleSize] = useState('text-base');
+    const [categoryColor, setCategoryColor] = useState('#000000');
+    const [categorySize, setCategorySize] = useState('text-base');
     const generateRandomColor = () => {
         const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
         setBackground(randomColor);
@@ -36,11 +72,6 @@ const ThumbnailMaker = () => {
         setBackgroundImage(''); // Reset background image when setting gradient
     };
 
-    const setSolidBackground = () => {
-        setBackground('#FFFFFF'); // Set solid white background
-        setBackgroundImage('');
-    };
-
     const captureThumbnail = () => {
         html2canvas(document.querySelector("#thumbnail-preview")!).then(canvas => {
             const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
@@ -63,11 +94,23 @@ const ThumbnailMaker = () => {
             case 'category':
                 setCategory(value);
                 break;
-            case 'textColor':
-                setTextColor(value);
+            case 'titleColor':
+                setTitleColor(value);
                 break;
-            case 'fontSize':
-                setFontSize(value);
+            case 'titleSize':
+                setTitleSize(value);
+                break;
+            case 'subtitleColor':
+                setSubtitleColor(value);
+                break;
+            case 'subtitleSize':
+                setSubtitleSize(value);
+                break;
+            case 'categoryColor':
+                setCategoryColor(value);
+                break;
+            case 'categorySize':
+                setCategorySize(value);
                 break;
             default:
                 break;
@@ -77,6 +120,15 @@ const ThumbnailMaker = () => {
     const updateAspectRatio = (ratio) => {
         setAspectRatio(ratio);
     };
+
+    // 숨겨진 input 태그를 위한 ref 생성
+    const fileInputRef = React.useRef(null);
+
+    // 버튼 클릭 시 input 클릭 이벤트 트리거
+    const handleUploadButtonClick = () => {
+        fileInputRef.current.click();
+    };
+
 
     const getThumbnailDimensions = () => {
         switch (aspectRatio) {
@@ -92,64 +144,192 @@ const ThumbnailMaker = () => {
                 return 'w-[560px] h-[315px]';
         }
     };
+
+    // 썸네일을 클립보드에 복사하는 함수
+    const copyToClipboard = () => {
+        html2canvas(document.querySelector("#thumbnail-preview")).then(canvas => {
+            canvas.toBlob(blob => {
+                const item = new ClipboardItem({ "image/png": blob });
+                navigator.clipboard.write([item]);
+            });
+        });
+    };
+
     return (
-        <div className="flex p-4">
-            {/* Thumbnail Preview */}
-            <div id="thumbnail-preview"
-                 className={`${getThumbnailDimensions()} p-8 ${fontSize} flex flex-col justify-center items-center`}
-                 style={{
-                     background,
-                     backgroundImage: `url(${backgroundImage})`,
-                     backgroundSize: 'cover',
-                     color: textColor,
-                     margin: 'auto'
-                 }}>
-                <h1 className={`font-bold ${fontSize}`}>{title}</h1>
-                <h2 className={`${fontSize}`}>{subtitle}</h2>
-                <p className={`${fontSize}`}>{category}</p>
-            </div>
+        <div className="flex justify-center items-center min-h-screen bg-gray-800"> {/* Layout div for dark background */}
 
-            {/* Control Sidebar */}
-            <div className="w-96 p-4">
-                <div className="text-center mb-2">Size</div>
-                <div className="flex justify-between mb-4">
-                    <button onClick={() => updateAspectRatio('16:9')} className="btn">16:9</button>
-                    <button onClick={() => updateAspectRatio('1:1')} className="btn">1:1</button>
-                    <button onClick={() => updateAspectRatio('4:3')} className="btn">4:3</button>
-                    <button onClick={() => updateAspectRatio('3:4')} className="btn">3:4</button>
+            <div className="flex flex-grow"> {/* Adjusted for flexible layout */}
+                {/* Thumbnail Preview */}
+                <div id="thumbnail-preview"
+                     className={`${getThumbnailDimensions()} p-8 flex flex-col justify-center items-center`}
+                     style={{
+                         background,
+                         backgroundImage: `url(${backgroundImage})`,
+                         backgroundSize: 'cover', // 이미지가 영역을 꽉 채우도록 설정
+                         backgroundRepeat: 'no-repeat',
+                         backgroundPosition: 'center',
+                         color: textColor,
+                         border: `${borderSize} solid ${borderColor}`,
+                         margin: 'auto'
+                     }}>
+                    <h1 className={`font-bold ${titleSize}`} style={{ color: titleColor }}>{title}</h1>
+                    <h2 className={`${subtitleSize}`} style={{ color: subtitleColor }}>{subtitle}</h2>
+                    <p className={`${categorySize}`} style={{ color: categoryColor }}>{category}</p>
                 </div>
-                <div className="text-center my-2">Background</div>
-                <input type="file" accept="image/*" onChange={handleBackgroundChange}
-                       className="input input-bordered w-full mb-2"/>
-                <button onClick={generateRandomGradient} className="btn btn-primary w-full mb-2">Gradient Random
-                </button>
-                <button onClick={setSolidBackground} className="btn btn-primary w-full mb-2">Solid Color</button>
-                <button onClick={generateRandomColor} className="btn btn-primary w-full mb-2">Solid Random</button>
 
 
-                <input type="text" name="title" placeholder="Title" onChange={handleInputChange}
-                       className="input input-bordered w-full mb-2"/>
-                <input type="text" name="subtitle" placeholder="Subtitle" onChange={handleInputChange}
-                       className="input input-bordered w-full mb-2"/>
-                <input type="text" name="category" placeholder="Category" onChange={handleInputChange}
-                       className="input input-bordered w-full mb-2"/>
-                <input type="text" name="backgroundImage" placeholder="Background Image URL"
-                       onChange={handleInputChange} className="input input-bordered w-full mb-2"/>
-                <input type="color" name="textColor" value={textColor} onChange={handleInputChange}
-                       className="input input-bordered w-16 mb-2"/>
-                <select name="fontSize" value={fontSize} onChange={handleInputChange}
-                        className="select select-bordered w-full mb-4">
-                    <option value="text-xs">Extra Small</option>
-                    <option value="text-sm">Small</option>
-                    <option value="text-base">Base</option>
-                    <option value="text-lg">Large</option>
-                    <option value="text-xl">Extra Large</option>
-                </select>
-                <button onClick={generateRandomColor} className="btn btn-primary w-full mb-2">Generate Background
-                </button>
-                <button onClick={captureThumbnail} className="btn btn-secondary w-full mb-2">Save Thumbnail</button>
+
+                {/* Control Sidebar */}
+                <div className="w-full md:w-96 h-screen bg-gray-200 p-4 flex flex-col"> {/* Sidebar settings adjusted for full height */}
+                    <div className="flex items-center space-x-2 my-2">
+                <div className="text-left mb-2">썸네일 크기</div>
+                <div className="flex justify-between mb-4">
+                    <button onClick={() => updateAspectRatio('16:9')} className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">16:9</button>
+                    <button onClick={() => updateAspectRatio('1:1')} className="btn bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">1:1</button>
+                    <button onClick={() => updateAspectRatio('4:3')} className="btn bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">4:3</button>
+                    <button onClick={() => updateAspectRatio('3:4')} className="btn bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">3:4</button>
+                </div>
+                    </div>
+                    <div className="flex items-center space-x-2 my-2">
+                        <div className="text-black">배경색</div>
+                        <input
+                            type="color"
+                            ref={colorInputRef}
+                            value={customBackgroundColor} // value 속성에 상태 바인딩
+                            onChange={handleColorChange}
+                        />
+
+                        <button onClick={generateRandomGradient} className="btn mb-2 bg-gradient-to-r from-purple-400 to-blue-500 hover:from-purple-500 hover:to-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 transition duration-150 ease-in-out">
+                            그라데이션
+                        </button>
+                        <button onClick={generateRandomColor} className="btn mb-2 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-opacity-50 transition duration-150 ease-in-out">
+                            단색 랜덤
+                        </button>
+                    </div>
+                    <div className="flex items-center space-x-2 my-2">
+                        <p>테두리색</p>
+                        {/* 테두리 색상 선택 */}
+                        <input
+                            type="color"
+                            ref={borderColorInputRef}
+                            value={borderColor}
+                            onChange={handleBorderColorChange}
+                        />
+                        <select
+                            id="borderSize"
+                            className="select select-bordered select-sm max-w-xs"
+                            onChange={(e) => handleBorderSizeChange(e.target.value)}
+                        >
+                            <option value="0px">None</option>
+                            <option value="5px">5px</option>
+                            <option value="15px">15px</option>
+                            <option value="30px">30px</option>
+                        </select>
+                        {/* "None" 버튼 스타일링 */}
+                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out" onClick={() => handleBorderSizeChange('0px')}>
+                            테두리 없애기
+                        </button>
+                    </div>
 
 
+
+                    <input type="file" accept="image/*" onChange={handleBackgroundChange}
+                           className="hidden" ref={fileInputRef}/>
+                    <button onClick={handleUploadButtonClick} className="btn w-full mb-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
+                        배경 이미지 업로드
+                    </button>
+
+                    {/* Title 설정 */}
+                    <div className="flex items-center space-x-2 my-2">
+                        <input
+                            type="text"
+                            name="title"
+                            placeholder="Title"
+                            onChange={handleInputChange}
+                            className="input input-bordered flex-1"
+                        />
+                        <input
+                            type="color"
+                            name="titleColor"
+                            value={titleColor}
+                            onChange={handleInputChange}
+                            className="input input-bordered w-16"
+                        />
+                        <select
+                            name="titleSize"
+                            value={titleSize}
+                            onChange={handleInputChange}
+                            className="select select-bordered"
+                        >
+                            <option value="text-xs">XS</option>
+                            <option value="text-sm">SM</option>
+                            <option value="text-base">Base</option>
+                            <option value="text-lg">LG</option>
+                            <option value="text-xl">XL</option>
+                        </select>
+                    </div>
+                    <div className="flex items-center space-x-2 my-2">
+                        <input
+                            type="text"
+                            name="subtitle"
+                            placeholder="Subtitle"
+                            onChange={handleInputChange}
+                            className="input input-bordered flex-1"
+                        />
+                        <input
+                            type="color"
+                            name="subtitleColor"
+                            value={subtitleColor}
+                            onChange={handleInputChange}
+                            className="input input-bordered w-16"
+                        />
+                        <select
+                            name="subtitleSize"
+                            value={subtitleSize}
+                            onChange={handleInputChange}
+                            className="select select-bordered"
+                        >
+                            <option value="text-xs">XS</option>
+                            <option value="text-sm">SM</option>
+                            <option value="text-base">Base</option>
+                            <option value="text-lg">LG</option>
+                            <option value="text-xl">XL</option>
+                        </select>
+                    </div>
+                    <div className="flex items-center space-x-2 my-2">
+                        <input
+                            type="text"
+                            name="category"
+                            placeholder="Category"
+                            onChange={handleInputChange}
+                            className="input input-bordered flex-1"
+                        />
+                        <input
+                            type="color"
+                            name="categoryColor"
+                            value={categoryColor}
+                            onChange={handleInputChange}
+                            className="input input-bordered w-16"
+                        />
+                        <select
+                            name="categorySize"
+                            value={categorySize}
+                            onChange={handleInputChange}
+                            className="select select-bordered"
+                        >
+                            <option value="text-xs">XS</option>
+                            <option value="text-sm">SM</option>
+                            <option value="text-base">Base</option>
+                            <option value="text-lg">LG</option>
+                            <option value="text-xl">XL</option>
+                        </select>
+                    </div>
+                    {/* 클립보드 복사 버튼 */}
+                    <button onClick={copyToClipboard} className="btn w-full mb-2 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
+                        클립보드 복사
+                    </button>
+                    <button onClick={captureThumbnail} className="btn bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out mb-2">썸네일 파일 저장</button>
+            </div>
             </div>
         </div>
     );
