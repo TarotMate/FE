@@ -12,7 +12,7 @@ const ThumbnailMaker = () => {
     const [aspectRatio, setAspectRatio] = useState('16:9');
 
     // 커스텀 배경색
-    const [customBackgroundColor, setCustomBackgroundColor] = useState('#FFFFFF'); // 사용자 정의 배경색 상태 추가
+    const [customBackgroundColor, setCustomBackgroundColor] = useState('#FFFFFF');
     // 숨겨진 색상 선택기를 위한 ref
     const colorInputRef = useRef(null);
 
@@ -56,23 +56,6 @@ const ThumbnailMaker = () => {
         setBackgroundImage(''); // Reset background image when changing color
     };
     import React, { ChangeEvent } from 'react'; // Ensure ChangeEvent is imported
-
-    const handleBackgroundChange = (event: ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files[0]) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                // Ensure reader.result is not null before calling setBackgroundImage
-                if (reader.result) {
-                    setBackgroundImage(reader.result as string);
-                    setBackground('');
-                } else {
-                    console.error('Failed to read file');
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-    };
 
 
     const generateRandomGradient = () => {
@@ -130,14 +113,6 @@ const ThumbnailMaker = () => {
 
     const updateAspectRatio = (ratio: string) => { // Consider defining a more specific type if the ratio is limited to certain values
         setAspectRatio(ratio);
-    };
-
-    // 숨겨진 input 태그를 위한 ref 생성
-    const fileInputRef = React.useRef(null);
-
-    // 버튼 클릭 시 input 클릭 이벤트 트리거
-    const handleUploadButtonClick = () => {
-        fileInputRef.current?.click(); // Use optional chaining to safely access current
     };
 
 
@@ -244,13 +219,6 @@ const ThumbnailMaker = () => {
                         </button>
                     </div>
 
-
-
-                    <input type="file" accept="image/*" onChange={handleBackgroundChange}
-                           className="hidden" ref={fileInputRef}/>
-                    <button onClick={handleUploadButtonClick} className="btn w-full mb-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
-                        배경 이미지 업로드
-                    </button>
 
                     {/* Title 설정 */}
                     <div className="flex items-center space-x-2 my-2">
